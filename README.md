@@ -12,6 +12,9 @@
 ## things i've had to do
 
 - the code i found was in ARM32 rather than ARM64 so i'm translating it
+- found out there are two different styles of ARM32 programming and my couple sources were using different styles
+    - `mov r7, #1` vs `mov %r7, $1`
+    - "immediate" operand can be either # or $
 
 
 SYSCALLS
@@ -19,3 +22,4 @@ SYSCALLS
 | ARM32 | ARM64 | Name              |
 | ----- | ----- | ----------------- |
 | 0     | 128   | restart_syscall   |
+| 1     | 93    | exit              |

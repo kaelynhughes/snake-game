@@ -43,7 +43,7 @@ _start:
 	bl init_random_seed
 	bl initialize_map
 
-        ldr r0, =hide_cursor
+        ldr x0, =hide_cursor
         bl output
 
 game_loop:
@@ -59,25 +59,25 @@ game_loop:
 	b game_loop			// loop until collision
 
 the_end:
-	ldr r0, =game_over
+	ldr x0, =game_over
 	bl output
-	ldr r0, =max_len
-	ldr r0, [r0]
+	ldr x0, =max_len
+	ldr x0, [x0]
 	bl output_int
-	ldr r0, =endl
+	ldr x0, =endl
 	bl output
 
 	bl kbhit		// wait for any key
 	bl cooked_mode		// just to be sure, restore termios
 
-        ldr r0, =endl
+        ldr x0, =endl
         bl output
-	ldr r0, =show_cursor
+	ldr x0, =show_cursor
 	bl output
 	pop {r4, lr}
 	
 	mov x0, #0		// exit status 0 (ok)
-    	mov x7, #1		// syscall 1 (exit)
+    	mov x7, #93		// syscall 1 (exit) is 93 in ARM64
     	svc #0
 
 ///////////////////////////////////////////////////
@@ -94,17 +94,17 @@ the_end:
 // and go add a new bug
 move_and_check_collision:
 	push {r4, r5, r6, r7, r8, lr}
-	ldr r4, =map
+	ldr x4, =map
 
-        ldr r1, =headx
-        ldr r1, [r1]
-        ldr r0, =dx
-        ldr r0, [r0]
+        ldr x1, =headx
+        ldr x1, [x1]
+        ldr x0, =dx
+        ldr x0, [x0]
         add r5, r1, r0		// r5 = headx + dx
-        ldr r2, =heady
-        ldr r2, [r2]
-        ldr r0, =dy
-        ldr r0, [r0]
+        ldr x2, =heady
+        ldr x2, [x2]
+        ldr x0, =dy
+        ldr x0, [x0]
         add r6, r2, r0		// r6 = heady + dy
         mov r0, #MAPXLEN	// get map address for head (r3)
         mul r3, r6, r0
@@ -112,7 +112,7 @@ move_and_check_collision:
         mov r0, #4
         mul r7, r3, r0		// (head) r7 = y*mapxlen + x
 
-        ldr r0, [r4, r7]	// r0 = map point for next step
+        ldr x0, [x4, x7]	// r0 = map point for next step
         cmp r0, #0              // collision to points >0 --> end
         bgt collision
         cmp r0, #-1             // -"- ==-1 --> end
@@ -125,12 +125,12 @@ move_and_check_collision:
 
         mov r0, #1		// store new head point to map
         str r0, [r4, r7]
-        ldr r0, =headx
+        ldr x0, =headx
         str r5, [r0] 		// store new headx
-        ldr r0, =heady
+        ldr x0, =heady
         str r6, [r0]    	// store new heady
 
-	mov r0, #0
+	mov x0, #0
 	b end_move_and_coll
 collision:
 	mov r0, #1
@@ -150,8 +150,8 @@ end_move_and_coll:
 // are -1 ('#'). Different bugs are -2, -3, -4.
 update_and_print_map:
 	push {r4, r5, r6, r7, r8, lr}
-	ldr r6, =map
-        ldr r0, =clear_screen
+	ldr x6, =map
+        ldr x0, =clear_screen
         bl output
 
         mov r5, #0
@@ -160,7 +160,7 @@ mapy_loop:
         cmp r5, #MAPYLEN
         beq end_map_loop
         add r5, r5, #1
-	ldr r0, =space
+	ldr x0, =space
 	bl output
 mapx_loop:
         cmp r4, #MAPXLEN
@@ -171,7 +171,7 @@ mapx_loop:
         add r4, r4, #1
 
         //// Update and print map point ////
-        ldr r7, [r6]            // load map point
+        ldr x7, [x6]            // load map point
 
         cmp r7, #0              //if point is:
         addgt r0, r7, #1        //>0 --> increase its value +1
@@ -190,8 +190,8 @@ mapx_loop:
         ldreq r0, =bug3
 
 
-        ldr r1, =max_len        // cut tail if its too long
-        ldr r1, [r1]
+        ldr x1, =max_len        // cut tail if its too long
+        ldr x1, [x1]
         add r1, r1, #1
         cmp r7, r1
         movgt r0, #0            // >max_len --> reset point to empty
@@ -204,7 +204,7 @@ mapx_loop:
         b mapx_loop
 
 end_map_loop:
-	ldr r0, =endl
+	ldr x0, =endl
 	bl output
 	pop {r4, r5, r6, r7, r8, lr}
 	bx lr
@@ -221,7 +221,7 @@ check_keypress:
       	bl raw_mode		// key presses are not buffered
       	bl delay
       	bl input
-	ldr r4, [r0]
+	ldr x4, [x0]
       	bl cooked_mode		// return to normal mode immediately
 				// this is overkill, but helps when
 				// debugging
@@ -254,8 +254,8 @@ check_keypress:
 	b end_check_keypress
 
 update_dxdy:
-	ldr r1, =dx
-	ldr r2, =dy
+	ldr x1, =dx
+	ldr x2, =dy
 
 	mov r4, #0	// new dx
 	mov r5, #0	// new dy
@@ -289,7 +289,7 @@ initialize_map:
 	push {r4, lr}
 
 	//horizontal borders//
-	ldr r4, =map
+	ldr x4, =map
 	mov r0, #0
 	mov r1, #MAPYLEN
 	sub r2, r1, #1		// compute offset for bottom row
@@ -310,7 +310,7 @@ top_loop:
 end_top_loop:
 
 	//vertical borders//
-	ldr r4, =map
+	ldr x4, =map
 	mov r0, #0
         mov r1, #MAPXLEN
         sub r2, r1, #1          // compute offset for left row
@@ -343,7 +343,7 @@ end_side_loop:
 // Adds a new random bug to the map in a random location
 add_new_bug:
 	push {r4, r5, r6, lr}
-	ldr r4, =map
+	ldr x4, =map
         mov r1, #MAPYLEN
         mov r2, #MAPXLEN
         mul r5, r1, r2          // mapylen*mapxlen
@@ -365,7 +365,7 @@ add_bug_new_try:
 	mov r3, #4
 	mul r0, r0, r3  	// map address for new bug
 
-	ldr r3, [r4, r0]	// load map point
+	ldr x3, [x4, x0]	// load map point
 	cmp r3, #0		// map point must be empty = 0 = '.'
 	moveq r2, r6		// new bug: -2, -3, or -4
 	streq r2, [r4, r0]	// store bug to map
@@ -403,8 +403,8 @@ end_divide:
 // Note that #1 shift would be enough for this purpose, but we want 
 // small random numbers so calculating the following modulo is fast
 get_random:
-	ldr r1, =random_seed
-	ldr r0, [r1]
+	ldr x1, =random_seed
+	ldr x0, [x1]
 	add r0, r0, #137
 	eor r0, r0, r0, ror #13
 	lsr r0, r0, #5	//shift right to ensure positiveness
@@ -422,7 +422,7 @@ get_random:
 // For Raspberry Pi, replace 9 in 0x900.. with 0
 init_random_seed:
         push {r7, lr}
-        ldr r0, =random_seed
+        ldr x0, =random_seed
         mov r7, #0x00004e	// syscall for gettimeofday
         svc #0
 
@@ -460,7 +460,7 @@ next_print:
 // Output: address of input string =rw_buffer
 input:
 	push {r4, r6, r7, lr}
-	ldr r4, =rw_buffer
+	ldr x4, =rw_buffer
 	mov r1, #0
 	str r1, [r4]
 	str r1, [r4, #+4]	// make sure buffer is empty
@@ -488,7 +488,7 @@ output_int:
 	mov r4, r0
     	mov r5, #8		// word is 8 x 4 bits
 	mov r6, #0		// carry
-	ldr r3, =rw_buffer	// buffer to write string
+	ldr x3, =rw_buffer	// buffer to write string
 	add r3, r3, #7		// start writing from end
 output_int_loop:
     	// Take least significant 4 bits from r4 into r0, loop 8 times
@@ -513,7 +513,7 @@ output_int_loop:
 	cmp r5, #0
     	bne output_int_loop
 
-	ldr r0, =rw_buffer	// reset to start
+	ldr x0, =rw_buffer	// reset to start
 	mov r2, #6
 output_int_loop3:		// skip leading zeroes (max 7)
 	ldrb r1, [r0]
@@ -535,8 +535,8 @@ output_int_end:
 // Input, Output: none
 // Delay program for delay_ticks loop time
 delay:
-        ldr r0, =delay_ticks
-        ldr r0, [r0]
+        ldr x0, =delay_ticks
+        ldr x0, [x0]
         mov r1, #0
 delay_loop:
         cmp r1, r0
@@ -580,13 +580,13 @@ kbhit:
 save_termios:
         push {r4, lr}
         bl read_termios
-        ldr r0, =termios
+        ldr x0, =termios
         mov r1, #0
-        ldr r2, =saved_termios
+        ldr x2, =saved_termios
 loop_save:                      // save old configurations
         cmp r1, #11
         beq end_loop_save
-        ldr r3, [r0], #4
+        ldr x3, [x0], #4
         str r3, [r2], #4
         add r1, r1, #1
         b loop_save
@@ -608,14 +608,14 @@ raw_mode:
 
 	bl save_termios
 
-	ldr r0, =termios
+	ldr x0, =termios
 	//termattr.c_lflag &= ~(ECHO | ICANON | IEXTEN | ISIG);
 	mov r1, #1000
 	orr r1, r1, #2
 	orr r1, r1, #0100000
 	orr r1, r1, #01
 	mvn r1, r1
-	ldr r6, [r0, #+12]
+	ldr x6, [x0, #+12]
 	and r6, r6, r1
 	str r6, [r0, #+12]
    	//termattr.c_iflag &= ~(BRKINT | ICRNL | INPCK | ISTRIP | IXON);
@@ -624,14 +624,14 @@ raw_mode:
 	orr r2, #20
 	orr r2, #2000
 	mvn r2, r2
-	ldr r6, [r0]
+	ldr x6, [x0]
         and r6, r6, r2
         str r6, [r0]
   	//termattr.c_cflag &= ~(CSIZE | PARENB);
 	mov r3, #60
 	orr r3, #400
 	mvn r3, r3
-	ldr r6, [r0, #+8]
+	ldr x6, [x0, #+8]
         and r6, r6, r3
    	//termattr.c_cflag |= CS8;
 	mov r4, #60
@@ -639,7 +639,7 @@ raw_mode:
         str r6, [r0, #+8]
    	//termattr.c_oflag &= ~(OPOST);
 	mvn r5, #1
- 	ldr r6, [r0, #+4]
+ 	ldr x6, [x0, #+4]
         and r6, r6, r5
         str r6, [r0, #+4]
 	//termattr.c_cc[VMIN] = 1;  // or 0 for some Unices 
@@ -659,13 +659,13 @@ raw_mode:
 // at the end of program, or your terminal input is toast.
 cooked_mode:
 	push {r4, lr}
-	ldr r0, =termios
+	ldr x0, =termios
         mov r1, #0
-        ldr r2, =saved_termios
+        ldr x2, =saved_termios
 loop_load:                      // load old configurations
         cmp r1, #11
         beq end_loop_load
-        ldr r3, [r2], #4
+        ldr x3, [x2], #4
         str r3, [r0], #4
         add r1, r1, #1
 	b loop_load
@@ -681,8 +681,8 @@ cbreak_off:
         push {r7, lr}
         bl read_termios
 
-        ldr r0, =termios
-        ldr r1, [r0, #+12]!
+        ldr x0, =termios
+        ldr x1, [x0, #+12]!
 	mvn r2, #0x00000002 	// NOT ICANON flag
         and r1, r1, r2		// AND local flag
 	mvn r2, #1000		// NOT ECHO flag
@@ -699,8 +699,8 @@ cbreak_on:
 	push {r7, lr}
         bl read_termios
 
-	ldr r0, =termios
-	ldr r1, [r0, #+12]!
+	ldr x0, =termios
+	ldr x1, [x0, #+12]!
 	mov r2, #0x00000002	// ICANON flag
 	orr r1, r1, r2		// canonical bit ON in local mode flags
         mov r2, #1000           // ECHO flag
@@ -717,8 +717,8 @@ read_termios:
         push {r7, lr}
 
 	mov r0,	#0		// stdin
-	ldr r1, =#0x5401 	// READ termios parameters
-	ldr r2, =termios	// address for termios buffer
+	ldr x1, =#0x5401 	// READ termios parameters
+	ldr x2, =termios	// address for termios buffer
 	mov r7, #54		// syscall for ioctl 0x36
 	svc #0
 
@@ -731,8 +731,8 @@ write_termios:
         push {r7, lr}
 
         mov r0, #0              // stdin
-        ldr r1, =#0x5402        // WRITE termios parameters
-        ldr r2, =termios        // address for termios buffer
+        ldr x1, =#0x5402        // WRITE termios parameters
+        ldr x2, =termios        // address for termios buffer
         mov r7, #54             // syscall for ioctl 0x36
         svc #0
 
