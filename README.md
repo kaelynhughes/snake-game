@@ -18,6 +18,7 @@
 - later, look into alignment - my tutorial thing says 32-bit is usually most efficient on a 4-byte boundary (.align 4) - is there a 64-bit equivalent?
 - registers move from being called r# to x#
 - `bx lr` (branch exchange link register - returns you to the address you were at before you jumped to a subroutine/function) becomes `ret`
+- `push` becomes `stp` or `str` for storing data in the stack
 
 
 SYSCALLS
