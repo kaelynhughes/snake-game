@@ -37,7 +37,7 @@ delay_ticks: .word 800000000	// game speed for Samsung S10 -- for Raspberry Pi 3
 ///////////////////  MAIN  ////////////////////
 ///////////////////////////////////////////////
 _start:
-	stp r4, lr, [sp, -96]!
+	stp x4, lr, [sp, -96]!
 
 	bl save_termios
 	bl init_random_seed
