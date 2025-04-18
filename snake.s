@@ -286,7 +286,7 @@ end_check_keypress:
 // Output: none
 // Initialize map values, mainly draw borders.
 initialize_map:
-	push {r4, lr}
+	stp x4, lr, [sp, -96]!
 
 	//horizontal borders//
 	ldr x4, =map
@@ -421,7 +421,7 @@ get_random:
 // Interrupt numbers from: https://syscalls.w3challs.com/?arch=arm_strong
 // For Raspberry Pi, replace 9 in 0x900.. with 0
 init_random_seed:
-        push {r7, lr}
+		stp x7, lr, [sp, -96]!
         ldr x0, =random_seed
         mov x7, #0x00004e	// syscall for gettimeofday
         svc #0
@@ -551,7 +551,7 @@ delay_loop:
 // Input, Output: none
 // Wait for any key press
 kbhit:
-        push {r4, lr}
+	stp x4, lr, [sp, -96]!
         bl cbreak_off
         bl input
         bl cooked_mode
@@ -578,7 +578,7 @@ kbhit:
 // Saves current termios (terminal input) configs to memory.
 // Needed so that they can be restored after config changes.
 save_termios:
-        push {r4, lr}
+	stp x4, lr, [sp, -96]!
         bl read_termios
         ldr x0, =termios
         mov x1, #0
@@ -658,7 +658,7 @@ raw_mode:
 // structure saved in save_termios. Make sure to call this
 // at the end of program, or your terminal input is toast.
 cooked_mode:
-	push {r4, lr}
+	stp x4, lr, [sp, -96]!
 	ldr x0, =termios
         mov x1, #0
         ldr x2, =saved_termios
@@ -678,7 +678,7 @@ end_loop_load:
 // Input, Output: none
 // Don't wait for a newline in following inputs
 cbreak_off:
-        push {r7, lr}
+	stp x7, lr, [sp, -96]!
         bl read_termios
 
         ldr x0, =termios
@@ -696,7 +696,7 @@ cbreak_off:
 // Input, Output: none
 // Wait for newline to buffer input, as normal
 cbreak_on:
-	push {r7, lr}
+	stp x7, lr, [sp, -96]!
         bl read_termios
 
 	ldr x0, =termios
@@ -714,7 +714,7 @@ cbreak_on:
 // Input, Output: none
 // Make syscall to ioctl and read termios structure to memory
 read_termios:
-        push {r7, lr}
+	stp x7, lr, [sp, -96]!
 
 	mov x0,	#0		// stdin
 	ldr x1, =#0x5401 	// READ termios parameters
@@ -728,7 +728,7 @@ read_termios:
 // Input, Output: none
 // Make syscall to ioctl and input termios structure to system
 write_termios:
-        push {r7, lr}
+	stp x7, lr, [sp, -96]!
 
         mov x0, #0              // stdin
         ldr x1, =#0x5402        // WRITE termios parameters
