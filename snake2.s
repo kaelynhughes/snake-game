@@ -106,10 +106,10 @@ move_and_check_collision:
         ldr x0, =dy
         ldr x0, [x0]
         add r6, r2, r0		// r6 = heady + dy
-        mov r0, #MAPXLEN	// get map address for head (r3)
+        mov x0, #MAPXLEN	// get map address for head (r3)
         mul r3, r6, r0
         add r3, r3, r5
-        mov r0, #4
+        mov x0, #4
         mul r7, r3, r0		// (head) r7 = y*mapxlen + x
 
         ldr x0, [x4, x7]	// r0 = map point for next step
@@ -123,7 +123,7 @@ move_and_check_collision:
         strlt r0, [r1]
         bllt add_new_bug	// ...and go add a new bug
 
-        mov r0, #1		// store new head point to map
+        mov x0, #1		// store new head point to map
         str r0, [r4, r7]
         ldr x0, =headx
         str r5, [r0] 		// store new headx
@@ -133,7 +133,7 @@ move_and_check_collision:
 	mov x0, #0
 	b end_move_and_coll
 collision:
-	mov r0, #1
+	mov x0, #1
 end_move_and_coll:
 	pop {r4, r5, r6, r7, r8, lr}
 	bx lr
@@ -154,9 +154,9 @@ update_and_print_map:
         ldr x0, =clear_screen
         bl output
 
-        mov r5, #0
+        mov x5, #0
 mapy_loop:
-        mov r4, #0
+        mov x4, #0
         cmp r5, #MAPYLEN
         beq end_map_loop
         add r5, r5, #1
@@ -257,8 +257,8 @@ update_dxdy:
 	ldr x1, =dx
 	ldr x2, =dy
 
-	mov r4, #0	// new dx
-	mov r5, #0	// new dy
+	mov x4, #0	// new dx
+	mov x5, #0	// new dy
 
 	cmp r0, #1
         moveq r5, #1
@@ -290,19 +290,19 @@ initialize_map:
 
 	//horizontal borders//
 	ldr x4, =map
-	mov r0, #0
-	mov r1, #MAPYLEN
+	mov x0, #0
+	mov x1, #MAPYLEN
 	sub r2, r1, #1		// compute offset for bottom row
-	mov r1, #MAPXLEN
+	mov x1, #MAPXLEN
 	mul r2, r2, r1
-	mov r1, #4
+	mov x1, #4
 	mul r2, r2, r1
 top_loop:
         cmp r0, #MAPXLEN
         beq end_top_loop
         add r0, r0, #1
 
-	mov r1, #-1
+	mov x1, #-1
 	str r1, [r4]
 	str r1, [r4, r2]  	// r2 is the offset for bottom row
 	add r4, r4, #4
@@ -311,19 +311,19 @@ end_top_loop:
 
 	//vertical borders//
 	ldr x4, =map
-	mov r0, #0
-        mov r1, #MAPXLEN
+	mov x0, #0
+        mov x1, #MAPXLEN
         sub r2, r1, #1          // compute offset for left row
-	mov r3, #4
+	mov x3, #4
 	mul r2, r2, r3
-        mov r1, #MAPXLEN
+        mov x1, #MAPXLEN
         mul r3, r1, r3
 side_loop:
 	cmp r0, #MAPYLEN
 	beq end_side_loop
         add r0, r0, #1
 
-        mov r1, #-1
+        mov x1, #-1
         str r1, [r4]
         str r1, [r4, r2]  	// r2 is offset for left row
         add r4, r4, r3   	// r3 is offset for next point
@@ -344,11 +344,11 @@ end_side_loop:
 add_new_bug:
 	push {r4, r5, r6, lr}
 	ldr x4, =map
-        mov r1, #MAPYLEN
-        mov r2, #MAPXLEN
+        mov x1, #MAPYLEN
+        mov x2, #MAPXLEN
         mul r5, r1, r2          // mapylen*mapxlen
 	bl get_random		// r0 = next random
-	mov r1, #3
+	mov x1, #3
 	bl divide		// r0 = r0 % 3
 	cmp r0, #0
 	moveq r6, #-2		// new bug '*'
@@ -359,10 +359,10 @@ add_new_bug:
 
 add_bug_new_try:
 	bl get_random		// r0 = next random
-	mov r1, r5
+	mov x1, x5
 	bl divide		// r0 / (mapylen*mapxlen)
 				// --> r0 stores the modulo
-	mov r3, #4
+	mov x3, #4
 	mul r0, r0, r3  	// map address for new bug
 
 	ldr x3, [x4, x0]	// load map point
@@ -380,7 +380,7 @@ add_bug_new_try:
 // Input: r0 (dividend), r1 (divisor), both integers
 // Output: r0 (remainder, modulo), r1 (integer result of r0/r1)
 divide:
-	mov r2, #0
+	mov x2, #0
 divide_loop:		// how many times r1 can be substr from r0?
 	cmp r0, r1
 	movlt r1, r2
@@ -423,7 +423,7 @@ get_random:
 init_random_seed:
         push {r7, lr}
         ldr x0, =random_seed
-        mov r7, #0x00004e	// syscall for gettimeofday
+        mov x7, #0x00004e	// syscall for gettimeofday
         svc #0
 
         pop {r7, lr}
@@ -436,8 +436,8 @@ init_random_seed:
 // Output: none, prints to stdout
 output:
 	push {r4, r6, r7, lr}
-	mov r4, r0		// store orig addr of string
-	mov r3, #0
+	mov x4, x0		// store orig addr of string
+	mov x3, #0
 count_loop:			// count chars in the string
 	ldrb r1, [r0], #1	// each char is one byte
 	cmp r1, #0		// each string must be null-ended
@@ -445,10 +445,10 @@ count_loop:			// count chars in the string
 	addne r3, r3, #1
 	b count_loop
 next_print:
-	mov r0, #1              // stdout
-    	mov r1, r4	        // address of the string
-    	mov r2, r3             	// string length
-    	mov r7, #4              // syscall for 'write'
+	mov x0, #1              // stdout
+    	mov x1, x4	        // address of the string
+    	mov x2, x3             	// string length
+    	mov x7, #4              // syscall for 'write'
     	svc #0                  // software interrupt
 	pop {r4, r6, r7, lr}
 	bx lr
@@ -461,17 +461,17 @@ next_print:
 input:
 	push {r4, r6, r7, lr}
 	ldr x4, =rw_buffer
-	mov r1, #0
+	mov x1, #0
 	str r1, [r4]
 	str r1, [r4, #+4]	// make sure buffer is empty
 
-	mov r0, #0              // stdin
-        mov r1, r4              // address of the string
-        mov r2, #1              // string length = 1
-        mov r7, #3              // syscall for 'write'
+	mov x0, #0              // stdin
+        mov x1, x4              // address of the string
+        mov x2, #1              // string length = 1
+        mov x7, #3              // syscall for 'write'
         svc #0                  // software interrupt
 
-	mov r0, r4		//return address of string
+	mov x0, x4		//return address of string
 
 end_input:
 	nop
@@ -485,15 +485,15 @@ end_input:
 // Output: none, prints r0 to stdout as decimal
 output_int:
 	push {r4, r5, r6, lr}
-	mov r4, r0
-    	mov r5, #8		// word is 8 x 4 bits
-	mov r6, #0		// carry
+	mov x4, x0
+    	mov x5, #8		// word is 8 x 4 bits
+	mov x6, #0		// carry
 	ldr x3, =rw_buffer	// buffer to write string
 	add r3, r3, #7		// start writing from end
 output_int_loop:
     	// Take least significant 4 bits from r4 into r0, loop 8 times
-    	mov r0, r4, lsl #28
-	mov r0, r0, lsr #28
+    	mov x0, x4, lsl #28
+	mov x0, x0, lsr #28
 
 	cmp r6, #0		// add carry if previous round >9
 	addgt r0, r0, #1
@@ -503,7 +503,7 @@ output_int_loop:
 	subgt r0, r0, #10
 	movgt r6, #1
 
-    	mov r4, r4, lsl #4	// Shift r4 for next time
+    	mov x4, x4, lsl #4	// Shift r4 for next time
 
     	// For each nibble (now in r0) convert to ASCII
     	add r0, r0, #48
@@ -514,7 +514,7 @@ output_int_loop:
     	bne output_int_loop
 
 	ldr x0, =rw_buffer	// reset to start
-	mov r2, #6
+	mov x2, #6
 output_int_loop3:		// skip leading zeroes (max 7)
 	ldrb r1, [r0]
 	cmp r1, #0x30		//= "0" in ascii
@@ -537,7 +537,7 @@ output_int_end:
 delay:
         ldr x0, =delay_ticks
         ldr x0, [x0]
-        mov r1, #0
+        mov x1, #0
 delay_loop:
         cmp r1, r0
         add r1, r1, #1
@@ -581,7 +581,7 @@ save_termios:
         push {r4, lr}
         bl read_termios
         ldr x0, =termios
-        mov r1, #0
+        mov x1, #0
         ldr x2, =saved_termios
 loop_save:                      // save old configurations
         cmp r1, #11
@@ -610,7 +610,7 @@ raw_mode:
 
 	ldr x0, =termios
 	//termattr.c_lflag &= ~(ECHO | ICANON | IEXTEN | ISIG);
-	mov r1, #1000
+	mov x1, #1000
 	orr r1, r1, #2
 	orr r1, r1, #0100000
 	orr r1, r1, #01
@@ -619,7 +619,7 @@ raw_mode:
 	and r6, r6, r1
 	str r6, [r0, #+12]
    	//termattr.c_iflag &= ~(BRKINT | ICRNL | INPCK | ISTRIP | IXON);
-	mov r2, #2
+	mov x2, #2
 	orr r2, #400
 	orr r2, #20
 	orr r2, #2000
@@ -628,13 +628,13 @@ raw_mode:
         and r6, r6, r2
         str r6, [r0]
   	//termattr.c_cflag &= ~(CSIZE | PARENB);
-	mov r3, #60
+	mov x3, #60
 	orr r3, #400
 	mvn r3, r3
 	ldr x6, [x0, #+8]
         and r6, r6, r3
    	//termattr.c_cflag |= CS8;
-	mov r4, #60
+	mov x4, #60
         orr r6, r6, r4
         str r6, [r0, #+8]
    	//termattr.c_oflag &= ~(OPOST);
@@ -643,10 +643,10 @@ raw_mode:
         and r6, r6, r5
         str r6, [r0, #+4]
 	//termattr.c_cc[VMIN] = 1;  // or 0 for some Unices 
-   	mov r7, #0		// needs to be 0 for Raspbian
+   	mov x7, #0		// needs to be 0 for Raspbian
 	strb r7, [r0, #+23]	// 16 + 1 + 6 (VMIN) 
 	//termattr.c_cc[VTIME] = 0;
-	mov r8, #0
+	mov x8, #0
 	strb r8, [r0, #+22]	// 16 + 1 + 5 (VTIME)
 
 	bl write_termios
@@ -660,7 +660,7 @@ raw_mode:
 cooked_mode:
 	push {r4, lr}
 	ldr x0, =termios
-        mov r1, #0
+        mov x1, #0
         ldr x2, =saved_termios
 loop_load:                      // load old configurations
         cmp r1, #11
@@ -701,9 +701,9 @@ cbreak_on:
 
 	ldr x0, =termios
 	ldr x1, [x0, #+12]!
-	mov r2, #0x00000002	// ICANON flag
+	mov x2, #0x00000002	// ICANON flag
 	orr r1, r1, r2		// canonical bit ON in local mode flags
-        mov r2, #1000           // ECHO flag
+        mov x2, #1000           // ECHO flag
         and r1, r1, r2
 	str r1, [r0]		// store back to termios+12
 
@@ -716,10 +716,10 @@ cbreak_on:
 read_termios:
         push {r7, lr}
 
-	mov r0,	#0		// stdin
+	mov x0,	#0		// stdin
 	ldr x1, =#0x5401 	// READ termios parameters
 	ldr x2, =termios	// address for termios buffer
-	mov r7, #54		// syscall for ioctl 0x36
+	mov x7, #54		// syscall for ioctl 0x36
 	svc #0
 
         pop {r7, lr}
@@ -730,10 +730,10 @@ read_termios:
 write_termios:
         push {r7, lr}
 
-        mov r0, #0              // stdin
+        mov x0, #0              // stdin
         ldr x1, =#0x5402        // WRITE termios parameters
         ldr x2, =termios        // address for termios buffer
-        mov r7, #54             // syscall for ioctl 0x36
+        mov x7, #54             // syscall for ioctl 0x36
         svc #0
 
         pop {r7, lr}
