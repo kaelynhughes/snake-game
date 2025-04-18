@@ -76,8 +76,8 @@ the_end:
 	bl output
 	pop {r4, lr}
 	
-	mov r0, #0		// exit status 0 (ok)
-    	mov r7, #1		// syscall 1 (exit)
+	mov x0, #0		// exit status 0 (ok)
+    	mov x7, #1		// syscall 1 (exit)
     	svc #0
 
 ///////////////////////////////////////////////////

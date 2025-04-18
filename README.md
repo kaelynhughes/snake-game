@@ -8,3 +8,14 @@
     - can't use the flat memory access things bc they may not map well
 2. there's a snake-asm [repo](https://github.com/NikitaIvanovV/snake-asm) for x86_64 - might be helpful later?
 3. 
+
+## things i've had to do
+
+- the code i found was in ARM32 rather than ARM64 so i'm translating it
+
+
+SYSCALLS
+
+| ARM32 | ARM64 | Name              |
+| ----- | ----- | ----------------- |
+| 0     | 128   | restart_syscall   |
