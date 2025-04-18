@@ -136,7 +136,7 @@ collision:
 	mov x0, #1
 end_move_and_coll:
 	pop {r4, r5, r6, r7, r8, lr}
-	bx lr
+	ret
 ///////////////////////////////////////////////
 
 
@@ -207,7 +207,7 @@ end_map_loop:
 	ldr x0, =endl
 	bl output
 	pop {r4, r5, r6, r7, r8, lr}
-	bx lr
+	ret
 ///////////////////////////////////////////////
 
 
@@ -277,7 +277,7 @@ update_dxdy:
 
 end_check_keypress:
 	pop {r4,r5, r6, lr}
-	bx lr
+	ret
 //////////////////////////////////////
 
 
@@ -333,7 +333,7 @@ end_side_loop:
 	bl add_new_bug
 
 	pop {r4, lr}
-	bx lr
+	ret
 ////////////////////////////////
 
 
@@ -372,7 +372,7 @@ add_bug_new_try:
 	bne add_bug_new_try	// if not empty, try again
 
 	pop {r4, r5, r6, lr}
-	bx lr
+	ret
 /////////////////////////////////////
 
 
@@ -391,7 +391,7 @@ divide_loop:		// how many times r1 can be substr from r0?
 	b divide_loop
 
 end_divide:
-	bx lr
+	ret
 /////////////////////////////////////
 
 
@@ -410,7 +410,7 @@ get_random:
 	lsr r0, r0, #5	//shift right to ensure positiveness
 	str r0, [r1]
 
-	bx lr
+	ret
 /////////////////////////////////////
 
 
@@ -427,7 +427,7 @@ init_random_seed:
         svc #0
 
         pop {r7, lr}
-        bx lr
+        ret
 /////////////////////////////////////
 
 
@@ -451,7 +451,7 @@ next_print:
     	mov x7, #4              // syscall for 'write'
     	svc #0                  // software interrupt
 	pop {r4, r6, r7, lr}
-	bx lr
+	ret
 ////////////////////////////////////
 
 
@@ -476,7 +476,7 @@ input:
 end_input:
 	nop
 	pop {r4, r6, r7, lr}
-        bx lr
+        ret
 ////////////////////////////////////////////////
 
 
@@ -527,7 +527,7 @@ output_int_end:
 	bl output
 
 	pop {r4, r5, r6, lr}
-	bx lr
+	ret
 ////////////////////////////////////////////
 
 
@@ -543,7 +543,7 @@ delay_loop:
         add r1, r1, #1
         blt delay_loop
 
-        bx lr
+        ret
 ////////////////////////////////////////
 
 
@@ -556,7 +556,7 @@ kbhit:
         bl input
         bl cooked_mode
         pop {r4, lr}
-        bx lr
+        ret
 ////////////////////////////////////////
 
 
@@ -592,7 +592,7 @@ loop_save:                      // save old configurations
         b loop_save
 end_loop_save:
 	pop {r4, lr}
-	bx lr
+	ret
 //////////////////////////////////////////////
 // Input, Output: none
 // Change input mode to raw mode. Input is not buffered.
@@ -651,7 +651,7 @@ raw_mode:
 
 	bl write_termios
 	pop {r4, r5, r6, r7, r8, lr}
-	bx lr
+	ret
 /////////////////////////////////////////
 // Input, Output: none
 // Set input mode to normal mode. Needs pre-saved termios
@@ -673,7 +673,7 @@ end_loop_load:
 
 	bl write_termios
 	pop {r4, lr}
-	bx lr
+	ret
 /////////////////////////////////////////
 // Input, Output: none
 // Don't wait for a newline in following inputs
@@ -691,7 +691,7 @@ cbreak_off:
 
         bl write_termios
         pop {r7, lr}
-        bx lr
+        ret
 //////////////////////////////////////////
 // Input, Output: none
 // Wait for newline to buffer input, as normal
@@ -709,7 +709,7 @@ cbreak_on:
 
         bl write_termios
 	pop {r7, lr}
-	bx lr
+	ret
 //////////////////////////////////////////
 // Input, Output: none
 // Make syscall to ioctl and read termios structure to memory
@@ -723,7 +723,7 @@ read_termios:
 	svc #0
 
         pop {r7, lr}
-        bx lr
+        ret
 /////////////////////////////////////////
 // Input, Output: none
 // Make syscall to ioctl and input termios structure to system
@@ -737,5 +737,5 @@ write_termios:
         svc #0
 
         pop {r7, lr}
-        bx lr
+        ret
 //////////////////////////////////////////

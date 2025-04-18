@@ -15,6 +15,9 @@
 - found out there are two different styles of ARM32 programming and my couple sources were using different styles
     - `mov r7, #1` vs `mov %r7, $1`
     - "immediate" operand can be either # or $
+- later, look into alignment - my tutorial thing says 32-bit is usually most efficient on a 4-byte boundary (.align 4) - is there a 64-bit equivalent?
+- registers move from being called r# to x#
+- `bx lr` (branch exchange link register - returns you to the address you were at before you jumped to a subroutine/function) becomes `ret`
 
 
 SYSCALLS
