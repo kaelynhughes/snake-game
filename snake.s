@@ -137,7 +137,9 @@ move_and_check_collision:
 collision:
 	mov x0, #1
 end_move_and_coll:
-	pop {r4, r5, r6, r7, r8, lr}
+	ldp x4, x5, [sp], #16
+	ldp x6, x7, [sp], #16
+	ldp x8, lr, [sp], #16
 	ret
 ///////////////////////////////////////////////
 
@@ -210,7 +212,9 @@ mapx_loop:
 end_map_loop:
 	ldr x0, =endl
 	bl output
-	pop {r4, r5, r6, r7, r8, lr}
+	ldp x4, x5, [sp], #16
+	ldp x6, x7, [sp], #16
+	ldp x8, lr, [sp], #16
 	ret
 ///////////////////////////////////////////////
 
@@ -289,7 +293,8 @@ update_dxdy:
 	str x5, [x2]
 
 end_check_keypress:
-	pop {r4,r5, r6, lr}
+	ldp x4, x5, [sp], #16
+	ldp x6, lr, [sp], #16
 	ret
 //////////////////////////////////////
 
@@ -387,7 +392,8 @@ add_bug_new_try:
 	streq x2, [x4, x0]	// store bug to map
 	bne add_bug_new_try	// if not empty, try again
 
-	pop {r4, r5, r6, lr}
+	ldp x4, x5, [sp], #16
+	ldp x6, lr, [sp], #16
 	ret
 /////////////////////////////////////
 
@@ -467,7 +473,8 @@ next_print:
     	mov x2, x3             	// string length
     	mov x7, #4              // syscall for 'write'
     	svc #0                  // software interrupt
-	pop {r4, r6, r7, lr}
+	ldp x4, x6, [sp], #16
+	ldp x7, lr, [sp], #16
 	ret
 ////////////////////////////////////
 
@@ -493,7 +500,8 @@ input:
 
 end_input:
 	nop
-	pop {r4, r6, r7, lr}
+	ldp x4, x6, [sp], #16
+	ldp x7, lr, [sp], #16
         ret
 ////////////////////////////////////////////////
 
@@ -545,7 +553,8 @@ output_int_loop3:		// skip leading zeroes (max 7)
 output_int_end:
 	bl output
 
-	pop {r4, r5, r6, lr}
+	ldp x4, x5, [sp], #16
+	ldp x6, lr, [sp], #16
 	ret
 ////////////////////////////////////////////
 
@@ -671,7 +680,9 @@ raw_mode:
 	strb w8, [x0, #+22]	// 16 + 1 + 5 (VTIME)
 
 	bl write_termios
-	pop {r4, r5, r6, r7, r8, lr}
+	ldp x4, x5, [sp], #16
+	ldp x6, x7, [sp], #16
+	ldp x8, lr, [sp], #16
 	ret
 /////////////////////////////////////////
 // Input, Output: none
