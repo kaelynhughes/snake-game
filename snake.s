@@ -174,8 +174,9 @@ mapy_loop:
 	bl output
 mapx_loop:
         cmp x4, #MAPXLEN
-        ldreq r0, =endl
-        bleq output
+		beq mapy_loop
+        beq line_break_and_output
+
         cmp x4, #MAPXLEN
         beq mapy_loop
         add x4, x4, #1
@@ -213,6 +214,10 @@ mapx_loop:
         add x6, x6, #4          // next  point in map
         b mapx_loop
 
+line_break_and_output:
+	ldr x0, =endl
+	bl output
+	b mapx_loop
 end_map_loop:
 	ldr x0, =endl
 	bl output

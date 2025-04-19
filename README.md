@@ -19,6 +19,7 @@
 - registers move from being called r# to x#
 - `bx lr` (branch exchange link register - returns you to the address you were at before you jumped to a subroutine/function) becomes `ret`
 - `push` becomes `stp` or `str` for storing data in the stack
+- `pop` becomes `ldp`
 
 ## potential problems
 
@@ -31,3 +32,8 @@ SYSCALLS
 | ----- | ----- | ----------------- |
 | 0     | 128   | restart_syscall   |
 | 1     | 93    | exit              |
+
+
+## map x loop
+
+update_and_print_map
