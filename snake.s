@@ -407,8 +407,10 @@ add_bug_new_try:
 	ldr x3, [x4, x0]	// load map point
 	cmp x3, #0			// map point must be empty = 0 = '.'
 	csel x2, x6, x2, eq // new bug: -2, -3, or -4
-	streq x2, [x4, x0]	// store bug to map
 	bne add_bug_new_try	// if not empty, try again
+
+	// this will not be run if not equal
+	str x2, [x4, x0]	// store bug to map
 
 	ldp x4, x5, [sp], #16
 	ldp x6, lr, [sp], #16
@@ -423,7 +425,7 @@ divide:
 	mov x2, #0
 divide_loop:		// how many times r1 can be substr from r0?
 	cmp x0, x1
-	movlt r1, r2
+	csel x1, x2, x1, lt
 	blt end_divide
 
 	sub x0, x0, x1
@@ -483,7 +485,8 @@ count_loop:			// count chars in the string
 	ldrb w1, [x0], #1	// each char is one byte
 	cmp x1, #0		// each string must be null-ended
 	beq next_print
-	addne x3, x3, #1
+	// this shouldn't be run if equal
+	add x3, x3, #1
 	b count_loop
 next_print:
 	mov x0, #1              // stdout
@@ -541,12 +544,15 @@ output_int_loop:
 	mov x0, x0, lsr #28
 
 	cmp x6, #0		// add carry if previous round >9
-	addgt x0, x0, #1
-	movgt r6, #0
+	cinc x0, x0, gt
+	csel r6, xzr, r6, gt
 
 	cmp x0, #9		// check if >9, if so mark carry
-	subgt r0, r0, #10
-	movgt r6, #1
+	mov x8, x0
+	sub x8, #10
+	csel x0, x8, x0, gt
+	mov x8, #1
+	csel x6, x8, x6, gt
 
     	mov x4, x4, lsl #4	// Shift r4 for next time
 
@@ -563,7 +569,7 @@ output_int_loop:
 output_int_loop3:		// skip leading zeroes (max 7)
 	ldrb w1, [x0]
 	cmp x1, #0x30		//= "0" in ascii
-	addeq x0, x0, #1
+	cinc x0, x0, eq
 	bne output_int_end
 	subs x2, x2, #1
 	bmi output_int_end	//if last number is also 0, print it
@@ -722,7 +728,7 @@ loop_load:                      // load old configurations
 end_loop_load:
 
 	bl write_termios
-	ldr x4, lr, [sp], #16
+	ldp x4, lr, [sp], #16
 	ret
 /////////////////////////////////////////
 // Input, Output: none
