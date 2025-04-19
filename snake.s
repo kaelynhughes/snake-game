@@ -219,9 +219,9 @@ snake_tail_age:
 	str x0, [x6]
 	ret
 reset_point_empty:
-	mov r0, #0
+	mov x0, #0
 	str x0, [x6]
-	ldr r0, =empty
+	ldr x0, =empty
 	ret
 line_break_and_output:
 	ldr x0, =endl
@@ -406,7 +406,7 @@ add_bug_new_try:
 
 	ldr x3, [x4, x0]	// load map point
 	cmp x3, #0			// map point must be empty = 0 = '.'
-	csel r2, r6, r2, eq // new bug: -2, -3, or -4
+	csel x2, x6, x2, eq // new bug: -2, -3, or -4
 	streq x2, [x4, x0]	// store bug to map
 	bne add_bug_new_try	// if not empty, try again
 
@@ -446,8 +446,8 @@ get_random:
 	ldr x1, =random_seed
 	ldr x0, [x1]
 	add x0, x0, #137
-	eor r0, r0, r0, ror #13
-	lsr r0, r0, #5	//shift right to ensure positiveness
+	eor x0, x0, x0, ror #13
+	lsr x0, x0, #5	//shift right to ensure positiveness
 	str x0, [x1]
 
 	ret
@@ -565,7 +565,7 @@ output_int_loop3:		// skip leading zeroes (max 7)
 	cmp x1, #0x30		//= "0" in ascii
 	addeq x0, x0, #1
 	bne output_int_end
-	subs r2, r2, #1
+	subs x2, x2, #1
 	bmi output_int_end	//if last number is also 0, print it
 	b output_int_loop3
 output_int_end:
