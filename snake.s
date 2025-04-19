@@ -176,9 +176,6 @@ mapx_loop:
         cmp x4, #MAPXLEN
 		beq mapy_loop
         beq line_break_and_output
-
-        cmp x4, #MAPXLEN
-        beq mapy_loop
         add x4, x4, #1
 
         //// Update and print map point ////
