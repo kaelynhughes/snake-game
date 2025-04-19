@@ -175,7 +175,7 @@ mapx_loop:
 
         cmp x7, #0              //if point is:
         addgt x0, x7, #1        //>0 --> increase its value +1
-        strgt r0, [r6]          //i.e. snake tail get older
+        strgt x0, [x6]          //i.e. snake tail get older
         ldreq r0, =empty        //==0 --> '.' to be printed
         cmp x7, #1
         ldreq r0, =snake        //==1 --> '@' head
@@ -195,7 +195,7 @@ mapx_loop:
         add x1, x1, #1
         cmp x7, x1
         movgt r0, #0            // >max_len --> reset point to empty
-        strgt r0, [r6]
+        strgt x0, [x6]
         ldrgt r0, =empty
 
         bl output               // print the point
@@ -280,8 +280,8 @@ update_dxdy:
         cmp x0, #3
 	csel x5, x3, x5, eq
 
-	str r4, [r1]
-	str r5, [r2]
+	str x4, [x1]
+	str x5, [x2]
 
 end_check_keypress:
 	pop {r4,r5, r6, lr}
@@ -311,8 +311,8 @@ top_loop:
         add x0, x0, #1
 
 	mov x1, #-1
-	str r1, [r4]
-	str r1, [r4, r2]  	// r2 is the offset for bottom row
+	str x1, [x4]
+	str x1, [x4, x2]  	// r2 is the offset for bottom row
 	add x4, x4, #4
 	b top_loop
 end_top_loop:
@@ -332,8 +332,8 @@ side_loop:
         add x0, x0, #1
 
         mov x1, #-1
-        str r1, [r4]
-        str r1, [r4, r2]  	// r2 is offset for left row
+        str x1, [x4]
+        str x1, [x4, x2]  	// r2 is offset for left row
         add x4, x4, x3   	// r3 is offset for next point
         b side_loop
 end_side_loop:
@@ -378,7 +378,7 @@ add_bug_new_try:
 	ldr x3, [x4, x0]	// load map point
 	cmp x3, #0			// map point must be empty = 0 = '.'
 	csel r2, r6, r2, eq // new bug: -2, -3, or -4
-	streq r2, [r4, r0]	// store bug to map
+	streq x2, [x4, x0]	// store bug to map
 	bne add_bug_new_try	// if not empty, try again
 
 	pop {r4, r5, r6, lr}
@@ -418,7 +418,7 @@ get_random:
 	add x0, x0, #137
 	eor r0, r0, r0, ror #13
 	lsr r0, r0, #5	//shift right to ensure positiveness
-	str r0, [r1]
+	str x0, [x1]
 
 	ret
 /////////////////////////////////////
@@ -517,7 +517,7 @@ output_int_loop:
 
     	// For each nibble (now in r0) convert to ASCII
     	add x0, x0, #48
-	strb r0, [r3], #-1
+	strb x0, [x3], #-1
 
     	sub x5, x5, #1		// decrease loop counter
 	cmp x5, #0
@@ -597,7 +597,7 @@ loop_save:                      // save old configurations
         cmp x1, #11
         beq end_loop_save
         ldr x3, [x0], #4
-        str r3, [r2], #4
+        str x3, [x2], #4
         add x1, x1, #1
         b loop_save
 end_loop_save:
@@ -627,7 +627,7 @@ raw_mode:
 	mvn x1, x1
 	ldr x6, [x0, #+12]
 	and x6, x6, x1
-	str r6, [r0, #+12]
+	str x6, [x0, #+12]
    	//termattr.c_iflag &= ~(BRKINT | ICRNL | INPCK | ISTRIP | IXON);
 	mov x2, #2
 	orr x2, #400
@@ -636,7 +636,7 @@ raw_mode:
 	mvn x2, x2
 	ldr x6, [x0]
         and x6, x6, x2
-        str r6, [r0]
+        str x6, [x0]
   	//termattr.c_cflag &= ~(CSIZE | PARENB);
 	mov x3, #60
 	orr x3, #400
@@ -646,18 +646,18 @@ raw_mode:
    	//termattr.c_cflag |= CS8;
 	mov x4, #60
         orr x6, x6, x4
-        str r6, [r0, #+8]
+        str x6, [x0, #+8]
    	//termattr.c_oflag &= ~(OPOST);
 	mvn x5, #1
  	ldr x6, [x0, #+4]
         and x6, x6, x5
-        str r6, [r0, #+4]
+        str x6, [x0, #+4]
 	//termattr.c_cc[VMIN] = 1;  // or 0 for some Unices 
    	mov x7, #0		// needs to be 0 for Raspbian
-	strb r7, [r0, #+23]	// 16 + 1 + 6 (VMIN) 
+	strb x7, [x0, #+23]	// 16 + 1 + 6 (VMIN) 
 	//termattr.c_cc[VTIME] = 0;
 	mov x8, #0
-	strb r8, [r0, #+22]	// 16 + 1 + 5 (VTIME)
+	strb x8, [x0, #+22]	// 16 + 1 + 5 (VTIME)
 
 	bl write_termios
 	pop {r4, r5, r6, r7, r8, lr}
@@ -676,7 +676,7 @@ loop_load:                      // load old configurations
         cmp x1, #11
         beq end_loop_load
         ldr x3, [x2], #4
-        str r3, [r0], #4
+        str x3, [x0], #4
         add x1, x1, #1
 	b loop_load
 end_loop_load:
@@ -697,7 +697,7 @@ cbreak_off:
         and x1, x1, x2		// AND local flag
 	mvn x2, #1000		// NOT ECHO flag
 	and x1, x1, x2		// AND local flag
-        str r1, [r0]            // store back to termios+12
+        str x1, [x0]            // store back to termios+12
 
         bl write_termios
 	ldp x7, lr, [sp], #16
@@ -715,7 +715,7 @@ cbreak_on:
 	orr x1, x1, x2		// canonical bit ON in local mode flags
         mov x2, #1000           // ECHO flag
         and x1, x1, x2
-	str r1, [r0]		// store back to termios+12
+	str x1, [x0]		// store back to termios+12
 
         bl write_termios
 	ldp x7, lr, [sp], #16
