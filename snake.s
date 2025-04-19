@@ -449,7 +449,7 @@ output:
 	mov x4, x0		// store orig addr of string
 	mov x3, #0
 count_loop:			// count chars in the string
-	ldrb r1, [r0], #1	// each char is one byte
+	ldrb x1, [x0], #1	// each char is one byte
 	cmp x1, #0		// each string must be null-ended
 	beq next_print
 	addne x3, x3, #1
@@ -517,7 +517,7 @@ output_int_loop:
 
     	// For each nibble (now in r0) convert to ASCII
     	add x0, x0, #48
-	strb x0, [x3], #-1
+	strb w0, [x3], #-1
 
     	sub x5, x5, #1		// decrease loop counter
 	cmp x5, #0
@@ -526,7 +526,7 @@ output_int_loop:
 	ldr x0, =rw_buffer	// reset to start
 	mov x2, #6
 output_int_loop3:		// skip leading zeroes (max 7)
-	ldrb r1, [r0]
+	ldrb x1, [x0]
 	cmp x1, #0x30		//= "0" in ascii
 	addeq x0, x0, #1
 	bne output_int_end
@@ -654,10 +654,10 @@ raw_mode:
         str x6, [x0, #+4]
 	//termattr.c_cc[VMIN] = 1;  // or 0 for some Unices 
    	mov x7, #0		// needs to be 0 for Raspbian
-	strb x7, [x0, #+23]	// 16 + 1 + 6 (VMIN) 
+	strb w7, [x0, #+23]	// 16 + 1 + 6 (VMIN) 
 	//termattr.c_cc[VTIME] = 0;
 	mov x8, #0
-	strb x8, [x0, #+22]	// 16 + 1 + 5 (VTIME)
+	strb w8, [x0, #+22]	// 16 + 1 + 5 (VTIME)
 
 	bl write_termios
 	pop {r4, r5, r6, r7, r8, lr}
