@@ -545,11 +545,11 @@ output_int_loop:
 
 	cmp x6, #0		// add carry if previous round >9
 	cinc x0, x0, gt
-	csel r6, xzr, r6, gt
+	csel x6, xzr, x6, gt
 
 	cmp x0, #9		// check if >9, if so mark carry
 	mov x8, x0
-	sub x8, #10
+	sub x8, x8, #10
 	csel x0, x8, x0, gt
 	mov x8, #1
 	csel x6, x8, x6, gt
