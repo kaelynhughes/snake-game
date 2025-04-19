@@ -74,7 +74,7 @@ the_end:
         bl output
 	ldr x0, =show_cursor
 	bl output
-	pop {r4, lr}
+	ldp x4, lr, [sp], #16
 	
 	mov x0, #0		// exit status 0 (ok)
     	mov x7, #93		// syscall 1 (exit) is 93 in ARM64
@@ -332,7 +332,7 @@ end_side_loop:
 
 	bl add_new_bug
 
-	pop {r4, lr}
+	ldp x4, lr, [sp], #16
 	ret
 ////////////////////////////////
 
@@ -426,7 +426,7 @@ init_random_seed:
         mov x7, #0x00004e	// syscall for gettimeofday
         svc #0
 
-        pop {r7, lr}
+	ldp x7, lr, [sp], #16
         ret
 /////////////////////////////////////
 
@@ -555,7 +555,7 @@ kbhit:
         bl cbreak_off
         bl input
         bl cooked_mode
-        pop {r4, lr}
+	ldp x4, lr, [sp], #16
         ret
 ////////////////////////////////////////
 
@@ -591,7 +591,7 @@ loop_save:                      // save old configurations
         add r1, r1, #1
         b loop_save
 end_loop_save:
-	pop {r4, lr}
+	ldp x4, lr, [sp], #16
 	ret
 //////////////////////////////////////////////
 // Input, Output: none
@@ -672,7 +672,7 @@ loop_load:                      // load old configurations
 end_loop_load:
 
 	bl write_termios
-	pop {r4, lr}
+	ldr x4, lr, [sp], #16
 	ret
 /////////////////////////////////////////
 // Input, Output: none
@@ -690,7 +690,7 @@ cbreak_off:
         str r1, [r0]            // store back to termios+12
 
         bl write_termios
-        pop {r7, lr}
+	ldp x7, lr, [sp], #16
         ret
 //////////////////////////////////////////
 // Input, Output: none
@@ -708,7 +708,7 @@ cbreak_on:
 	str r1, [r0]		// store back to termios+12
 
         bl write_termios
-	pop {r7, lr}
+	ldp x7, lr, [sp], #16
 	ret
 //////////////////////////////////////////
 // Input, Output: none
@@ -722,7 +722,7 @@ read_termios:
 	mov x7, #54		// syscall for ioctl 0x36
 	svc #0
 
-        pop {r7, lr}
+	ldp x7, lr, [sp], #16
         ret
 /////////////////////////////////////////
 // Input, Output: none
@@ -736,6 +736,6 @@ write_termios:
         mov x7, #54             // syscall for ioctl 0x36
         svc #0
 
-        pop {r7, lr}
+	ldp x7, lr, [sp], #16
         ret
 //////////////////////////////////////////
