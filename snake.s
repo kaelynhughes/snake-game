@@ -93,7 +93,9 @@ the_end:
 // Updates headx, heady. If collides with bug, increase max_len
 // and go add a new bug
 move_and_check_collision:
-	push {r4, r5, r6, r7, r8, lr}
+	stp x4, x5, [sp, #-16]!
+	stp x6, x7, [sp, #-16]!
+	stp x8, lr, [sp, #-16]!
 	ldr x4, =map
 
         ldr x1, =headx
@@ -149,7 +151,9 @@ end_move_and_coll:
 // an empty space may be drawn instead: 0 ('.'). Borders
 // are -1 ('#'). Different bugs are -2, -3, -4.
 update_and_print_map:
-	push {r4, r5, r6, r7, r8, lr}
+	stp x4, x5, [sp, #-16]!
+	stp x6, x7, [sp, #-16]!
+	stp x8, lr, [sp, #-16]!
 	ldr x6, =map
         ldr x0, =clear_screen
         bl output
@@ -216,7 +220,8 @@ end_map_loop:
 // Input: none
 // Output: none, update dx and dy
 check_keypress:
-	push {r4, r5, r6, lr}
+	stp x4, x5, [sp, #-16]!
+	stp x6, lr, [sp, #-16]!
 
       	bl raw_mode		// key presses are not buffered
       	bl delay
@@ -350,7 +355,8 @@ end_side_loop:
 // Output: none
 // Adds a new random bug to the map in a random location
 add_new_bug:
-	push {r4, r5, r6, lr}
+	stp x4, x5, [sp, #-16]!
+	stp x6, lr, [sp, #-16]!
 	ldr x4, =map
         mov x1, #MAPYLEN
         mov x2, #MAPXLEN
@@ -445,7 +451,8 @@ init_random_seed:
 // Input: r0, address of string to print
 // Output: none, prints to stdout
 output:
-	push {r4, r6, r7, lr}
+	stp x4, x6, [sp, #-16]!
+	stp x7, lr, [sp, #-16]!
 	mov x4, x0		// store orig addr of string
 	mov x3, #0
 count_loop:			// count chars in the string
@@ -469,7 +476,8 @@ next_print:
 // Input: none
 // Output: address of input string =rw_buffer
 input:
-	push {r4, r6, r7, lr}
+	stp x4, x6, [sp, #-16]!
+	stp x7, lr, [sp, #-16]!
 	ldr x4, =rw_buffer
 	mov x1, #0
 	str x1, [x4]
@@ -494,7 +502,8 @@ end_input:
 // Input: r0, 32 bit positive integer
 // Output: none, prints r0 to stdout as decimal
 output_int:
-	push {r4, r5, r6, lr}
+	stp x4, x5, [sp, #-16]!
+	stp x6, lr, [sp, #-16]!
 	mov x4, x0
     	mov x5, #8		// word is 8 x 4 bits
 	mov x6, #0		// carry
@@ -614,7 +623,9 @@ end_loop_save:
 // https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/
 //         linux.git/tree/include/uapi/asm-generic/termbits.h?id=HEAD
 raw_mode:
-	push {r4, r5, r6, r7, r8, lr}
+	stp x4, x5, [sp, #-16]!
+	stp x6, x7, [sp, #-16]!
+	stp x8, lr, [sp, #-16]!
 
 	bl save_termios
 
