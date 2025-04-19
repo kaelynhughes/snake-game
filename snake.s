@@ -182,35 +182,47 @@ mapx_loop:
         ldr x7, [x6]            // load map point
 
         cmp x7, #0              //if point is:
-        addgt x0, x7, #1        //>0 --> increase its value +1
-        strgt x0, [x6]          //i.e. snake tail get older
-        ldreq r0, =empty        //==0 --> '.' to be printed
+		beq snake_tail_age
+		ldr x8, =empty
+        csel x0, x8, x0, eq     //==0 --> '.' to be printed
         cmp x7, #1
-        ldreq r0, =snake        //==1 --> '@' head
-        ldrgt r0, =tail         //>1 --> '0' tail
+        ldr x8, =snake        //==1 --> '@' head
+        csel x0, x8, x0, eq
+        ldr x8, =tail         //>1 --> '0' tail
+        csel x0, x8, x0, gt
         cmp x7, #-1
-        ldreq r0, =border       //==-1 --> '#'
+        ldr x8, =border       //==-1 --> '#'
+        csel x0, x8, x0, eq
         cmp x7, #-2             //==-2 --> '*'
-        ldreq r0, =bug1
+        ldr x8, =bug1
+        csel x0, x8, x0, eq
 	cmp x7, #-3             //==-3 --> '~'
-        ldreq r0, =bug2
+        ldr x8, =bug2
+        csel x0, x8, x0, eq
 	cmp x7, #-4             //==-4 --> '%'
-        ldreq r0, =bug3
+        ldr x8, =bug3
+        csel x0, x8, x0, eq
 
 
         ldr x1, =max_len        // cut tail if its too long
         ldr x1, [x1]
         add x1, x1, #1
         cmp x7, x1
-        movgt r0, #0            // >max_len --> reset point to empty
-        strgt x0, [x6]
-        ldrgt r0, =empty
+		bgt reset_point_empty
 
         bl output               // print the point
 
         add x6, x6, #4          // next  point in map
         b mapx_loop
-
+snake_tail_age:
+	add x0, x7, #1
+	str x0, [x6]
+	ret
+reset_point_empty:
+	mov r0, #0
+	str x0, [x6]
+	ldr r0, =empty
+	ret
 line_break_and_output:
 	ldr x0, =endl
 	bl output
