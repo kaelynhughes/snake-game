@@ -624,7 +624,7 @@ raw_mode:
 	orr r1, r1, #2
 	orr r1, r1, #0100000
 	orr r1, r1, #01
-	mvn r1, r1
+	mvn x1, x1
 	ldr x6, [x0, #+12]
 	and x6, x6, x1
 	str r6, [r0, #+12]
@@ -633,14 +633,14 @@ raw_mode:
 	orr r2, #400
 	orr r2, #20
 	orr r2, #2000
-	mvn r2, r2
+	mvn x2, x2
 	ldr x6, [x0]
         and x6, x6, x2
         str r6, [r0]
   	//termattr.c_cflag &= ~(CSIZE | PARENB);
 	mov x3, #60
 	orr r3, #400
-	mvn r3, r3
+	mvn x3, x3
 	ldr x6, [x0, #+8]
         and x6, x6, x3
    	//termattr.c_cflag |= CS8;
@@ -648,7 +648,7 @@ raw_mode:
         orr r6, r6, r4
         str r6, [r0, #+8]
    	//termattr.c_oflag &= ~(OPOST);
-	mvn r5, #1
+	mvn x5, #1
  	ldr x6, [x0, #+4]
         and x6, x6, x5
         str r6, [r0, #+4]
@@ -693,9 +693,9 @@ cbreak_off:
 
         ldr x0, =termios
         ldr x1, [x0, #+12]!
-	mvn r2, #0x00000002 	// NOT ICANON flag
+	mvn x2, #0x00000002 	// NOT ICANON flag
         and x1, x1, x2		// AND local flag
-	mvn r2, #1000		// NOT ECHO flag
+	mvn x2, #1000		// NOT ECHO flag
 	and x1, x1, x2		// AND local flag
         str r1, [r0]            // store back to termios+12
 
