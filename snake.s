@@ -264,17 +264,21 @@ update_dxdy:
 	mov x4, #0	// new dx
 	mov x5, #0	// new dy
 
+	mov x3, #1
+
 	cmp x0, #1
-        moveq r5, #1
-
-        cmp x0, #2
-        moveq r4, #-1
-
-        cmp x0, #3
-        moveq r5, #-1
+	csel x5, x3, x5, eq
 
         cmp x0, #4
-        moveq r4, #1
+	csel x4, x3, x4, eq
+
+	mov x3, #-1
+
+        cmp x0, #2
+	csel x4, x3, x4, eq
+
+        cmp x0, #3
+	csel x5, x3, x5, eq
 
 	str r4, [r1]
 	str r5, [r2]
@@ -350,16 +354,18 @@ add_new_bug:
 	ldr x4, =map
         mov x1, #MAPYLEN
         mov x2, #MAPXLEN
-        mul r5, r1, r2          // mapylen*mapxlen
-	bl get_random		// r0 = next random
+        mul r5, r1, r2      // mapylen*mapxlen
+	bl get_random			// r0 = next random
 	mov x1, #3
-	bl divide		// r0 = r0 % 3
+	bl divide				// r0 = r0 % 3
+	mov x3, #-4
 	cmp x0, #0
-	moveq r6, #-2		// new bug '*'
+	csel x6, x3, x6, eq		// new bug '%'
 	cmp x0, #1
-        moveq r6, #-3	        // new bug '~'
-        movgt r6, #-4         	// new bug '%'
+	cinc x6, x6, eq	        // bug is '~'
 
+	cinc x6, x6, gt			// twice if greater so x6 holds -2
+	cinc x6, x6, gt			// bug is '*'
 
 add_bug_new_try:
 	bl get_random		// r0 = next random
@@ -370,8 +376,8 @@ add_bug_new_try:
 	mul r0, r0, r3  	// map address for new bug
 
 	ldr x3, [x4, x0]	// load map point
-	cmp x3, #0		// map point must be empty = 0 = '.'
-	moveq r2, r6		// new bug: -2, -3, or -4
+	cmp x3, #0			// map point must be empty = 0 = '.'
+	csel r2, r6, r2, eq // new bug: -2, -3, or -4
 	streq r2, [r4, r0]	// store bug to map
 	bne add_bug_new_try	// if not empty, try again
 
