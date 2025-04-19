@@ -621,31 +621,31 @@ raw_mode:
 	ldr x0, =termios
 	//termattr.c_lflag &= ~(ECHO | ICANON | IEXTEN | ISIG);
 	mov x1, #1000
-	orr r1, r1, #2
-	orr r1, r1, #0100000
-	orr r1, r1, #01
+	orr x1, x1, #2
+	orr x1, x1, #0100000
+	orr x1, x1, #01
 	mvn x1, x1
 	ldr x6, [x0, #+12]
 	and x6, x6, x1
 	str r6, [r0, #+12]
    	//termattr.c_iflag &= ~(BRKINT | ICRNL | INPCK | ISTRIP | IXON);
 	mov x2, #2
-	orr r2, #400
-	orr r2, #20
-	orr r2, #2000
+	orr x2, #400
+	orr x2, #20
+	orr x2, #2000
 	mvn x2, x2
 	ldr x6, [x0]
         and x6, x6, x2
         str r6, [r0]
   	//termattr.c_cflag &= ~(CSIZE | PARENB);
 	mov x3, #60
-	orr r3, #400
+	orr x3, #400
 	mvn x3, x3
 	ldr x6, [x0, #+8]
         and x6, x6, x3
    	//termattr.c_cflag |= CS8;
 	mov x4, #60
-        orr r6, r6, r4
+        orr x6, x6, x4
         str r6, [r0, #+8]
    	//termattr.c_oflag &= ~(OPOST);
 	mvn x5, #1
@@ -712,7 +712,7 @@ cbreak_on:
 	ldr x0, =termios
 	ldr x1, [x0, #+12]!
 	mov x2, #0x00000002	// ICANON flag
-	orr r1, r1, r2		// canonical bit ON in local mode flags
+	orr x1, x1, x2		// canonical bit ON in local mode flags
         mov x2, #1000           // ECHO flag
         and x1, x1, x2
 	str r1, [r0]		// store back to termios+12
