@@ -120,15 +120,15 @@ move_and_check_collision:
         ldrlt r1, =max_len      // collision to bug --> maxlen++
         ldrlt r0, [r1]
         addlt x0, x0, #1
-        strlt r0, [r1]
+        strlt x0, [x1]
         bllt add_new_bug	// ...and go add a new bug
 
         mov x0, #1		// store new head point to map
-        str r0, [r4, r7]
+        str x0, [x4, x7]
         ldr x0, =headx
-        str r5, [r0] 		// store new headx
+        str x5, [x0] 		// store new headx
         ldr x0, =heady
-        str r6, [r0]    	// store new heady
+        str x6, [x0]    	// store new heady
 
 	mov x0, #0
 	b end_move_and_coll
@@ -193,7 +193,7 @@ mapx_loop:
         ldr x1, =max_len        // cut tail if its too long
         ldr x1, [x1]
         add x1, x1, #1
-        cmp x7, r1
+        cmp x7, x1
         movgt r0, #0            // >max_len --> reset point to empty
         strgt r0, [r6]
         ldrgt r0, =empty
@@ -472,8 +472,8 @@ input:
 	push {r4, r6, r7, lr}
 	ldr x4, =rw_buffer
 	mov x1, #0
-	str r1, [r4]
-	str r1, [r4, #+4]	// make sure buffer is empty
+	str x1, [x4]
+	str x1, [x4, #+4]	// make sure buffer is empty
 
 	mov x0, #0              // stdin
         mov x1, x4              // address of the string
