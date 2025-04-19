@@ -100,15 +100,15 @@ move_and_check_collision:
         ldr x1, [x1]
         ldr x0, =dx
         ldr x0, [x0]
-        add r5, r1, r0		// r5 = headx + dx
+        add x5, x1, x0		// r5 = headx + dx
         ldr x2, =heady
         ldr x2, [x2]
         ldr x0, =dy
         ldr x0, [x0]
-        add r6, r2, r0		// r6 = heady + dy
+        add x6, x2, x0		// r6 = heady + dy
         mov x0, #MAPXLEN	// get map address for head (r3)
         mul r3, r6, r0
-        add r3, r3, r5
+        add x3, x3, x5
         mov x0, #4
         mul r7, r3, r0		// (head) r7 = y*mapxlen + x
 
@@ -119,7 +119,7 @@ move_and_check_collision:
         beq collision
         ldrlt r1, =max_len      // collision to bug --> maxlen++
         ldrlt r0, [r1]
-        addlt r0, r0, #1
+        addlt x0, x0, #1
         strlt r0, [r1]
         bllt add_new_bug	// ...and go add a new bug
 
@@ -159,7 +159,7 @@ mapy_loop:
         mov x4, #0
         cmp x5, #MAPYLEN
         beq end_map_loop
-        add r5, r5, #1
+        add x5, x5, #1
 	ldr x0, =space
 	bl output
 mapx_loop:
@@ -168,13 +168,13 @@ mapx_loop:
         bleq output
         cmp x4, #MAPXLEN
         beq mapy_loop
-        add r4, r4, #1
+        add x4, x4, #1
 
         //// Update and print map point ////
         ldr x7, [x6]            // load map point
 
         cmp x7, #0              //if point is:
-        addgt r0, r7, #1        //>0 --> increase its value +1
+        addgt x0, x7, #1        //>0 --> increase its value +1
         strgt r0, [r6]          //i.e. snake tail get older
         ldreq r0, =empty        //==0 --> '.' to be printed
         cmp x7, #1
@@ -192,7 +192,7 @@ mapx_loop:
 
         ldr x1, =max_len        // cut tail if its too long
         ldr x1, [x1]
-        add r1, r1, #1
+        add x1, x1, #1
         cmp x7, r1
         movgt r0, #0            // >max_len --> reset point to empty
         strgt r0, [r6]
@@ -200,7 +200,7 @@ mapx_loop:
 
         bl output               // print the point
 
-        add r6, r6, #4          // next  point in map
+        add x6, x6, #4          // next  point in map
         b mapx_loop
 
 end_map_loop:
@@ -300,12 +300,12 @@ initialize_map:
 top_loop:
         cmp x0, #MAPXLEN
         beq end_top_loop
-        add r0, r0, #1
+        add x0, x0, #1
 
 	mov x1, #-1
 	str r1, [r4]
 	str r1, [r4, r2]  	// r2 is the offset for bottom row
-	add r4, r4, #4
+	add x4, x4, #4
 	b top_loop
 end_top_loop:
 
@@ -321,12 +321,12 @@ end_top_loop:
 side_loop:
 	cmp x0, #MAPYLEN
 	beq end_side_loop
-        add r0, r0, #1
+        add x0, x0, #1
 
         mov x1, #-1
         str r1, [r4]
         str r1, [r4, r2]  	// r2 is offset for left row
-        add r4, r4, r3   	// r3 is offset for next point
+        add x4, x4, x3   	// r3 is offset for next point
         b side_loop
 end_side_loop:
 
@@ -387,7 +387,7 @@ divide_loop:		// how many times r1 can be substr from r0?
 	blt end_divide
 
 	sub r0, r0, r1
-	add r2, r2, #1  // increase counter
+	add x2, x2, #1  // increase counter
 	b divide_loop
 
 end_divide:
@@ -405,7 +405,7 @@ end_divide:
 get_random:
 	ldr x1, =random_seed
 	ldr x0, [x1]
-	add r0, r0, #137
+	add x0, x0, #137
 	eor r0, r0, r0, ror #13
 	lsr r0, r0, #5	//shift right to ensure positiveness
 	str r0, [r1]
@@ -442,7 +442,7 @@ count_loop:			// count chars in the string
 	ldrb r1, [r0], #1	// each char is one byte
 	cmp x1, #0		// each string must be null-ended
 	beq next_print
-	addne r3, r3, #1
+	addne x3, x3, #1
 	b count_loop
 next_print:
 	mov x0, #1              // stdout
@@ -489,14 +489,14 @@ output_int:
     	mov x5, #8		// word is 8 x 4 bits
 	mov x6, #0		// carry
 	ldr x3, =rw_buffer	// buffer to write string
-	add r3, r3, #7		// start writing from end
+	add x3, x3, #7		// start writing from end
 output_int_loop:
     	// Take least significant 4 bits from r4 into r0, loop 8 times
     	mov x0, x4, lsl #28
 	mov x0, x0, lsr #28
 
 	cmp x6, #0		// add carry if previous round >9
-	addgt r0, r0, #1
+	addgt x0, x0, #1
 	movgt r6, #0
 
 	cmp x0, #9		// check if >9, if so mark carry
@@ -506,7 +506,7 @@ output_int_loop:
     	mov x4, x4, lsl #4	// Shift r4 for next time
 
     	// For each nibble (now in r0) convert to ASCII
-    	add r0, r0, #48
+    	add x0, x0, #48
 	strb r0, [r3], #-1
 
     	sub r5, r5, #1		// decrease loop counter
@@ -518,7 +518,7 @@ output_int_loop:
 output_int_loop3:		// skip leading zeroes (max 7)
 	ldrb r1, [r0]
 	cmp x1, #0x30		//= "0" in ascii
-	addeq r0, r0, #1
+	addeq x0, x0, #1
 	bne output_int_end
 	subs r2, r2, #1
 	bmi output_int_end	//if last number is also 0, print it
@@ -540,7 +540,7 @@ delay:
         mov x1, #0
 delay_loop:
         cmp x1, x0
-        add r1, r1, #1
+        add x1, x1, #1
         blt delay_loop
 
         ret
@@ -588,7 +588,7 @@ loop_save:                      // save old configurations
         beq end_loop_save
         ldr x3, [x0], #4
         str r3, [r2], #4
-        add r1, r1, #1
+        add x1, x1, #1
         b loop_save
 end_loop_save:
 	ldp x4, lr, [sp], #16
@@ -667,7 +667,7 @@ loop_load:                      // load old configurations
         beq end_loop_load
         ldr x3, [x2], #4
         str r3, [r0], #4
-        add r1, r1, #1
+        add x1, x1, #1
 	b loop_load
 end_loop_load:
 
