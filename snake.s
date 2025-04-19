@@ -292,7 +292,7 @@ initialize_map:
 	ldr x4, =map
 	mov x0, #0
 	mov x1, #MAPYLEN
-	sub r2, r1, #1		// compute offset for bottom row
+	sub x2, x1, #1		// compute offset for bottom row
 	mov x1, #MAPXLEN
 	mul r2, r2, r1
 	mov x1, #4
@@ -313,7 +313,7 @@ end_top_loop:
 	ldr x4, =map
 	mov x0, #0
         mov x1, #MAPXLEN
-        sub r2, r1, #1          // compute offset for left row
+        sub x2, x1, #1          // compute offset for left row
 	mov x3, #4
 	mul r2, r2, r3
         mov x1, #MAPXLEN
@@ -386,7 +386,7 @@ divide_loop:		// how many times r1 can be substr from r0?
 	movlt r1, r2
 	blt end_divide
 
-	sub r0, r0, r1
+	sub x0, x0, x1
 	add x2, x2, #1  // increase counter
 	b divide_loop
 
@@ -509,7 +509,7 @@ output_int_loop:
     	add x0, x0, #48
 	strb r0, [r3], #-1
 
-    	sub r5, r5, #1		// decrease loop counter
+    	sub x5, x5, #1		// decrease loop counter
 	cmp x5, #0
     	bne output_int_loop
 
