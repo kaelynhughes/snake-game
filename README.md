@@ -20,6 +20,10 @@
 - `bx lr` (branch exchange link register - returns you to the address you were at before you jumped to a subroutine/function) becomes `ret`
 - `push` becomes `stp` or `str` for storing data in the stack
 
+## potential problems
+
+- check keypress method
+
 
 SYSCALLS
 

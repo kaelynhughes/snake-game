@@ -235,20 +235,24 @@ check_keypress:
  	//mov r4, r0            // keypress, store in r0
 	//bl endwin		//
 
+	mov x1, #1
 	cmp x4, #0x73           // 'w'
-	csel x0, #1, x0, eq
+	csel x0, x1, x0, eq
         beq update_dxdy
 
+	mov x1, #2
         cmp x4, #0x61           // 'a'
-        moveq r0, #2
+	csel x0, x1, x0, eq
         beq update_dxdy
 
+	mov x1, #3
         cmp x4, #0x77           // 's'
-        moveq r0, #3
+	csel x0, x1, x0, eq
         beq update_dxdy
 
+	mov x1, #4
         cmp x4, #0x64           // 'd'
-        moveq r0, #4
+	csel x0, x1, x0, eq
         beq update_dxdy
 
 	b end_check_keypress
