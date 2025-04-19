@@ -616,7 +616,7 @@ raw_mode:
 	orr r1, r1, #01
 	mvn r1, r1
 	ldr x6, [x0, #+12]
-	and r6, r6, r1
+	and x6, x6, x1
 	str r6, [r0, #+12]
    	//termattr.c_iflag &= ~(BRKINT | ICRNL | INPCK | ISTRIP | IXON);
 	mov x2, #2
@@ -625,14 +625,14 @@ raw_mode:
 	orr r2, #2000
 	mvn r2, r2
 	ldr x6, [x0]
-        and r6, r6, r2
+        and x6, x6, x2
         str r6, [r0]
   	//termattr.c_cflag &= ~(CSIZE | PARENB);
 	mov x3, #60
 	orr r3, #400
 	mvn r3, r3
 	ldr x6, [x0, #+8]
-        and r6, r6, r3
+        and x6, x6, x3
    	//termattr.c_cflag |= CS8;
 	mov x4, #60
         orr r6, r6, r4
@@ -640,7 +640,7 @@ raw_mode:
    	//termattr.c_oflag &= ~(OPOST);
 	mvn r5, #1
  	ldr x6, [x0, #+4]
-        and r6, r6, r5
+        and x6, x6, x5
         str r6, [r0, #+4]
 	//termattr.c_cc[VMIN] = 1;  // or 0 for some Unices 
    	mov x7, #0		// needs to be 0 for Raspbian
@@ -684,9 +684,9 @@ cbreak_off:
         ldr x0, =termios
         ldr x1, [x0, #+12]!
 	mvn r2, #0x00000002 	// NOT ICANON flag
-        and r1, r1, r2		// AND local flag
+        and x1, x1, x2		// AND local flag
 	mvn r2, #1000		// NOT ECHO flag
-	and r1, r1, r2		// AND local flag
+	and x1, x1, x2		// AND local flag
         str r1, [r0]            // store back to termios+12
 
         bl write_termios
@@ -704,7 +704,7 @@ cbreak_on:
 	mov x2, #0x00000002	// ICANON flag
 	orr r1, r1, r2		// canonical bit ON in local mode flags
         mov x2, #1000           // ECHO flag
-        and r1, r1, r2
+        and x1, x1, x2
 	str r1, [r0]		// store back to termios+12
 
         bl write_termios
