@@ -107,10 +107,10 @@ move_and_check_collision:
         ldr x0, [x0]
         add x6, x2, x0		// r6 = heady + dy
         mov x0, #MAPXLEN	// get map address for head (r3)
-        mul r3, r6, r0
+        mul x3, x6, x0
         add x3, x3, x5
         mov x0, #4
-        mul r7, r3, r0		// (head) r7 = y*mapxlen + x
+        mul x7, x3, x0		// (head) r7 = y*mapxlen + x
 
         ldr x0, [x4, x7]	// r0 = map point for next step
         cmp x0, #0              // collision to points >0 --> end
@@ -302,9 +302,9 @@ initialize_map:
 	mov x1, #MAPYLEN
 	sub x2, x1, #1		// compute offset for bottom row
 	mov x1, #MAPXLEN
-	mul r2, r2, r1
+	mul x2, x2, x1
 	mov x1, #4
-	mul r2, r2, r1
+	mul x2, x2, x1
 top_loop:
         cmp x0, #MAPXLEN
         beq end_top_loop
@@ -323,9 +323,9 @@ end_top_loop:
         mov x1, #MAPXLEN
         sub x2, x1, #1          // compute offset for left row
 	mov x3, #4
-	mul r2, r2, r3
+	mul x2, x2, x3
         mov x1, #MAPXLEN
-        mul r3, r1, r3
+        mul x3, x1, x3
 side_loop:
 	cmp x0, #MAPYLEN
 	beq end_side_loop
@@ -354,7 +354,7 @@ add_new_bug:
 	ldr x4, =map
         mov x1, #MAPYLEN
         mov x2, #MAPXLEN
-        mul r5, r1, r2      // mapylen*mapxlen
+        mul x5, x1, x2      // mapylen*mapxlen
 	bl get_random			// r0 = next random
 	mov x1, #3
 	bl divide				// r0 = r0 % 3
@@ -373,7 +373,7 @@ add_bug_new_try:
 	bl divide		// r0 / (mapylen*mapxlen)
 				// --> r0 stores the modulo
 	mov x3, #4
-	mul r0, r0, r3  	// map address for new bug
+	mul x0, x0, x3  	// map address for new bug
 
 	ldr x3, [x4, x0]	// load map point
 	cmp x3, #0			// map point must be empty = 0 = '.'
@@ -449,7 +449,7 @@ output:
 	mov x4, x0		// store orig addr of string
 	mov x3, #0
 count_loop:			// count chars in the string
-	ldrb x1, [x0], #1	// each char is one byte
+	ldrb w1, [x0], #1	// each char is one byte
 	cmp x1, #0		// each string must be null-ended
 	beq next_print
 	addne x3, x3, #1
@@ -526,7 +526,7 @@ output_int_loop:
 	ldr x0, =rw_buffer	// reset to start
 	mov x2, #6
 output_int_loop3:		// skip leading zeroes (max 7)
-	ldrb x1, [x0]
+	ldrb w1, [x0]
 	cmp x1, #0x30		//= "0" in ascii
 	addeq x0, x0, #1
 	bne output_int_end
