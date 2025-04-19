@@ -236,7 +236,7 @@ check_keypress:
 	//bl endwin		//
 
 	cmp x4, #0x73           // 'w'
-        moveq r0, #1
+	csel x0, #1, x0, eq
         beq update_dxdy
 
         cmp x4, #0x61           // 'a'
