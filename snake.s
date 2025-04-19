@@ -117,13 +117,10 @@ move_and_check_collision:
         ldr x0, [x4, x7]	// r0 = map point for next step
         cmp x0, #0              // collision to points >0 --> end
         bgt collision
+
         cmp x0, #-1             // -"- ==-1 --> end
         beq collision
-        ldrlt r1, =max_len      // collision to bug --> maxlen++
-        ldrlt r0, [r1]
-        addlt x0, x0, #1
-        strlt x0, [x1]
-        bllt add_new_bug	// ...and go add a new bug
+		blt bug_collision
 
         mov x0, #1		// store new head point to map
         str x0, [x4, x7]
@@ -134,6 +131,13 @@ move_and_check_collision:
 
 	mov x0, #0
 	b end_move_and_coll
+bug_collision:
+	adrp x1, max_len
+	add x1, x1, :lo12:max_len
+	ldr x0, [x1]
+	add x0, x0, #1
+	str x0, [x1]
+	b add_new_bug
 collision:
 	mov x0, #1
 end_move_and_coll:
