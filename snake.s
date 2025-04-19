@@ -49,7 +49,7 @@ _start:
 game_loop:
 
 	bl move_and_check_collision	// update snake position
-	cmp r0, #1			// did collision occur?
+	cmp x0, #1			// did collision occur?
 	beq the_end
 
 	bl update_and_print_map
@@ -113,9 +113,9 @@ move_and_check_collision:
         mul r7, r3, r0		// (head) r7 = y*mapxlen + x
 
         ldr x0, [x4, x7]	// r0 = map point for next step
-        cmp r0, #0              // collision to points >0 --> end
+        cmp x0, #0              // collision to points >0 --> end
         bgt collision
-        cmp r0, #-1             // -"- ==-1 --> end
+        cmp x0, #-1             // -"- ==-1 --> end
         beq collision
         ldrlt r1, =max_len      // collision to bug --> maxlen++
         ldrlt r0, [r1]
@@ -157,43 +157,43 @@ update_and_print_map:
         mov x5, #0
 mapy_loop:
         mov x4, #0
-        cmp r5, #MAPYLEN
+        cmp x5, #MAPYLEN
         beq end_map_loop
         add r5, r5, #1
 	ldr x0, =space
 	bl output
 mapx_loop:
-        cmp r4, #MAPXLEN
+        cmp x4, #MAPXLEN
         ldreq r0, =endl
         bleq output
-        cmp r4, #MAPXLEN
+        cmp x4, #MAPXLEN
         beq mapy_loop
         add r4, r4, #1
 
         //// Update and print map point ////
         ldr x7, [x6]            // load map point
 
-        cmp r7, #0              //if point is:
+        cmp x7, #0              //if point is:
         addgt r0, r7, #1        //>0 --> increase its value +1
         strgt r0, [r6]          //i.e. snake tail get older
         ldreq r0, =empty        //==0 --> '.' to be printed
-        cmp r7, #1
+        cmp x7, #1
         ldreq r0, =snake        //==1 --> '@' head
         ldrgt r0, =tail         //>1 --> '0' tail
-        cmp r7, #-1
+        cmp x7, #-1
         ldreq r0, =border       //==-1 --> '#'
-        cmp r7, #-2             //==-2 --> '*'
+        cmp x7, #-2             //==-2 --> '*'
         ldreq r0, =bug1
-	cmp r7, #-3             //==-3 --> '~'
+	cmp x7, #-3             //==-3 --> '~'
         ldreq r0, =bug2
-	cmp r7, #-4             //==-4 --> '%'
+	cmp x7, #-4             //==-4 --> '%'
         ldreq r0, =bug3
 
 
         ldr x1, =max_len        // cut tail if its too long
         ldr x1, [x1]
         add r1, r1, #1
-        cmp r7, r1
+        cmp x7, r1
         movgt r0, #0            // >max_len --> reset point to empty
         strgt r0, [r6]
         ldrgt r0, =empty
@@ -235,19 +235,19 @@ check_keypress:
  	//mov r4, r0            // keypress, store in r0
 	//bl endwin		//
 
-	cmp r4, #0x73           // 'w'
+	cmp x4, #0x73           // 'w'
         moveq r0, #1
         beq update_dxdy
 
-        cmp r4, #0x61           // 'a'
+        cmp x4, #0x61           // 'a'
         moveq r0, #2
         beq update_dxdy
 
-        cmp r4, #0x77           // 's'
+        cmp x4, #0x77           // 's'
         moveq r0, #3
         beq update_dxdy
 
-        cmp r4, #0x64           // 'd'
+        cmp x4, #0x64           // 'd'
         moveq r0, #4
         beq update_dxdy
 
@@ -260,16 +260,16 @@ update_dxdy:
 	mov x4, #0	// new dx
 	mov x5, #0	// new dy
 
-	cmp r0, #1
+	cmp x0, #1
         moveq r5, #1
 
-        cmp r0, #2
+        cmp x0, #2
         moveq r4, #-1
 
-        cmp r0, #3
+        cmp x0, #3
         moveq r5, #-1
 
-        cmp r0, #4
+        cmp x0, #4
         moveq r4, #1
 
 	str r4, [r1]
@@ -298,7 +298,7 @@ initialize_map:
 	mov x1, #4
 	mul r2, r2, r1
 top_loop:
-        cmp r0, #MAPXLEN
+        cmp x0, #MAPXLEN
         beq end_top_loop
         add r0, r0, #1
 
@@ -319,7 +319,7 @@ end_top_loop:
         mov x1, #MAPXLEN
         mul r3, r1, r3
 side_loop:
-	cmp r0, #MAPYLEN
+	cmp x0, #MAPYLEN
 	beq end_side_loop
         add r0, r0, #1
 
@@ -350,9 +350,9 @@ add_new_bug:
 	bl get_random		// r0 = next random
 	mov x1, #3
 	bl divide		// r0 = r0 % 3
-	cmp r0, #0
+	cmp x0, #0
 	moveq r6, #-2		// new bug '*'
-	cmp r0, #1
+	cmp x0, #1
         moveq r6, #-3	        // new bug '~'
         movgt r6, #-4         	// new bug '%'
 
@@ -366,7 +366,7 @@ add_bug_new_try:
 	mul r0, r0, r3  	// map address for new bug
 
 	ldr x3, [x4, x0]	// load map point
-	cmp r3, #0		// map point must be empty = 0 = '.'
+	cmp x3, #0		// map point must be empty = 0 = '.'
 	moveq r2, r6		// new bug: -2, -3, or -4
 	streq r2, [r4, r0]	// store bug to map
 	bne add_bug_new_try	// if not empty, try again
@@ -382,7 +382,7 @@ add_bug_new_try:
 divide:
 	mov x2, #0
 divide_loop:		// how many times r1 can be substr from r0?
-	cmp r0, r1
+	cmp x0, x1
 	movlt r1, r2
 	blt end_divide
 
@@ -440,7 +440,7 @@ output:
 	mov x3, #0
 count_loop:			// count chars in the string
 	ldrb r1, [r0], #1	// each char is one byte
-	cmp r1, #0		// each string must be null-ended
+	cmp x1, #0		// each string must be null-ended
 	beq next_print
 	addne r3, r3, #1
 	b count_loop
@@ -495,11 +495,11 @@ output_int_loop:
     	mov x0, x4, lsl #28
 	mov x0, x0, lsr #28
 
-	cmp r6, #0		// add carry if previous round >9
+	cmp x6, #0		// add carry if previous round >9
 	addgt r0, r0, #1
 	movgt r6, #0
 
-	cmp r0, #9		// check if >9, if so mark carry
+	cmp x0, #9		// check if >9, if so mark carry
 	subgt r0, r0, #10
 	movgt r6, #1
 
@@ -510,14 +510,14 @@ output_int_loop:
 	strb r0, [r3], #-1
 
     	sub r5, r5, #1		// decrease loop counter
-	cmp r5, #0
+	cmp x5, #0
     	bne output_int_loop
 
 	ldr x0, =rw_buffer	// reset to start
 	mov x2, #6
 output_int_loop3:		// skip leading zeroes (max 7)
 	ldrb r1, [r0]
-	cmp r1, #0x30		//= "0" in ascii
+	cmp x1, #0x30		//= "0" in ascii
 	addeq r0, r0, #1
 	bne output_int_end
 	subs r2, r2, #1
@@ -539,7 +539,7 @@ delay:
         ldr x0, [x0]
         mov x1, #0
 delay_loop:
-        cmp r1, r0
+        cmp x1, x0
         add r1, r1, #1
         blt delay_loop
 
@@ -584,7 +584,7 @@ save_termios:
         mov x1, #0
         ldr x2, =saved_termios
 loop_save:                      // save old configurations
-        cmp r1, #11
+        cmp x1, #11
         beq end_loop_save
         ldr x3, [x0], #4
         str r3, [r2], #4
@@ -663,7 +663,7 @@ cooked_mode:
         mov x1, #0
         ldr x2, =saved_termios
 loop_load:                      // load old configurations
-        cmp r1, #11
+        cmp x1, #11
         beq end_loop_load
         ldr x3, [x2], #4
         str r3, [r0], #4
