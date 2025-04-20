@@ -351,11 +351,6 @@ top_loop:
 	b top_loop
 end_top_loop:
 
-	mov     x0, #1              // stdout
-	ldr     x1, =msg            // address of message
-	mov     x2, #2              // message length
-	mov     x8, #64             // syscall: write
-	svc     #0
 	//vertical borders//
 	ldr x4, =map
 	mov x0, #0
@@ -377,6 +372,11 @@ side_loop:
         b side_loop
 end_side_loop:
 
+	mov     x0, #1              // stdout
+	ldr     x1, =msg            // address of message
+	mov     x2, #2              // message length
+	mov     x8, #64             // syscall: write
+	svc     #0
 	bl add_new_bug
 
 	ldp x4, lr, [sp], #16
