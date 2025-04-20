@@ -382,15 +382,15 @@ side_loop:
         add x4, x4, x3   	// r3 is offset for next point
         b side_loop
 end_side_loop:
-
-	bl add_new_bug
-
 	ldp x4, lr, [sp], #16
 	mov     x0, #1              // stdout
 	ldr     x1, =msg            // address of message
 	mov     x2, #1              // message length
 	mov     x8, #64             // syscall: write
 	svc     #0
+
+	bl add_new_bug
+
 	ret lr
 ////////////////////////////////
 
