@@ -5,6 +5,7 @@ show_cursor: .asciz "\033[?25h"
 test_msg: .asciz "Terminal test - press any key to continue\n"
 termios: .skip 100
 saved_termios: .skip 100
+input_buffer: .skip 1
 
 .text
 .global _start
@@ -57,7 +58,7 @@ _start:
 
     // Wait for keypress
     mov x0, #0              // stdin
-    adr x1, =0              // buffer
+    adr x1, input_buffer    // buffer
     mov x2, #1              // count
     mov x7, #63             // read
     svc #0
