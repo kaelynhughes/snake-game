@@ -37,6 +37,11 @@ delay_ticks: .word 800000000	// game speed for Samsung S10 -- for Raspberry Pi 3
 ///////////////////  MAIN  ////////////////////
 ///////////////////////////////////////////////
 _start:
+	mov     x0, #1              // stdout
+	ldr     x1, =msg            // address of message
+	mov     x2, #2              // message length
+	mov     x8, #64             // syscall: write
+	svc     #0
 	stp x4, lr, [sp, #-16]!
 
 	bl save_termios
@@ -630,7 +635,7 @@ kbhit:
 // Saves current termios (terminal input) configs to memory.
 // Needed so that they can be restored after config changes.
 save_termios:
-	stp x4, lr, [sp, #-16]!
+	stp x29, lr, [sp, #-16]!
         bl read_termios
         ldr x0, =termios
         mov x1, #0
