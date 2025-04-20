@@ -16,8 +16,8 @@ show_cursor: .asciz "\033[?25h"
 endl: .asciz "\n"
 game_over: .asciz "\033[1A Game Over. Score: "
 .align 4
-msg:    .asciz "Y\n"
-msg2:	.asciz "Y\n"
+msg:    .asciz "X"
+msg2:	.asciz "x"
 map: .skip 600  		// mapxlen*mapylen*4
 dx: .word 1			// snake directions
 dy: .word 0
@@ -46,7 +46,7 @@ _start:
 	bl initialize_map
 	mov     x0, #1              // stdout
 	ldr     x1, =msg            // address of message
-	mov     x2, #2              // message length
+	mov     x2, #1              // message length
 	mov     x8, #64             // syscall: write
 	svc     #0
 
@@ -331,7 +331,7 @@ end_check_keypress:
 initialize_map:
 	mov     x0, #1              // stdout
 	ldr     x1, =msg2            // address of message
-	mov     x2, #2              // message length
+	mov     x2, #1              // message length
 	mov     x8, #64             // syscall: write
 	svc     #0
 	stp x4, lr, [sp, #-16]!
@@ -356,7 +356,7 @@ top_loop:
 	add x4, x4, #4
 	mov     x0, #1              // stdout
 	ldr     x1, =msg            // address of message
-	mov     x2, #2              // message length
+	mov     x2, #1              // message length
 	mov     x8, #64             // syscall: write
 	svc     #0
 	b top_loop
