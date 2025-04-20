@@ -773,8 +773,9 @@ read_termios:
 	stp x7, lr, [sp, #-16]!
 
 	mov x0,	#0		// stdin
-	movz x1, =#0x5401 	// READ termios parameters
-	ldr x2, =termios	// address for termios buffer
+	movz x1, #0x5401 	// READ termios parameters
+	adrp x2, =termios	// address for termios buffer
+	add x2, x2, :lol2:termios
 	mov x7, #54		// syscall for ioctl 0x36
 	svc #0
 
