@@ -15,7 +15,7 @@ _start:
     mov x0, #0              // stdin
     movz x1, #0x5401        // TCGETS
     adr x2, termios
-    mov x8, #54             // ioctl
+    mov x8, #29             // ioctl is 29 in 64, 54 in 32
     svc #0
 
     // Copy to saved settings
@@ -43,7 +43,7 @@ _start:
     mov x0, #0              // stdin
     movz x1, #0x5402        // TCSETS
     adr x2, termios
-    mov x8, #54             // ioctl
+    mov x8, #29             // ioctl
     svc #0
 
     // Clear screen and hide cursor
@@ -60,14 +60,14 @@ _start:
     mov x0, #0              // stdin
     adr x1, input_buffer    // buffer
     mov x2, #1              // count
-    mov x8, #63             // read
+    mov x8, #63             // read is 63 in 64, 3 in 32
     svc #0
 
     // Restore terminal settings
     mov x0, #0              // stdin
     movz x1, #0x5402        // TCSETS
     adr x2, saved_termios
-    mov x8, #54             // ioctl
+    mov x8, #29             // ioctl
     svc #0
 
     // Show cursor
@@ -94,7 +94,7 @@ count_loop:
 
 print:
     mov x0, #1              // stdout
-    mov x8, #64             // write
+    mov x8, #64             // write is 64 in 64, 4 in 32
     svc #0
 
     ldp x29, x30, [sp], #16

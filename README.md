@@ -30,12 +30,33 @@
 
 ## notes
 
+### registers and addresses
+
+A register holds 64 bits. 64 bits is 8 bytes.
+
+A full register is marked as `x`. A half register with the top values zeroed out is `w`.
+
+The stack pointer holds an address. If you subtract 16 from the stack pointer, it will now point at the address 16 bytes (128 bits) lower in memory.
+
+The stack is backwards. The bottom of the stack is the top of its allocation in memory, and it expands from the top down. New items are pushed underneath old items, and popping items pulls them from the bottom of the stack.
+
+
 ### stp
 
 EXAMPLE:
 ```
 stp x4, x5, [sp, #-16]!
 ```
+
+BREAKDOWN:
+- `stp`: store pair (of registers to memory)
+- `x4, x5`: pair of registers that hold the values we want to store
+- brackets indicate that we're using the contents as a memory address
+- `sp`: stack pointer
+- `#-16`: immediate offset of 16 bytes
+- `!`: writeback operator - updates `sp` to point to the new value after it's used
+
+RESULT: takes the values in registers 4 and 5 and stores them at the address `sp - 16`, then updates the stack pointer to point 16 bytes lower on the stack (since we push new values in at the bottom).
 
 
 SYSCALLS
@@ -44,6 +65,9 @@ SYSCALLS
 | ----- | ----- | ----------------- |
 | 0     | 128   | restart_syscall   |
 | 1     | 93    | exit              |
+| 3     | 63    | read              |
+| 4     | 64    | write             |
+| 54    | 29    | ioctl             |
 
 
 ## map x loop
