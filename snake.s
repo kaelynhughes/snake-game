@@ -330,7 +330,7 @@ end_check_keypress:
 // Initialize map values, mainly draw borders.
 initialize_map:
 	mov     x0, #1              // stdout
-	ldr     x1, =msg            // address of message
+	ldr     x1, =msg2            // address of message
 	mov     x2, #1              // message length
 	mov     x8, #64             // syscall: write
 	svc     #0
@@ -362,11 +362,6 @@ top_loop:
 	b top_loop
 end_top_loop:
 
-	mov     x0, #1              // stdout
-	ldr     x1, =msg2            // address of message
-	mov     x2, #1              // message length
-	mov     x8, #64             // syscall: write
-	svc     #0
 	//vertical borders//
 	ldr x4, =map
 	mov x0, #0
@@ -391,6 +386,11 @@ end_side_loop:
 	bl add_new_bug
 
 	ldp x4, lr, [sp], #16
+	mov     x0, #1              // stdout
+	ldr     x1, =msg            // address of message
+	mov     x2, #1              // message length
+	mov     x8, #64             // syscall: write
+	svc     #0
 	ret lr
 ////////////////////////////////
 
