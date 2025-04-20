@@ -774,8 +774,7 @@ read_termios:
 
 	mov x0,	#0		// stdin
 	movz x1, #0x5401 	// READ termios parameters
-	adrp x2, termios	// address for termios buffer
-	add x2, x2, :lol2:termios
+	ldr x2, =termios	// address for termios buffer
 	mov x7, #54		// syscall for ioctl 0x36
 	svc #0
 
