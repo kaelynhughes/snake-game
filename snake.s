@@ -27,6 +27,7 @@ rw_buffer: .skip 100
 termios: .skip 100		// terminal input configs
 saved_termios: .skip 100
 delay_ticks: .word 800000000	// game speed for Samsung S10 -- for Raspberry Pi 3, use 230000000
+msg:    .asciz "X\n"
 .equ MAPXLEN, 14
 .equ MAPYLEN, 8
 
@@ -38,7 +39,7 @@ delay_ticks: .word 800000000	// game speed for Samsung S10 -- for Raspberry Pi 3
 ///////////////////////////////////////////////
 _start:
 	mov     x0, #1              // stdout
-	ldr     x1, =tail            // address of message
+	ldr     x1, =msg            // address of message
 	mov     x2, #2              // message length
 	mov     x8, #64             // syscall: write
 	svc     #0
