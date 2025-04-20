@@ -38,14 +38,14 @@ msg:    .asciz "X\n"
 ///////////////////  MAIN  ////////////////////
 ///////////////////////////////////////////////
 _start:
+	stp x4, lr, [sp, #-16]!
+
+	bl save_termios
 	mov     x0, #1              // stdout
 	ldr     x1, =msg            // address of message
 	mov     x2, #2              // message length
 	mov     x8, #64             // syscall: write
 	svc     #0
-	stp x4, lr, [sp, #-16]!
-
-	bl save_termios
 	bl init_random_seed
 	bl initialize_map
 
