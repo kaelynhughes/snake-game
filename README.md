@@ -20,10 +20,22 @@
 - `bx lr` (branch exchange link register - returns you to the address you were at before you jumped to a subroutine/function) becomes `ret`
 - `push` becomes `stp` or `str` for storing data in the stack
 - `pop` becomes `ldp`
+- registers are different in ARM64 than ARM32 - each register is 64 bytes and marked with x, but you can also use the lower half and call it w; the top 32 bits are zeroed out
+- you have to be a lot more hands-on with stack operations in arm64 - instead of just using push/pop and it all working out, you have to use the stack pointer and change where it points to
+    - 
 
 ## potential problems
 
 - check keypress method
+
+## notes
+
+### stp
+
+EXAMPLE:
+```
+stp x4, x5, [sp, #-16]!
+```
 
 
 SYSCALLS
@@ -79,4 +91,6 @@ map x loop:
     - store one plus the value of register 7 in register 0
     - store the value in register 0 at the address in register 6 (map point)
 - if x7 is equal to 0, store the value of empty ('.') in register 0
+
+
 
