@@ -402,11 +402,6 @@ add_new_bug:
         mul x5, x1, x2      // mapylen*mapxlen
 	ldp x4, lr, [sp], #16
 	bl get_random			// r0 = next random
-	mov     x0, #1              // stdout
-	ldr     x1, =msg            // address of message
-	mov     x2, #1              // message length
-	mov     x8, #64             // syscall: write
-	svc     #0
 	mov x1, #3
 	bl divide				// r0 = r0 % 3
 	mov x3, #-4
@@ -417,6 +412,11 @@ add_new_bug:
 
 	cinc x6, x6, gt			// twice if greater so x6 holds -2
 	cinc x6, x6, gt			// bug is '*'
+	mov     x0, #1              // stdout
+	ldr     x1, =msg            // address of message
+	mov     x2, #1              // message length
+	mov     x8, #64             // syscall: write
+	svc     #0
 
 add_bug_new_try:
 	bl get_random		// r0 = next random
