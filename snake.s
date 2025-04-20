@@ -403,11 +403,6 @@ add_new_bug:
 	ldp x4, lr, [sp], #16
 	bl get_random			// r0 = next random
 	mov x1, #3
-	mov     x0, #1              // stdout
-	ldr     x1, =msg            // address of message
-	mov     x2, #1              // message length
-	mov     x8, #64             // syscall: write
-	svc     #0
 	bl divide				// r0 = r0 % 3
 	mov x3, #-4
 	cmp x0, #0
@@ -444,6 +439,11 @@ add_bug_new_try:
 // Input: r0 (dividend), r1 (divisor), both integers
 // Output: r0 (remainder, modulo), r1 (integer result of r0/r1)
 divide:
+	mov     x0, #1              // stdout
+	ldr     x1, =msg            // address of message
+	mov     x2, #1              // message length
+	mov     x8, #64             // syscall: write
+	svc     #0
 	mov x2, #0
 divide_loop:		// how many times r1 can be substr from r0?
 	cmp x0, x1
