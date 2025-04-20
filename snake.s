@@ -89,7 +89,7 @@ the_end:
 	ldp x4, lr, [sp], #16
 	
 	mov x0, #0		// exit status 0 (ok)
-    	mov x7, #93		// syscall 1 (exit) is 93 in ARM64
+    	mov x8, #93		// syscall 1 (exit) is 93 in ARM64
     	svc #0
 
 ///////////////////////////////////////////////////
@@ -482,7 +482,7 @@ get_random:
 init_random_seed:
 		stp x7, lr, [sp, #-16]!
         ldr x0, =random_seed
-        mov x7, #0x00004e	// syscall for gettimeofday
+        mov x8, #0x00004e	// syscall for gettimeofday
         svc #0
 
 	ldp x7, lr, [sp], #16
@@ -509,7 +509,7 @@ next_print:
 	mov x0, #1              // stdout
     	mov x1, x4	        // address of the string
     	mov x2, x3             	// string length
-    	mov x7, #4              // syscall for 'write'
+    	mov x8, #4              // syscall for 'write'
     	svc #0                  // software interrupt
 	ldp x4, x6, [sp], #16
 	ldp x7, lr, [sp], #16
@@ -531,7 +531,7 @@ input:
 	mov x0, #0              // stdin
         mov x1, x4              // address of the string
         mov x2, #1              // string length = 1
-        mov x7, #3              // syscall for 'write'
+        mov x8, #3              // syscall for 'write'
         svc #0                  // software interrupt
 
 	mov x0, x4		//return address of string
@@ -792,7 +792,7 @@ read_termios:
 	mov x0,	#0		// stdin
 	movz x1, #0x5401 	// READ termios parameters
 	ldr x2, =termios	// address for termios buffer
-	mov x7, #54		// syscall for ioctl 0x36
+	mov x8, #54		// syscall for ioctl 0x36
 	svc #0
 
 	ldp x7, lr, [sp], #16
@@ -806,7 +806,7 @@ write_termios:
         mov x0, #0              // stdin
         movz x1, #0x5402        // WRITE termios parameters
         ldr x2, =termios        // address for termios buffer
-        mov x7, #54             // syscall for ioctl 0x36
+        mov x8, #54             // syscall for ioctl 0x36
         svc #0
 
 	ldp x7, lr, [sp], #16
