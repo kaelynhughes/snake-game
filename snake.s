@@ -674,16 +674,16 @@ raw_mode:
 	str x6, [x0, #+12]
    	//termattr.c_iflag &= ~(BRKINT | ICRNL | INPCK | ISTRIP | IXON);
 	mov x2, #2
-	orr x2, #400
-	orr x2, #20
-	orr x2, #2000
+	orr x2, x2, #400
+	orr x2, x2, #20
+	orr x2, x2, #2000
 	mvn x2, x2
 	ldr x6, [x0]
         and x6, x6, x2
         str x6, [x0]
   	//termattr.c_cflag &= ~(CSIZE | PARENB);
 	mov x3, #60
-	orr x3, #400
+	orr x3, x3, #400
 	mvn x3, x3
 	ldr x6, [x0, #+8]
         and x6, x6, x3
