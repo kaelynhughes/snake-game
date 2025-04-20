@@ -635,7 +635,7 @@ kbhit:
 // Saves current termios (terminal input) configs to memory.
 // Needed so that they can be restored after config changes.
 save_termios:
-	stp x29, lr, [sp, #-16]!
+	stp x4, lr, [sp, #-16]!
         bl read_termios
         ldr x0, =termios
         mov x1, #0
