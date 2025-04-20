@@ -340,11 +340,6 @@ initialize_map:
 	mov x1, #4
 	mul x2, x2, x1
 top_loop:
-	mov     x0, #1              // stdout
-	ldr     x1, =msg            // address of message
-	mov     x2, #2              // message length
-	mov     x8, #64             // syscall: write
-	svc     #0
         cmp x0, #MAPXLEN
         beq end_top_loop
         add x0, x0, #1
@@ -356,6 +351,11 @@ top_loop:
 	b top_loop
 end_top_loop:
 
+	mov     x0, #1              // stdout
+	ldr     x1, =msg            // address of message
+	mov     x2, #2              // message length
+	mov     x8, #64             // syscall: write
+	svc     #0
 	//vertical borders//
 	ldr x4, =map
 	mov x0, #0
