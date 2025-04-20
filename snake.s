@@ -329,11 +329,6 @@ end_check_keypress:
 // Output: none
 // Initialize map values, mainly draw borders.
 initialize_map:
-	mov     x0, #1              // stdout
-	ldr     x1, =msg2            // address of message
-	mov     x2, #1              // message length
-	mov     x8, #64             // syscall: write
-	svc     #0
 	stp x4, lr, [sp, #-16]!
 
 	//horizontal borders//
@@ -439,11 +434,6 @@ add_bug_new_try:
 // Input: r0 (dividend), r1 (divisor), both integers
 // Output: r0 (remainder, modulo), r1 (integer result of r0/r1)
 divide:
-	mov     x0, #1              // stdout
-	ldr     x1, =msg            // address of message
-	mov     x2, #1              // message length
-	mov     x8, #64             // syscall: write
-	svc     #0
 	mov x2, #0
 divide_loop:		// how many times r1 can be substr from r0?
 	cmp x0, x1
