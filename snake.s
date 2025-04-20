@@ -382,12 +382,6 @@ side_loop:
         add x4, x4, x3   	// r3 is offset for next point
         b side_loop
 end_side_loop:
-	ldp x4, lr, [sp], #16
-	mov     x0, #1              // stdout
-	ldr     x1, =msg            // address of message
-	mov     x2, #1              // message length
-	mov     x8, #64             // syscall: write
-	svc     #0
 
 	bl add_new_bug
 
@@ -406,6 +400,12 @@ add_new_bug:
         mov x1, #MAPYLEN
         mov x2, #MAPXLEN
         mul x5, x1, x2      // mapylen*mapxlen
+	ldp x4, lr, [sp], #16
+	mov     x0, #1              // stdout
+	ldr     x1, =msg            // address of message
+	mov     x2, #1              // message length
+	mov     x8, #64             // syscall: write
+	svc     #0
 	bl get_random			// r0 = next random
 	mov x1, #3
 	bl divide				// r0 = r0 % 3
