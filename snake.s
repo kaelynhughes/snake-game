@@ -16,7 +16,7 @@ show_cursor: .asciz "\033[?25h"
 endl: .asciz "\n"
 game_over: .asciz "\033[1A Game Over. Score: "
 .align 4
-msg:    .asciz "X\n"
+msg:    .asciz "Y\n"
 msg2:	.asciz "Y\n"
 map: .skip 600  		// mapxlen*mapylen*4
 dx: .word 1			// snake directions
@@ -330,7 +330,7 @@ end_check_keypress:
 // Initialize map values, mainly draw borders.
 initialize_map:
 	mov     x0, #1              // stdout
-	ldr     x1, =msg2            // address of message
+	ldr     x1, =msg            // address of message
 	mov     x2, #2              // message length
 	mov     x8, #64             // syscall: write
 	stp x4, lr, [sp, #-16]!
