@@ -17,7 +17,7 @@ endl: .asciz "\n"
 game_over: .asciz "\033[1A Game Over. Score: "
 .align 4
 msg:    .asciz "X\n"
-msg2: .asciz "Y\n"
+msg2:	.asciz "Y\n"
 map: .skip 600  		// mapxlen*mapylen*4
 dx: .word 1			// snake directions
 dy: .word 0
