@@ -692,7 +692,7 @@ raw_mode:
         orr x6, x6, x4
         str x6, [x0, #+8]
    	//termattr.c_oflag &= ~(OPOST);
-	mvn x5, #1
+	movn x5, #1
  	ldr x6, [x0, #+4]
         and x6, x6, x5
         str x6, [x0, #+4]
@@ -739,9 +739,9 @@ cbreak_off:
 
         ldr x0, =termios
         ldr x1, [x0, #+12]!
-	mvn x2, #0x00000002 	// NOT ICANON flag
+	movn x2, #0x00000002 	// NOT ICANON flag
         and x1, x1, x2		// AND local flag
-	mvn x2, #1000		// NOT ECHO flag
+	movn x2, #1000		// NOT ECHO flag
 	and x1, x1, x2		// AND local flag
         str x1, [x0]            // store back to termios+12
 
