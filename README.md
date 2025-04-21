@@ -59,7 +59,28 @@ BREAKDOWN:
 RESULT: takes the values in registers 4 and 5 and stores them at the address `sp - 16`, then updates the stack pointer to point 16 bytes lower on the stack (since we push new values in at the bottom).
 
 
-SYSCALLS
+### ascii vs asciz
+
+ASCIZ functions the same as ASCII but adds a zero byte to the end of the string.
+
+This is helpful because it means you can process the string by reading characters until you reach a zero byte (a null value). If you used ASCII, you would have to either:
+- Manually add the zero byte to the string. This is cumbersome
+- Store the size of the string you want to print. This limits the size of the string; I'm not 100% sure to what bc the reddit answer I'm reading is confusing but you don't want to do that either
+
+Just use .asciz
+
+| ascii     | character                 |
+| --------- | ------------------------- |
+| `\033`    | escape                    |
+| `\n`      | newline                   |
+| `[`       | start control sequence    |
+| `?`       | private mode ctrl seq     |
+| `2J`      | clear entire screen       |
+| `25`      | cursor visibility param   |
+| `l`       | hide                      |
+| `h`       | show                      |
+
+### syscalls
 
 | ARM32 | ARM64 | Name              |
 | ----- | ----- | ----------------- |
