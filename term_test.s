@@ -11,8 +11,6 @@ input_buffer: .skip 1
 .global _start
 
 _start:
-    adr x0, clear_screen
-    bl output
     // Save current terminal settings
     mov x0, #0              // stdin
     movz x1, #0x5401        // TCGETS
@@ -49,7 +47,7 @@ _start:
     svc #0
 
     // Clear screen and hide cursor
-    adr x0, clear_screen
+    ldr x0, clear_screen
     bl output
     adr x0, hide_cursor
     bl output
