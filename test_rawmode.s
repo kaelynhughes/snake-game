@@ -149,8 +149,21 @@ save_termios:
 // end_loop_save:
 	ldp x4, lr, [sp], #16
 
+
+    mov     x0, #1              // stdout
+	ldr     x1, =test_msg       // address of message
+	mov     x2, #5              // message length
+	mov     x8, #64             // syscall: write
+	svc     #0
+
     mov     x0, #1              // stdout
 	ldr     x1, =lr             // address of message
+	mov     x2, #5              // message length
+	mov     x8, #64             // syscall: write
+	svc     #0
+
+    mov     x0, #1              // stdout
+	ldr     x1, =test_msg       // address of message
 	mov     x2, #5              // message length
 	mov     x8, #64             // syscall: write
 	svc     #0
