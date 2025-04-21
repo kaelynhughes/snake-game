@@ -122,9 +122,9 @@ raw_mode:
 
 	bl write_termios
 
-	ldp x4, x5, [sp], #16
-	ldp x6, x7, [sp], #16
 	ldp x8, lr, [sp], #16
+	ldp x6, x7, [sp], #16
+	ldp x4, x5, [sp], #16
 
 	ret
 
