@@ -12,6 +12,8 @@ border: .asciz "\033[33m#\033[0m"			// yellow #
 bug1: .asciz "\033[38;5;199m\244\033[0m"	// pink currency sign
 bug2: .asciz "\033[38;5;207m~\033[0m"		// pink ~
 bug3: .asciz "\033[38;5;165m\272\033[0m"	// pink circle
+
+// set ansi control codes
 clear_screen: .asciz "\033[2J\n"
 move_up: .asciz "\033[1A"
 hide_cursor: .asciz "\033[?25l"
@@ -480,12 +482,12 @@ get_random:
 // Interrupt numbers from: https://syscalls.w3challs.com/?arch=arm_strong
 // For Raspberry Pi, replace 9 in 0x900.. with 0
 init_random_seed:
-		stp x7, lr, [sp, #-16]!
+		stp x8, lr, [sp, #-16]!
         ldr x0, =random_seed
-        mov x8, #0x00004e	// syscall for gettimeofday
+        mov x8, #169	// syscall for gettimeofday
         svc #0
 
-	ldp x7, lr, [sp], #16
+	ldp x8, lr, [sp], #16
         ret
 /////////////////////////////////////
 
@@ -509,7 +511,7 @@ next_print:
 	mov x0, #1              // stdout
     	mov x1, x4	        // address of the string
     	mov x2, x3             	// string length
-    	mov x8, #4              // syscall for 'write'
+    	mov x8, #64              // syscall for 'write'
     	svc #0                  // software interrupt
 	ldp x4, x6, [sp], #16
 	ldp x7, lr, [sp], #16
@@ -531,7 +533,7 @@ input:
 	mov x0, #0              // stdin
         mov x1, x4              // address of the string
         mov x2, #1              // string length = 1
-        mov x8, #3              // syscall for 'write'
+        mov x8, #63              // syscall for 'write'
         svc #0                  // software interrupt
 
 	mov x0, x4		//return address of string
@@ -648,19 +650,27 @@ kbhit:
 // Needed so that they can be restored after config changes.
 save_termios:
 	stp x4, lr, [sp, #-16]!
-        bl read_termios
-        ldr x0, =termios
-        mov x1, #0
-        ldr x2, =saved_termios
-loop_save:                      // save old configurations
-        cmp x1, #11
-        beq end_loop_save
-        ldr x3, [x0], #4
-        str x3, [x2], #4
-        add x1, x1, #1
-        b loop_save
-end_loop_save:
-	ldp x4, lr, [sp], #16
+    bl read_termios
+    ldr x0, =termios
+    ldr x1, =saved_termios
+	
+	// janky but confirmed to work - replace with a loop later?
+    ldp x2, x3, [x0]
+    stp x2, x3, [x1]
+    ldp x2, x3, [x0, #16]
+    stp x2, x3, [x1, #16]
+    ldp x2, x3, [x0, #32]
+    stp x2, x3, [x1, #32]
+    // mov x2, #0
+// loop_save:                      // save old configurations
+    // cmp x2, #11
+    // beq end_loop_save
+    // ldr x3, [x0], #4
+    // str x3, [x1], #4
+    // add x1, x1, #1
+    // b loop_save
+// end_loop_save:
+	// ldp x4, lr, [sp], #16
 	ret
 //////////////////////////////////////////////
 // Input, Output: none
@@ -787,16 +797,16 @@ cbreak_on:
 // Input, Output: none
 // Make syscall to ioctl and read termios structure to memory
 read_termios:
-	stp x7, lr, [sp, #-16]!
+	stp x8, lr, [sp, #-16]!
 
 	mov x0,	#0		// stdin
 	movz x1, #0x5401 	// READ termios parameters
 	ldr x2, =termios	// address for termios buffer
-	mov x8, #54		// syscall for ioctl 0x36
+	mov x8, #29		// syscall for ioctl 0x36
 	svc #0
 
-	ldp x7, lr, [sp], #16
-        ret
+	ldp x8, lr, [sp], #16
+    ret
 /////////////////////////////////////////
 // Input, Output: none
 // Make syscall to ioctl and input termios structure to system
@@ -806,7 +816,7 @@ write_termios:
         mov x0, #0              // stdin
         movz x1, #0x5402        // WRITE termios parameters
         ldr x2, =termios        // address for termios buffer
-        mov x8, #54             // syscall for ioctl 0x36
+        mov x8, #29             // syscall for ioctl 0x36
         svc #0
 
 	ldp x7, lr, [sp], #16
