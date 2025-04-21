@@ -11,7 +11,7 @@ input_buffer: .skip 1
 .global _start
 
 _start:
-    bl raw_mode
+    // bl raw_mode
 
     // Set raw mode
     adr x0, termios
