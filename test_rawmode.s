@@ -41,6 +41,9 @@ _start:
     mov x8, #29             // ioctl
     svc #0
 
+    // Print test message
+    ldr x0, =test_msg
+    bl output
     // Show cursor
     ldr x0, =show_cursor
     bl output
