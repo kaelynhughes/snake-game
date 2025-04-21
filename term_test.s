@@ -1,10 +1,10 @@
 .data
-clear_screen: .asciz "\nclear screen\n"
-hide_cursor: .asciz "\nhide cursor\n"
-show_cursor: .asciz "\nshow cursor\n"
-test_msg: .asciz "Terminal test - press any key to continue\n"
-debug_msg: .asciz "Debug: Before clear screen\n"
-debug_msg2: .asciz "Debug: After clear screen\n"
+clear_screen: .asciz "2 - clear screen\n"
+hide_cursor: .asciz "3 - hide cursor\n"
+show_cursor: .asciz "5 - show cursor\n"
+test_msg: .asciz " 4 - Terminal test - press any key to continue\n"
+debug_msg: .asciz "1 - Debug 1\n"
+debug_msg2: .asciz "Debug 2\n"
 termios: .skip 100
 saved_termios: .skip 100
 input_buffer: .skip 1
@@ -18,7 +18,7 @@ _start:
     mov x29, sp
 
     // Print debug message before any terminal changes
-    ldr x0, =debug_msg2
+    ldr x0, =debug_msg
     bl output
 
     // Save current terminal settings
