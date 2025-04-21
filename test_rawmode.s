@@ -11,7 +11,7 @@ input_buffer: .skip 1
 .global _start
 
 _start:
-    // bl raw_mode
+    bl raw_mode
 
     // Set raw mode
     adr x0, termios
@@ -30,12 +30,6 @@ _start:
     adr x2, termios
     mov x8, #29             // ioctl
     svc #0
-
-    mov     x0, #1              // stdout
-	ldr     x1, =test_msg       // address of message
-	mov     x2, #5              // message length
-	mov     x8, #64             // syscall: write
-	svc     #0
 
     // Clear screen and hide cursor
     ldr x0, =clear_screen
