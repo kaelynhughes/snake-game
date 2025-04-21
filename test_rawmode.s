@@ -129,7 +129,7 @@ raw_mode:
         orr x6, x6, x4
         str x6, [x0, #+8]
    	//termattr.c_oflag &= ~(OPOST);
-	mvn r5, #1
+	mvn x5, #1
  	ldr x6, [x0, #+4]
     and x6, x6, x5
     str x6, [x0, #+4]
