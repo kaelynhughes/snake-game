@@ -1,5 +1,5 @@
 .data
-clear_screen: .asciz "HELLA\n"
+clear_screen: .asciz "HOLLA\n"
 // clear_screen: .asciz "\033[2J\n"
 hide_cursor: .asciz "HELLE\n"
 // hide_cursor: .asciz "\033[?25l"
@@ -43,11 +43,11 @@ _start:
     str x1, [x0, #12]
 
     // Apply new settings
-    mov x0, #0              // stdin
-    movz x1, #0x5402        // TCSETS
-    adr x2, termios
-    mov x8, #29             // ioctl
-    svc #0
+    // mov x0, #0              // stdin
+    // movz x1, #0x5402        // TCSETS
+    // adr x2, termios
+    // mov x8, #29             // ioctl
+    // svc #0
 
     // Clear screen and hide cursor
     adr x0, clear_screen

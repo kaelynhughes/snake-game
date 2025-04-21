@@ -90,6 +90,7 @@ Just use .asciz
 | 4     | 64    | write             |
 | 54    | 29    | ioctl             |
 
+- when you call `write`, you have to have the address of the string in x1 and the size of the string in x2. stdout is #1 - you need to have this in x0
 
 ## map x loop
 
