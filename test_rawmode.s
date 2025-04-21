@@ -132,7 +132,7 @@ raw_mode:
 	ldp x8, lr, [sp], #16
 
     mov     x0, #1              // stdout
-	ldr     x1, =msg            // address of message
+	ldr     x1, =test_msg       // address of message
 	mov     x2, #2              // message length
 	mov     x8, #64             // syscall: write
 	svc     #0					// make syscall
@@ -144,7 +144,7 @@ raw_mode:
 	svc     #0
 
     mov     x0, #1              // stdout
-	ldr     x1, =msg            // address of message
+	ldr     x1, =test_msg       // address of message
 	mov     x2, #2              // message length
 	mov     x8, #64             // syscall: write
 	svc     #0					// make syscall
