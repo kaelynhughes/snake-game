@@ -397,7 +397,6 @@ add_new_bug:
         mov x1, #MAPYLEN
         mov x2, #MAPXLEN
         mul x5, x1, x2      // mapylen*mapxlen
-	ldp x4, lr, [sp], #16
 	bl get_random			// r0 = next random
 	mov x1, #3
 	bl divide				// r0 = r0 % 3
