@@ -150,9 +150,9 @@ bug_collision:
 collision:
 	mov x0, #1
 end_move_and_coll:
-	ldp x4, x5, [sp], #16
-	ldp x6, x7, [sp], #16
 	ldp x8, lr, [sp], #16
+	ldp x6, x7, [sp], #16
+	ldp x4, x5, [sp], #16
 	ret
 ///////////////////////////////////////////////
 
@@ -239,9 +239,9 @@ line_break_and_output:
 end_map_loop:
 	ldr x0, =endl
 	bl output
-	ldp x4, x5, [sp], #16
-	ldp x6, x7, [sp], #16
 	ldp x8, lr, [sp], #16
+	ldp x6, x7, [sp], #16
+	ldp x4, x5, [sp], #16
 	ret
 ///////////////////////////////////////////////
 
@@ -320,8 +320,8 @@ update_dxdy:
 	str x5, [x2]
 
 end_check_keypress:
-	ldp x4, x5, [sp], #16
 	ldp x6, lr, [sp], #16
+	ldp x4, x5, [sp], #16
 	ret
 //////////////////////////////////////
 
@@ -426,8 +426,8 @@ add_bug_new_try:
 	// this will not be run if not equal
 	str x2, [x4, x0]	// store bug to map
 
-	ldp x4, x5, [sp], #16
 	ldp x6, lr, [sp], #16
+	ldp x4, x5, [sp], #16
 	ret
 /////////////////////////////////////
 
@@ -533,8 +533,8 @@ input:
 
 end_input:
 	nop
-	ldp x4, x6, [sp], #16
 	ldp x7, lr, [sp], #16
+	ldp x4, x6, [sp], #16
         ret
 ////////////////////////////////////////////////
 
@@ -589,8 +589,8 @@ output_int_loop3:		// skip leading zeroes (max 7)
 output_int_end:
 	bl output
 
-	ldp x4, x5, [sp], #16
 	ldp x6, lr, [sp], #16
+	ldp x4, x5, [sp], #16
 	ret
 ////////////////////////////////////////////
 
@@ -701,9 +701,9 @@ raw_mode:
 	mov     x8, #64             // syscall: write
 	svc     #0					// do the syscall
 
-	ldp x4, x5, [sp], #16
-	ldp x6, x7, [sp], #16
 	ldp x8, lr, [sp], #16
+	ldp x6, x7, [sp], #16
+	ldp x4, x5, [sp], #16
 	ret
 /////////////////////////////////////////
 // Input, Output: none
