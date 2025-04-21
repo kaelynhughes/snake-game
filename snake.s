@@ -681,29 +681,53 @@ raw_mode:
 	stp x8, lr, [sp, #-16]!
 
 	bl save_termios
-
-    // Set raw mode
-    adr x0, termios
-    ldr x1, [x0, #12]       // c_lflag
-    mov x2, #0x00000002     // ICANON
-    mvn x2, x2
-    and x1, x1, x2
-    mov x2, #1000           // ECHO
-    mvn x2, x2
-    and x1, x1, x2
-    str x1, [x0, #12]
+	
+	//termattr.c_lflag &= ~(ECHO | ICANON | IEXTEN | ISIG);
+	mov x1, #1000			// ECHO flag
+	orr x1, x1, #2			// ICANON flag
+	orr x1, x1, #0100000	// IEXTEN flag
+	orr x1, x1, #01			// ISIG flag
+	mvn x1, x1				// negate this to create a mask for clearing bits
+	ldr x6, [x0, #+12]		// load the current flag
+	and x6, x6, x1			// negate the flags we don't want
+	str x6, [x0, #+12]		// store modified value
+   	//termattr.c_iflag &= ~(BRKINT | ICRNL | INPCK | ISTRIP | IXON);
+	mov x2, #2
+	orr x2, x2, #0x400
+	orr x2, x2, #0x20
+	orr x2, x2, #0x2000
+	mvn x2, x2
+	ldr x6, [x0]
+        and x6, x6, x2
+        str x6, [x0]
+  	//termattr.c_cflag &= ~(CSIZE | PARENB);
+	mov x3, #0x3F
+	orr x3, x3, #0x100
+	mvn x3, x3
+	ldr x6, [x0, #+8]
+        and x6, x6, x3
+   	//termattr.c_cflag |= CS8;
+	mov x4, #0x30
+        orr x6, x6, x4
+        str x6, [x0, #+8]
+   	//termattr.c_oflag &= ~(OPOST);
+	movn x5, #1
+ 	ldr x6, [x0, #+4]
+        and x6, x6, x5
+        str x6, [x0, #+4]
+	//termattr.c_cc[VMIN] = 1;  // or 0 for some Unices 
+   	mov x7, #0		// needs to be 0 for Raspbian
+	strb w7, [x0, #+23]	// 16 + 1 + 6 (VMIN) 
+	//termattr.c_cc[VTIME] = 0;
+	mov x8, #0
+	strb w8, [x0, #+22]	// 16 + 1 + 5 (VTIME)
 
 	bl write_termios
-
-	mov     x0, #1              // stdout
-	ldr     x1, =msg            // address of message
-	mov     x2, #1              // message length
-	mov     x8, #64             // syscall: write
-	svc     #0					// do the syscall
 
 	ldp x8, lr, [sp], #16
 	ldp x6, x7, [sp], #16
 	ldp x4, x5, [sp], #16
+
 	ret
 /////////////////////////////////////////
 // Input, Output: none
