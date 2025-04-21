@@ -381,7 +381,7 @@ side_loop:
 end_side_loop:
 
 	bl add_new_bug
-
+	ldp x4, lr, [sp], #16
 	ret lr
 ////////////////////////////////
 
