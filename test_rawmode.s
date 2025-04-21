@@ -194,3 +194,14 @@ write_termios:
 	ldp x8, lr, [sp], #16
         ret
 
+read_termios:
+	stp x8, lr, [sp, #-16]!
+
+	mov x0,	#0		// stdin
+	movz x1, #0x5401 	// READ termios parameters
+	ldr x2, =termios	// address for termios buffer
+	mov x8, #29		// syscall for ioctl 0x36
+	svc #0
+
+	ldp x8, lr, [sp], #16
+    ret
