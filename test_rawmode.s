@@ -138,13 +138,6 @@ save_termios:
     stp x2, x3, [x1, #16]
     ldp x2, x3, [x0, #32]
     stp x2, x3, [x1, #32]
-
-    mov     x0, #1              // stdout
-	ldr     x1, =test_msg       // address of message
-	mov     x2, #5              // message length
-	mov     x8, #64             // syscall: write
-	svc     #0
-
     // mov x2, #0
 // loop_save:                      // save old configurations
     // cmp x2, #11
@@ -155,6 +148,13 @@ save_termios:
     // b loop_save
 // end_loop_save:
 	ldp x4, lr, [sp], #16
+
+    mov     x0, #1              // stdout
+	ldr     x1, =test_msg       // address of message
+	mov     x2, #5              // message length
+	mov     x8, #64             // syscall: write
+	svc     #0
+
 	ret
 write_termios:
 	stp x8, lr, [sp, #-16]!
