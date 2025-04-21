@@ -97,11 +97,11 @@ raw_mode:
         and x6, x6, x2
         str x6, [x0]
   	//termattr.c_cflag &= ~(CSIZE | PARENB);
-	// mov x3, #0x3F
-	// orr x3, x3, #0x100
-	// mvn x3, x3
-	// ldr x6, [x0, #+8]
-    //     and x6, x6, x3
+	mov x3, #0x3F
+	orr x3, x3, #0x100
+	mvn x3, x3
+	ldr x6, [x0, #+8]
+        and x6, x6, x3
    	//termattr.c_cflag |= CS8;
 	// mov x4, #0x30
     //     orr x6, x6, x4
