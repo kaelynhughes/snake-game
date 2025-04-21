@@ -703,7 +703,7 @@ raw_mode:
 	ldr x0, =clear_screen
 	mov x1, x0
 	mov x2, #0
-count_loop:
+count_loop_test:
 	ldrb w3, [x0], #1
 	cbz w3, print_test
 	add x2, x2, #1
