@@ -134,8 +134,8 @@ raw_mode:
     and x6, x6, x5
     str x6, [x0, #+4]
 	//termattr.c_cc[VMIN] = 1;  // or 0 for some Unices 
-   	mov x7, #0		// needs to be 0 for Raspbian
-	strb w7, [x0, #+23]	// 16 + 1 + 6 (VMIN) 
+   	// mov x7, #0		// needs to be 0 for Raspbian
+	// strb w7, [x0, #+23]	// 16 + 1 + 6 (VMIN) 
 	//termattr.c_cc[VTIME] = 0;
 	// mov x8, #0
 	// strb w8, [x0, #+22]	// 16 + 1 + 5 (VTIME)
