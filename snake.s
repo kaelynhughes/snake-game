@@ -436,7 +436,7 @@ add_bug_new_try:
 // Output: r0 (remainder, modulo), r1 (integer result of r0/r1)
 divide:
 	mov x2, #0
-divide_loop:		// how many times r1 can be substr from r0?
+divide_loop:		// how many times can r1 be substr from r0?
 	cmp x0, x1
 	csel x1, x2, x1, lt
 	blt end_divide
@@ -462,7 +462,8 @@ get_random:
 	ldr x0, [x1]
 	add x0, x0, #137
 	eor x0, x0, x0, ror #13
-	lsr x0, x0, #5	//shift right to ensure positiveness
+	lsr x0, x0, #5				// shift right to ensure positive
+	and x0, x0, #0xFF			// keep only the lowest byte
 	str x0, [x1]
 
 	ret
