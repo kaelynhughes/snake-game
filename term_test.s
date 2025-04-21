@@ -14,6 +14,7 @@ input_buffer: .skip 1
 .global _start
 
 _start:
+    bl output
     // Save current terminal settings
     mov x0, #0              // stdin
     movz x1, #0x5401        // TCGETS
