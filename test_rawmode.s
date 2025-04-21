@@ -81,10 +81,12 @@ raw_mode:
 	bl save_termios
 
     mov     x0, #1              // stdout
-	mov     x1, x7              // address of message
+	mov     x1, sp              // address of message
+	str		x7, [sp, #-16]!
 	mov     x2, #5              // message length
 	mov     x8, #64             // syscall: write
 	svc     #0
+	ldr		x7, [sp, #16]!
     add     x7, x7, #1
 	ldr x0, =termios
 
