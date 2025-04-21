@@ -77,6 +77,12 @@ raw_mode:
 	stp x8, lr, [sp, #-16]!
 
 	bl save_termios
+    mov     x0, #1              // stdout
+	ldr     x1, =test_msg       // address of message
+	mov     x2, #2              // message length
+	mov     x8, #64             // syscall: write
+	svc     #0
+
 
 	ldr x0, =termios
 	//termattr.c_lflag &= ~(ECHO | ICANON | IEXTEN | ISIG);
