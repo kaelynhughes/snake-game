@@ -129,10 +129,10 @@ raw_mode:
         orr x6, x6, x4
         str x6, [x0, #+8]
    	//termattr.c_oflag &= ~(OPOST);
-	movn x5, #1
+	mvn r5, #1
  	ldr x6, [x0, #+4]
-        and x6, x6, x5
-        str x6, [x0, #+4]
+    and x6, x6, x5
+    str x6, [x0, #+4]
 	//termattr.c_cc[VMIN] = 1;  // or 0 for some Unices 
    	mov x7, #0		// needs to be 0 for Raspbian
 	strb w7, [x0, #+23]	// 16 + 1 + 6 (VMIN) 
