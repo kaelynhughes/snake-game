@@ -37,6 +37,7 @@ _start:
     // Print test message
     ldr x0, =test_msg
     bl output
+
     // Restore terminal settings
     mov x0, #0              // stdin
     movz x1, #0x5402        // TCSETS
@@ -94,21 +95,26 @@ raw_mode:
 
 	bl save_termios
 	
+    // numbers are defined in /usr/include/asm-generic/termbits.h
 	//termattr.c_lflag &= ~(ECHO | ICANON | IEXTEN | ISIG);
-	mov x1, #1000			// ECHO flag
-	orr x1, x1, #0x00000002	// ICANON flag
-	orr x1, x1, #0100000	// IEXTEN flag
-	orr x1, x1, #01			// ISIG flag
-	mvn x1, x1				// negate this to create a mask for clearing bits
-	ldr x6, [x0, #+12]		// load the current flag -> c_lflag
-	and x6, x6, x1			// negate the flags we don't want
-	str x6, [x0, #+12]		// store modified value
+	mov x1, #1000	        // ECHO - Echo input characters
+	// mov x1, #0x00008		// ECHO - Echo input characters
+	orr x1, x1, #2	        // ICANON - Enable canonical mode
+	// orr x1, x1, #0x00002	// ICANON - Enable canonical mode
+	orr x1, x1, #0x08000    // IEXTEN - Enable implementation-defined input processing
+	// orr x1, x1, #0x08000	// IEXTEN - Enable implementation-defined input processing
+	orr x1, x1, #01		    // ISIG - Generate INTR, QUIT, SUSP, DSUSP when received
+	// orr x1, x1, #0x0001		// ISIG - Generate INTR, QUIT, SUSP, DSUSP when received
+	mvn x1, x1				// Negate all above bits
+	ldr x6, [x0, #+12]		// Load in c_lflag
+	and x6, x6, x1			// Negate the flags we specified
+	str x6, [x0, #+12]		// Store modified value in termios
    	//termattr.c_iflag &= ~(BRKINT | ICRNL | INPCK | ISTRIP | IXON);
-	mov x2, #2
-	orr x2, x2, #0x400
-	orr x2, x2, #0x20
-	orr x2, x2, #0x2000
-	mvn x2, x2
+	mov x2, #2              // BRKINT - Negating ignores BREAK signals or reads as null byte
+	orr x2, x2, #0x400      // ICRNL - Translate carriage return to newline on input
+	orr x2, x2, #0x20       // INPCK - Enable input parity checking
+	orr x2, x2, #0x2000     // ISTRIP - Strip off eighth bit
+	mvn x2, x2              // negate this to turn the flags off
 	ldr x6, [x0]
         and x6, x6, x2
         str x6, [x0]
@@ -128,8 +134,8 @@ raw_mode:
         and x6, x6, x5
         str x6, [x0, #+4]
 	//termattr.c_cc[VMIN] = 1;  // or 0 for some Unices 
-   	// mov x7, #0		// needs to be 0 for Raspbian
-	// strb w7, [x0, #+23]	// 16 + 1 + 6 (VMIN) 
+   	mov x7, #0		// needs to be 0 for Raspbian
+	strb w7, [x0, #+23]	// 16 + 1 + 6 (VMIN) 
 	//termattr.c_cc[VTIME] = 0;
 	// mov x8, #0
 	// strb w8, [x0, #+22]	// 16 + 1 + 5 (VTIME)
