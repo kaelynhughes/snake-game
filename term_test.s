@@ -14,6 +14,7 @@ input_buffer: .skip 1
 .global _start
 
 _start:
+    adr x0, clear_screen
     bl output
     // Save current terminal settings
     mov x0, #0              // stdin
