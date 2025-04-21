@@ -115,11 +115,11 @@ raw_mode:
 	
 	//termattr.c_lflag &= ~(ECHO | ICANON | IEXTEN | ISIG);
 	mov x1, #1000			// ECHO flag
-	orr x1, x1, #2			// ICANON flag
+	orr x1, x1, #0x00000002	// ICANON flag
 	orr x1, x1, #0100000	// IEXTEN flag
 	orr x1, x1, #01			// ISIG flag
 	mvn x1, x1				// negate this to create a mask for clearing bits
-	ldr x6, [x0, #+12]		// load the current flag
+	ldr x6, [x0, #+12]		// load the current flag -> c_lflag
 	and x6, x6, x1			// negate the flags we don't want
 	str x6, [x0, #+12]		// store modified value
    	//termattr.c_iflag &= ~(BRKINT | ICRNL | INPCK | ISTRIP | IXON);
