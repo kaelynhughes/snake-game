@@ -51,11 +51,6 @@ _start:
 	bl save_termios
 	bl init_random_seed
 	bl initialize_map
-	mov     x0, #1              // stdout
-	ldr     x1, =msg            // address of message
-	mov     x2, #1              // message length
-	mov     x8, #64             // syscall: write
-	svc     #0					// do the syscall
 
         ldr x0, =hide_cursor
         bl output
@@ -700,18 +695,11 @@ raw_mode:
 
 	bl write_termios
 
-	ldr x0, =clear_screen
-	mov x1, x0
-	mov x2, #0
-count_loop_test:
-	ldrb w3, [x0], #1
-	cbz w3, print_test
-	add x2, x2, #1
-	b count_loop
-print_test:
-	mov x0, #1
-	mov x8, #64
-	svc #0
+	mov     x0, #1              // stdout
+	ldr     x1, =msg            // address of message
+	mov     x2, #1              // message length
+	mov     x8, #64             // syscall: write
+	svc     #0					// do the syscall
 
 	ldp x4, x5, [sp], #16
 	ldp x6, x7, [sp], #16
