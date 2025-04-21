@@ -1,10 +1,8 @@
 .data
-clear_screen: .asciz "2 - clear screen\n"
-hide_cursor: .asciz "3 - hide cursor\n"
-show_cursor: .asciz "5 - show cursor\n"
+clear_screen: .asciz "\033[2J\n"
+hide_cursor: .asciz "\033[?25l"
+show_cursor: .asciz "\033[?25h"
 test_msg: .asciz " 4 - Terminal test - press any key to continue\n"
-debug_msg: .asciz "1 - Debug 1\n"
-debug_msg2: .asciz "Debug 2\n"
 termios: .skip 100
 saved_termios: .skip 100
 input_buffer: .skip 1
@@ -16,10 +14,6 @@ _start:
     // Set up stack
     stp x29, x30, [sp, #-16]!
     mov x29, sp
-
-    // Print debug message before any terminal changes
-    ldr x0, =debug_msg
-    bl output
 
     // Save current terminal settings
     mov x0, #0              // stdin
