@@ -11,10 +11,6 @@ input_buffer: .skip 1
 .global _start
 
 _start:
-    // Set up stack
-    stp x29, x30, [sp, #-16]!
-    mov x29, sp
-
     // Save current terminal settings
     mov x0, #0              // stdin
     movz x1, #0x5401        // TCGETS

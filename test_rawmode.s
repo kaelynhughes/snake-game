@@ -11,7 +11,7 @@ input_buffer: .skip 1
 .global _start
 
 _start:
-    bl raw_mode
+    // bl raw_mode
  
     // Save current terminal settings
     // mov x0, #0              // stdin
@@ -188,11 +188,11 @@ save_termios:
 write_termios:
 	stp x8, lr, [sp, #-16]!
 
-        mov x0, #0              // stdin
-        movz x1, #0x5402        // WRITE termios parameters
-        ldr x2, =termios        // address for termios buffer
-        mov x8, #29             // syscall for ioctl 0x36
-        svc #0
+    mov x0, #0              // stdin
+    movz x1, #0x5402        // WRITE termios parameters
+    adr x2, termios        // address for termios buffer
+    mov x8, #29             // syscall for ioctl 0x36
+    svc #0
 
 	ldp x8, lr, [sp], #16
         ret
