@@ -1,10 +1,7 @@
 .data
 clear_screen: .asciz "\nclear screen\n"
-// clear_screen: .asciz "\033[2J\n"
 hide_cursor: .asciz "\nhide cursor\n"
-// hide_cursor: .asciz "\033[?25l"
 show_cursor: .asciz "\nshow cursor\n"
-// show_cursor: .asciz "\033[?25h"
 test_msg: .asciz "Terminal test - press any key to continue\n"
 termios: .skip 100
 saved_termios: .skip 100

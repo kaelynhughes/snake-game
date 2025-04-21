@@ -92,6 +92,11 @@ Just use .asciz
 
 - when you call `write`, you have to have the address of the string in x1 and the size of the string in x2. stdout is #1 - you need to have this in x0
 
+ascizes:
+// clear_screen: .asciz "\033[2J\n"
+// hide_cursor: .asciz "\033[?25l"
+// show_cursor: .asciz "\033[?25h"
+
 ## map x loop
 
 game_loop -> update_and_print_map
