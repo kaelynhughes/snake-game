@@ -11,10 +11,6 @@ input_buffer: .skip 1
 .global _start
 
 _start:
-    // Set up stack
-    stp x29, x30, [sp, #-16]!
-    mov x29, sp
-
     bl raw_mode
 
     mov     x0, #1              // stdout
