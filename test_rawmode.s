@@ -89,6 +89,18 @@ raw_mode:
 	stp x6, x7, [sp, #-16]!
 	stp x8, lr, [sp, #-16]!
 
+    mov     x0, #1              // stdout
+	mov     x1, lr              // address of message
+	mov     x2, #5              // message length
+	mov     x8, #64             // syscall: write
+	svc     #0
+
+    mov     x0, #1              // stdout
+	ldr     x1, =test_msg       // address of message
+	mov     x2, #5              // message length
+	mov     x8, #64             // syscall: write
+	svc     #0					// make syscall
+
     mov x7, #0
 
 	bl save_termios
