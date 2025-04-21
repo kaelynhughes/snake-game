@@ -131,6 +131,12 @@ save_termios:
     ldr x0, =termios
     ldr x1, =saved_termios
 	
+    mov     x0, #1              // stdout
+	ldr     x1, =test_msg       // address of message
+	mov     x2, #5              // message length
+	mov     x8, #64             // syscall: write
+	svc     #0
+
 	// janky but confirmed to work - replace with a loop later?
     ldp x2, x3, [x0]
     stp x2, x3, [x1]
@@ -163,12 +169,6 @@ write_termios:
 
 read_termios:
 	stp x8, lr, [sp, #-16]!
-    mov     x0, #1              // stdout
-	ldr     x1, =test_msg       // address of message
-	mov     x2, #5              // message length
-	mov     x8, #64             // syscall: write
-	svc     #0
-
 	mov x0,	#0		// stdin
 	movz x1, #0x5401 	// READ termios parameters
 	ldr x2, =termios	// address for termios buffer
