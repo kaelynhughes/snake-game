@@ -57,13 +57,13 @@ _start:
     svc #0
 
     // Clear screen and hide cursor
-    adr x0, clear_screen
+    ldr x0, =clear_screen
     bl output
-    adr x0, hide_cursor
+    ldr x0, =hide_cursor
     bl output
 
     // Print test message
-    adr x0, test_msg
+    ldr x0, =test_msg
     bl output
 
     // Wait for keypress
@@ -81,7 +81,7 @@ _start:
     svc #0
 
     // Show cursor
-    adr x0, show_cursor
+    ldr x0, =show_cursor
     bl output
 
     // Exit
