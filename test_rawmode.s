@@ -17,6 +17,12 @@ _start:
 
     bl raw_mode
 
+    mov     x0, #1              // stdout
+	ldr     x1, =test_msg       // address of message
+	mov     x2, #5              // message length
+	mov     x8, #64             // syscall: write
+	svc     #0
+
     // Clear screen and hide cursor
     ldr x0, =clear_screen
     bl output
@@ -121,21 +127,9 @@ raw_mode:
 
 	bl write_termios
 
-    mov     x0, #1              // stdout
-	ldr     x1, =test_msg       // address of message
-	mov     x2, #5              // message length
-	mov     x8, #64             // syscall: write
-	svc     #0
-
 	ldp x4, x5, [sp], #16
 	ldp x6, x7, [sp], #16
 	ldp x8, lr, [sp], #16
-
-    mov     x0, #1              // stdout
-	ldr     x1, =test_msg       // address of message
-	mov     x2, #5              // message length
-	mov     x8, #64             // syscall: write
-	svc     #0
 
 	ret
 
