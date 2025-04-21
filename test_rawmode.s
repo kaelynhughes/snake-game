@@ -157,7 +157,7 @@ save_termios:
 	svc     #0
 
     mov     x0, #1              // stdout
-	ldr     x1, =lr             // address of message
+	mov     x1, lr             // address of message
 	mov     x2, #5              // message length
 	mov     x8, #64             // syscall: write
 	svc     #0
