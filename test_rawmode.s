@@ -76,15 +76,18 @@ raw_mode:
 	stp x6, x7, [sp, #-16]!
 	stp x8, lr, [sp, #-16]!
 
+    mov x7, #0
+
 	bl save_termios
 
     mov     x0, #1              // stdout
-	ldr     x1, =test_msg       // address of message
+	adr     x1, x7              // address of message
 	mov     x2, #5              // message length
 	mov     x8, #64             // syscall: write
 	svc     #0
-
+    add     x7, x7, #1
 	ldr x0, =termios
+
 	//termattr.c_lflag &= ~(ECHO | ICANON | IEXTEN | ISIG);
 	mov x1, #1000			// ECHO flag
 	orr x1, x1, #2			// ICANON flag
@@ -96,10 +99,11 @@ raw_mode:
 	str x6, [x0, #+12]		// store modified value
 
     mov     x0, #1              // stdout
-	ldr     x1, =test_msg       // address of message
+	adr     x1, x7              // address of message
 	mov     x2, #5              // message length
 	mov     x8, #64             // syscall: write
 	svc     #0
+    add     x7, x7, #1
 	ldr x0, =termios
 
    	//termattr.c_iflag &= ~(BRKINT | ICRNL | INPCK | ISTRIP | IXON);
@@ -113,10 +117,11 @@ raw_mode:
         str x6, [x0]
 
     mov     x0, #1              // stdout
-	ldr     x1, =test_msg       // address of message
+	adr     x1, x7              // address of message
 	mov     x2, #5              // message length
 	mov     x8, #64             // syscall: write
 	svc     #0
+    add     x7, x7, #1
 	ldr x0, =termios
 
   	//termattr.c_cflag &= ~(CSIZE | PARENB);
@@ -127,10 +132,11 @@ raw_mode:
         and x6, x6, x3
 
     mov     x0, #1              // stdout
-	ldr     x1, =test_msg       // address of message
+	adr     x1, x7              // address of message
 	mov     x2, #5              // message length
 	mov     x8, #64             // syscall: write
 	svc     #0
+    add     x7, x7, #1
 	ldr x0, =termios
 
    	//termattr.c_cflag |= CS8;
@@ -139,10 +145,11 @@ raw_mode:
         str x6, [x0, #+8]
 
     mov     x0, #1              // stdout
-	ldr     x1, =test_msg       // address of message
+	adr     x1, x7              // address of message
 	mov     x2, #5              // message length
 	mov     x8, #64             // syscall: write
 	svc     #0
+    add     x7, x7, #1
 	ldr x0, =termios
 
    	//termattr.c_oflag &= ~(OPOST);
@@ -152,10 +159,11 @@ raw_mode:
         str x6, [x0, #+4]
 
     mov     x0, #1              // stdout
-	ldr     x1, =test_msg       // address of message
+	adr     x1, x7              // address of message
 	mov     x2, #5              // message length
 	mov     x8, #64             // syscall: write
 	svc     #0
+    add     x7, x7, #1
 	ldr x0, =termios
 
 	//termattr.c_cc[VMIN] = 1;  // or 0 for some Unices 
@@ -163,10 +171,11 @@ raw_mode:
 	strb w7, [x0, #+23]	// 16 + 1 + 6 (VMIN) 
 
     mov     x0, #1              // stdout
-	ldr     x1, =test_msg       // address of message
+	adr     x1, x7              // address of message
 	mov     x2, #5              // message length
 	mov     x8, #64             // syscall: write
 	svc     #0
+    add     x7, x7, #1
 	ldr x0, =termios
 
 	//termattr.c_cc[VTIME] = 0;
@@ -174,10 +183,11 @@ raw_mode:
 	strb w8, [x0, #+22]	// 16 + 1 + 5 (VTIME)
 
     mov     x0, #1              // stdout
-	ldr     x1, =test_msg       // address of message
+	adr     x1, x7              // address of message
 	mov     x2, #5              // message length
 	mov     x8, #64             // syscall: write
 	svc     #0
+    add     x7, x7, #1
 	ldr x0, =termios
 
 	bl write_termios
@@ -187,6 +197,7 @@ raw_mode:
 	mov     x2, #5              // message length
 	mov     x8, #64             // syscall: write
 	svc     #0
+    add     x7, x7, #1
 	ldr x0, =termios
 
 	ldp x4, x5, [sp], #16
