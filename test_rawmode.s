@@ -81,7 +81,7 @@ raw_mode:
 	bl save_termios
 
     mov     x0, #1              // stdout
-	adr     x1, x7              // address of message
+	mov     x1, x7              // address of message
 	mov     x2, #5              // message length
 	mov     x8, #64             // syscall: write
 	svc     #0
@@ -99,7 +99,7 @@ raw_mode:
 	str x6, [x0, #+12]		// store modified value
 
     mov     x0, #1              // stdout
-	adr     x1, x7              // address of message
+	mov     x1, x7              // address of message
 	mov     x2, #5              // message length
 	mov     x8, #64             // syscall: write
 	svc     #0
@@ -117,7 +117,7 @@ raw_mode:
         str x6, [x0]
 
     mov     x0, #1              // stdout
-	adr     x1, x7              // address of message
+	mov     x1, x7              // address of message
 	mov     x2, #5              // message length
 	mov     x8, #64             // syscall: write
 	svc     #0
@@ -132,7 +132,7 @@ raw_mode:
         and x6, x6, x3
 
     mov     x0, #1              // stdout
-	adr     x1, x7              // address of message
+	mov     x1, x7              // address of message
 	mov     x2, #5              // message length
 	mov     x8, #64             // syscall: write
 	svc     #0
@@ -145,7 +145,7 @@ raw_mode:
         str x6, [x0, #+8]
 
     mov     x0, #1              // stdout
-	adr     x1, x7              // address of message
+	mov     x1, x7              // address of message
 	mov     x2, #5              // message length
 	mov     x8, #64             // syscall: write
 	svc     #0
@@ -159,7 +159,7 @@ raw_mode:
         str x6, [x0, #+4]
 
     mov     x0, #1              // stdout
-	adr     x1, x7              // address of message
+	mov     x1, x7              // address of message
 	mov     x2, #5              // message length
 	mov     x8, #64             // syscall: write
 	svc     #0
@@ -171,7 +171,7 @@ raw_mode:
 	strb w7, [x0, #+23]	// 16 + 1 + 6 (VMIN) 
 
     mov     x0, #1              // stdout
-	adr     x1, x7              // address of message
+	mov     x1, x7              // address of message
 	mov     x2, #5              // message length
 	mov     x8, #64             // syscall: write
 	svc     #0
@@ -183,7 +183,7 @@ raw_mode:
 	strb w8, [x0, #+22]	// 16 + 1 + 5 (VTIME)
 
     mov     x0, #1              // stdout
-	adr     x1, x7              // address of message
+	mov     x1, x7              // address of message
 	mov     x2, #5              // message length
 	mov     x8, #64             // syscall: write
 	svc     #0
