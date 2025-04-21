@@ -18,7 +18,7 @@ _start:
     mov x29, sp
 
     // Print debug message before any terminal changes
-    ldr x0, =debug_msg
+    ldr x0, =debug_msg2
     bl output
 
     // Save current terminal settings
