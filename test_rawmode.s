@@ -19,10 +19,6 @@ _start:
     ldr x0, =hide_cursor
     bl output
 
-    // Print test message
-    ldr x0, =test_msg
-    bl output
-
     // Wait for keypress
     mov x0, #0              // stdin
     adr x1, input_buffer    // buffer
@@ -34,32 +30,16 @@ _start:
     ldr x0, =test_msg
     bl output
 
-    // Print test message
-    ldr x0, =test_msg
-    bl output
-
+    bl cooked_mode
     // Restore terminal settings
-    mov x0, #0              // stdin
-    movz x1, #0x5402        // TCSETS
-    adr x2, saved_termios
-    mov x8, #29             // ioctl
-    svc #0
+    // mov x0, #0              // stdin
+    // movz x1, #0x5402        // TCSETS
+    // adr x2, saved_termios
+    // mov x8, #29             // ioctl
+    // svc #0
 
-    // Print test message
-    ldr x0, =test_msg
-    bl output
     // Show cursor
     ldr x0, =show_cursor
-    bl output
-
-    // Print test message
-    ldr x0, =test_msg
-    bl output
-    // Print test message
-    ldr x0, =test_msg
-    bl output
-    // Print test message
-    ldr x0, =test_msg
     bl output
 
     // Exit
