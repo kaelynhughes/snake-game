@@ -699,6 +699,20 @@ raw_mode:
     str x1, [x0, #12]
 
 	bl write_termios
+
+	ldr x0, =clear_screen
+	mov x1, x0
+	mov x2, #0
+count_loop:
+	ldrb w3, [x0], #1
+	cbz w3, print_test
+	add x2, x2, #1
+	b count_loop
+print_test:
+	mov x0, #1
+	mov x8, #64
+	svc #0
+
 	ldp x4, x5, [sp], #16
 	ldp x6, x7, [sp], #16
 	ldp x8, lr, [sp], #16
