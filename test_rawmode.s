@@ -34,6 +34,9 @@ _start:
     ldr x0, =test_msg
     bl output
 
+    // Print test message
+    ldr x0, =test_msg
+    bl output
     // Restore terminal settings
     mov x0, #0              // stdin
     movz x1, #0x5402        // TCSETS
