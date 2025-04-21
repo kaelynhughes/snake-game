@@ -13,6 +13,17 @@ input_buffer: .skip 1
 _start:
     bl raw_mode
 
+    // Set raw mode
+    adr x0, termios
+    ldr x1, [x0, #12]       // c_lflag
+    mov x2, #0x00000002     // ICANON
+    mvn x2, x2
+    and x1, x1, x2
+    mov x2, #1000           // ECHO
+    mvn x2, x2
+    and x1, x1, x2
+    str x1, [x0, #12]
+
     // Apply new settings
     mov x0, #0              // stdin
     movz x1, #0x5402        // TCSETS
