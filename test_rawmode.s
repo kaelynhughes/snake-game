@@ -103,9 +103,9 @@ raw_mode:
 	ldr x6, [x0, #+8]
         and x6, x6, x3
    	//termattr.c_cflag |= CS8;
-	// mov x4, #0x30
-    //     orr x6, x6, x4
-    //     str x6, [x0, #+8]
+	mov x4, #0x30
+        orr x6, x6, x4
+        str x6, [x0, #+8]
    	//termattr.c_oflag &= ~(OPOST);
 	// movn x5, #1
  	// ldr x6, [x0, #+4]
