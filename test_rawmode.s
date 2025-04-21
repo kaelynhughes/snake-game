@@ -59,11 +59,11 @@ _start:
     bl output
 
     // Wait for keypress
-    mov x0, #0              // stdin
-    adr x1, input_buffer    // buffer
-    mov x2, #1              // count
-    mov x8, #63             // read is 63 in 64, 3 in 32
-    svc #0
+    // mov x0, #0              // stdin
+    // adr x1, input_buffer    // buffer
+    // mov x2, #1              // count
+    // mov x8, #63             // read is 63 in 64, 3 in 32
+    // svc #0
 
     // Print test message
     ldr x0, =test_msg
