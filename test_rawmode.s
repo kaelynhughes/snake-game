@@ -90,6 +90,66 @@ raw_mode:
 	stp x8, lr, [sp, #-16]!
 
     mov     x0, #1              // stdout
+	mov     x1, x4              // address of message
+	mov     x2, #5              // message length
+	mov     x8, #64             // syscall: write
+	svc     #0
+
+    mov     x0, #1              // stdout
+	ldr     x1, =test_msg       // address of message
+	mov     x2, #5              // message length
+	mov     x8, #64             // syscall: write
+	svc     #0					// make syscall
+
+    mov     x0, #1              // stdout
+	mov     x1, x5              // address of message
+	mov     x2, #5              // message length
+	mov     x8, #64             // syscall: write
+	svc     #0
+
+    mov     x0, #1              // stdout
+	ldr     x1, =test_msg       // address of message
+	mov     x2, #5              // message length
+	mov     x8, #64             // syscall: write
+	svc     #0					// make syscall
+
+    mov     x0, #1              // stdout
+	mov     x1, x6              // address of message
+	mov     x2, #5              // message length
+	mov     x8, #64             // syscall: write
+	svc     #0
+
+    mov     x0, #1              // stdout
+	ldr     x1, =test_msg       // address of message
+	mov     x2, #5              // message length
+	mov     x8, #64             // syscall: write
+	svc     #0					// make syscall
+
+    mov     x0, #1              // stdout
+	mov     x1, x7              // address of message
+	mov     x2, #5              // message length
+	mov     x8, #64             // syscall: write
+	svc     #0
+
+    mov     x0, #1              // stdout
+	ldr     x1, =test_msg       // address of message
+	mov     x2, #5              // message length
+	mov     x8, #64             // syscall: write
+	svc     #0					// make syscall
+
+    mov     x0, #1              // stdout
+	mov     x1, x8              // address of message
+	mov     x2, #5              // message length
+	mov     x8, #64             // syscall: write
+	svc     #0
+
+    mov     x0, #1              // stdout
+	ldr     x1, =test_msg       // address of message
+	mov     x2, #5              // message length
+	mov     x8, #64             // syscall: write
+	svc     #0					// make syscall
+
+    mov     x0, #1              // stdout
 	mov     x1, lr              // address of message
 	mov     x2, #5              // message length
 	mov     x8, #64             // syscall: write
