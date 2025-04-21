@@ -78,35 +78,12 @@ print:
     ret 
 
 raw_mode:
-    mov     x0, #1              // stdout
-	mov     x1, [sp]              // address of message
-	mov     x2, #5              // message length
-	mov     x8, #64             // syscall: write
-	svc     #0
-
-    mov     x0, #1              // stdout
-	ldr     x1, =test_msg       // address of message
-	mov     x2, #5              // message length
-	mov     x8, #64             // syscall: write
-	svc     #0					// make syscall
-
 	stp x4, x5, [sp, #-16]!
 	stp x6, x7, [sp, #-16]!
 	stp x8, lr, [sp, #-16]!
 
-    mov     x0, #1              // stdout
-	mov     x1, lr              // address of message
-	mov     x2, #5              // message length
-	mov     x8, #64             // syscall: write
-	svc     #0
-
-    mov     x0, #1              // stdout
-	ldr     x1, =test_msg       // address of message
-	mov     x2, #5              // message length
-	mov     x8, #64             // syscall: write
-	svc     #0					// make syscall
-
 	bl save_termios
+	
 	//termattr.c_lflag &= ~(ECHO | ICANON | IEXTEN | ISIG);
 	mov x1, #1000			// ECHO flag
 	orr x1, x1, #2			// ICANON flag
@@ -152,24 +129,6 @@ raw_mode:
 	ldp x4, x5, [sp], #16
 	ldp x6, x7, [sp], #16
 	ldp x8, lr, [sp], #16
-
-    mov     x0, #1              // stdout
-	ldr     x1, =test_msg       // address of message
-	mov     x2, #5              // message length
-	mov     x8, #64             // syscall: write
-	svc     #0					// make syscall
-
-    mov     x0, #1              // stdout
-	mov     x1, lr              // address of message
-	mov     x2, #5              // message length
-	mov     x8, #64             // syscall: write
-	svc     #0
-
-    mov     x0, #1              // stdout
-	ldr     x1, =test_msg       // address of message
-	mov     x2, #5              // message length
-	mov     x8, #64             // syscall: write
-	svc     #0					// make syscall
 
 	ret
 
