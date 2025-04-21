@@ -45,6 +45,10 @@ _start:
     ldr x0, =show_cursor
     bl output
 
+    // Print test message
+    ldr x0, =test_msg
+    bl output
+
     // Exit
     mov x0, #0              // status
     mov x8, #93             // exit
