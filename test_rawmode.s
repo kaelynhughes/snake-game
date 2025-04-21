@@ -147,7 +147,7 @@ save_termios:
     // add x1, x1, #1
     // b loop_save
 // end_loop_save:
-	// ldp x4, lr, [sp], #16
+	ldp x4, lr, [sp], #16
 	ret
 write_termios:
 	stp x8, lr, [sp, #-16]!
