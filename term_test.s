@@ -67,6 +67,10 @@ _start:
     mov x8, #63             // read is 63 in 64, 3 in 32
     svc #0
 
+    // Print test message
+    ldr x0, =test_msg
+    bl output
+
     // Restore terminal settings
     mov x0, #0              // stdin
     movz x1, #0x5402        // TCSETS
