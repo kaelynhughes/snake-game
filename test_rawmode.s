@@ -88,35 +88,35 @@ raw_mode:
 	and x6, x6, x1			// negate the flags we don't want
 	str x6, [x0, #+12]		// store modified value
    	//termattr.c_iflag &= ~(BRKINT | ICRNL | INPCK | ISTRIP | IXON);
-	mov x2, #2
-	orr x2, x2, #0x400
-	orr x2, x2, #0x20
-	orr x2, x2, #0x2000
-	mvn x2, x2
-	ldr x6, [x0]
-        and x6, x6, x2
-        str x6, [x0]
+	// mov x2, #2
+	// orr x2, x2, #0x400
+	// orr x2, x2, #0x20
+	// orr x2, x2, #0x2000
+	// mvn x2, x2
+	// ldr x6, [x0]
+    //     and x6, x6, x2
+    //     str x6, [x0]
   	//termattr.c_cflag &= ~(CSIZE | PARENB);
-	mov x3, #0x3F
-	orr x3, x3, #0x100
-	mvn x3, x3
-	ldr x6, [x0, #+8]
-        and x6, x6, x3
+	// mov x3, #0x3F
+	// orr x3, x3, #0x100
+	// mvn x3, x3
+	// ldr x6, [x0, #+8]
+    //     and x6, x6, x3
    	//termattr.c_cflag |= CS8;
-	mov x4, #0x30
-        orr x6, x6, x4
-        str x6, [x0, #+8]
+	// mov x4, #0x30
+    //     orr x6, x6, x4
+    //     str x6, [x0, #+8]
    	//termattr.c_oflag &= ~(OPOST);
-	movn x5, #1
- 	ldr x6, [x0, #+4]
-        and x6, x6, x5
-        str x6, [x0, #+4]
+	// movn x5, #1
+ 	// ldr x6, [x0, #+4]
+    //     and x6, x6, x5
+    //     str x6, [x0, #+4]
 	//termattr.c_cc[VMIN] = 1;  // or 0 for some Unices 
-   	mov x7, #0		// needs to be 0 for Raspbian
-	strb w7, [x0, #+23]	// 16 + 1 + 6 (VMIN) 
+   	// mov x7, #0		// needs to be 0 for Raspbian
+	// strb w7, [x0, #+23]	// 16 + 1 + 6 (VMIN) 
 	//termattr.c_cc[VTIME] = 0;
-	mov x8, #0
-	strb w8, [x0, #+22]	// 16 + 1 + 5 (VTIME)
+	// mov x8, #0
+	// strb w8, [x0, #+22]	// 16 + 1 + 5 (VTIME)
 
 	bl write_termios
 
