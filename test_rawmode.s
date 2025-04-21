@@ -13,6 +13,13 @@ input_buffer: .skip 1
 _start:
     bl raw_mode
 
+    // Apply new settings
+    mov x0, #0              // stdin
+    movz x1, #0x5402        // TCSETS
+    adr x2, termios
+    mov x8, #29             // ioctl
+    svc #0
+
     mov     x0, #1              // stdout
 	ldr     x1, =test_msg       // address of message
 	mov     x2, #5              // message length
