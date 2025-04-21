@@ -48,6 +48,12 @@ _start:
     // Print test message
     ldr x0, =test_msg
     bl output
+    // Print test message
+    ldr x0, =test_msg
+    bl output
+    // Print test message
+    ldr x0, =test_msg
+    bl output
 
     // Exit
     mov x0, #0              // status
