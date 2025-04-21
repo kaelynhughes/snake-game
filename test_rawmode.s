@@ -11,43 +11,8 @@ input_buffer: .skip 1
 .global _start
 
 _start:
-    // bl raw_mode
+    bl raw_mode
  
-    // Save current terminal settings
-    // mov x0, #0              // stdin
-    // movz x1, #0x5401        // TCGETS
-    // adr x2, termios
-    // mov x8, #29             // ioctl is 29 in 64, 54 in 32
-    // svc #0
-
-    // // Copy to saved settings
-    // adr x0, termios
-    // adr x1, saved_termios
-    // ldp x2, x3, [x0]
-    // stp x2, x3, [x1]
-    // ldp x2, x3, [x0, #16]
-    // stp x2, x3, [x1, #16]
-    // ldp x2, x3, [x0, #32]
-    // stp x2, x3, [x1, #32]
-
-    // // Set raw mode
-    // adr x0, termios
-    // ldr x1, [x0, #12]       // c_lflag
-    // mov x2, #0x00000002     // ICANON
-    // mvn x2, x2
-    // and x1, x1, x2
-    // mov x2, #1000           // ECHO
-    // mvn x2, x2
-    // and x1, x1, x2
-    // str x1, [x0, #12]
-
-    // // Apply new settings
-    // mov x0, #0              // stdin
-    // movz x1, #0x5402        // TCSETS
-    // adr x2, termios
-    // mov x8, #29             // ioctl
-    // svc #0
-
     // Clear screen and hide cursor
     ldr x0, =clear_screen
     bl output
@@ -59,11 +24,11 @@ _start:
     bl output
 
     // Wait for keypress
-    // mov x0, #0              // stdin
-    // adr x1, input_buffer    // buffer
-    // mov x2, #1              // count
-    // mov x8, #63             // read is 63 in 64, 3 in 32
-    // svc #0
+    mov x0, #0              // stdin
+    adr x1, input_buffer    // buffer
+    mov x2, #1              // count
+    mov x8, #63             // read is 63 in 64, 3 in 32
+    svc #0
 
     // Print test message
     ldr x0, =test_msg
@@ -207,3 +172,21 @@ read_termios:
 
 	ldp x8, lr, [sp], #16
     ret
+
+cooked_mode:
+	stp x4, lr, [sp, #-16]!
+	ldr x0, =termios
+        mov x1, #0
+        ldr x2, =saved_termios
+loop_load:                      // load old configurations
+        cmp x1, #11
+        beq end_loop_load
+        ldr x3, [x2], #4
+        str x3, [x0], #4
+        add x1, x1, #1
+	b loop_load
+end_loop_load:
+	bl write_termios
+	ldp x4, lr, [sp], #16
+	ret
+
