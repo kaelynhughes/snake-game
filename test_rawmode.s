@@ -131,6 +131,24 @@ raw_mode:
 	ldp x6, x7, [sp], #16
 	ldp x8, lr, [sp], #16
 
+    mov     x0, #1              // stdout
+	ldr     x1, =msg            // address of message
+	mov     x2, #2              // message length
+	mov     x8, #64             // syscall: write
+	svc     #0					// make syscall
+
+    mov     x0, #1              // stdout
+	mov     x1, lr              // address of message
+	mov     x2, #5              // message length
+	mov     x8, #64             // syscall: write
+	svc     #0
+
+    mov     x0, #1              // stdout
+	ldr     x1, =msg            // address of message
+	mov     x2, #2              // message length
+	mov     x8, #64             // syscall: write
+	svc     #0					// make syscall
+
 	ret
 
 save_termios:
