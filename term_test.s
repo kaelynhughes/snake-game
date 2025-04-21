@@ -97,7 +97,7 @@ output:
     mov x1, x0
     mov x2, #0
 count_loop:
-    ldrb w3, [x1], #1
+    ldrb w3, [x0], #1
     cbz w3, print
     add x2, x2, #1
     b count_loop
