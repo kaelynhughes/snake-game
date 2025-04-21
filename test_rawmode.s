@@ -88,6 +88,7 @@ raw_mode:
 	stp x4, x5, [sp, #-16]!
 	stp x6, x7, [sp, #-16]!
 	stp x8, lr, [sp, #-16]!
+    mov x4, #4
 
     mov     x0, #1              // stdout
 	mov     x1, x4              // address of message
