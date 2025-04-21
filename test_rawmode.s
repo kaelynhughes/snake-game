@@ -21,6 +21,13 @@ _start:
 	ldr     x1, =test_msg       // address of message
 	mov     x2, #5              // message length
 	mov     x8, #64             // syscall: write
+	svc     #0					// make syscall
+
+
+    mov     x0, #1              // stdout
+	ldr     x1, =test_msg       // address of message
+	mov     x2, #5              // message length
+	mov     x8, #64             // syscall: write
 	svc     #0
 
     // Clear screen and hide cursor
@@ -133,7 +140,7 @@ raw_mode:
 
     mov     x0, #1              // stdout
 	ldr     x1, =test_msg       // address of message
-	mov     x2, #2              // message length
+	mov     x2, #5              // message length
 	mov     x8, #64             // syscall: write
 	svc     #0					// make syscall
 
@@ -145,7 +152,7 @@ raw_mode:
 
     mov     x0, #1              // stdout
 	ldr     x1, =test_msg       // address of message
-	mov     x2, #2              // message length
+	mov     x2, #5              // message length
 	mov     x8, #64             // syscall: write
 	svc     #0					// make syscall
 
