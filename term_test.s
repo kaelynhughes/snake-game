@@ -3,6 +3,8 @@ clear_screen: .asciz "\nclear screen\n"
 hide_cursor: .asciz "\nhide cursor\n"
 show_cursor: .asciz "\nshow cursor\n"
 test_msg: .asciz "Terminal test - press any key to continue\n"
+debug_msg: .asciz "Debug: Before clear screen\n"
+debug_msg2: .asciz "Debug: After clear screen\n"
 termios: .skip 100
 saved_termios: .skip 100
 input_buffer: .skip 1
@@ -11,6 +13,14 @@ input_buffer: .skip 1
 .global _start
 
 _start:
+    // Set up stack
+    stp x29, x30, [sp, #-16]!
+    mov x29, sp
+
+    // Print debug message before any terminal changes
+    ldr x0, =debug_msg
+    bl output
+
     // Save current terminal settings
     mov x0, #0              // stdin
     movz x1, #0x5401        // TCGETS
@@ -47,7 +57,7 @@ _start:
     svc #0
 
     // Clear screen and hide cursor
-    ldr x0, clear_screen
+    adr x0, clear_screen
     bl output
     adr x0, hide_cursor
     bl output
