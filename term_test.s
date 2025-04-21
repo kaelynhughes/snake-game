@@ -2,7 +2,7 @@
 clear_screen: .asciz "\033[2J\n"
 hide_cursor: .asciz "\033[?25l"
 show_cursor: .asciz "\033[?25h"
-test_msg: .asciz "test\n"
+test_msg: .asciz " 4 - Terminal test - press any key to continue\n"
 termios: .skip 100
 saved_termios: .skip 100
 input_buffer: .skip 1
@@ -63,7 +63,7 @@ _start:
     // Wait for keypress
     mov x0, #0              // stdin
     adr x1, input_buffer    // buffer
-    mov x2, #5              // count
+    mov x2, #1              // count
     mov x8, #63             // read is 63 in 64, 3 in 32
     svc #0
 

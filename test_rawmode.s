@@ -126,14 +126,14 @@ raw_mode:
 	ret
 
 save_termios:
+	stp x4, lr, [sp, #-16]!
+    bl read_termios
     mov     x0, #1              // stdout
 	ldr     x1, =test_msg       // address of message
 	mov     x2, #5              // message length
 	mov     x8, #64             // syscall: write
 	svc     #0
 
-	stp x4, lr, [sp, #-16]!
-    bl read_termios
     ldr x0, =termios
     ldr x1, =saved_termios
 	
