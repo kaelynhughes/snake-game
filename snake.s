@@ -683,41 +683,49 @@ raw_mode:
 	bl save_termios
 	
 	//termattr.c_lflag &= ~(ECHO | ICANON | IEXTEN | ISIG);
-	mov x1, #1000			// ECHO flag
-	orr x1, x1, #2			// ICANON flag
-	orr x1, x1, #0100000	// IEXTEN flag
-	orr x1, x1, #01			// ISIG flag
-	mvn x1, x1				// negate this to create a mask for clearing bits
-	ldr x6, [x0, #+12]		// load the current flag
-	and x6, x6, x1			// negate the flags we don't want
-	str x6, [x0, #+12]		// store modified value
+	mov x1, #1000			// ECHO - Echo input characters
+	orr x1, x1, #2			// ICANON - Enable canonical mode
+	orr x1, x1, #0100000	// IEXTEN - Enable implementation-defined input processing
+	orr x1, x1, #01			// ISIG - Generate INTR, QUIT, SUSP, DSUSP when received
+	mvn x1, x1				// Negate all above bits
+	ldr x6, [x0, #+12]		// Load in c_lflag
+	and x6, x6, x1			// Negate the flags we specified
+	str x6, [x0, #+12]		// Store modified value in termios
+
    	//termattr.c_iflag &= ~(BRKINT | ICRNL | INPCK | ISTRIP | IXON);
-	mov x2, #2
-	orr x2, x2, #0x400
-	orr x2, x2, #0x20
-	orr x2, x2, #0x2000
+	mov x2, #2				// BRKINT - Negating ignores BREAK signals or reads as null byte
+	orr x2, x2, #0x400		// ICRNL - Translate carriage return to newline on input
+	orr x2, x2, #0x20		// INPCK - Enable input parity checking
+	orr x2, x2, #0x2000		// ISTRIP - Strip off eighth bit
 	mvn x2, x2
 	ldr x6, [x0]
         and x6, x6, x2
         str x6, [x0]
+
   	//termattr.c_cflag &= ~(CSIZE | PARENB);
 	mov x3, #0x3F
 	orr x3, x3, #0x100
 	mvn x3, x3
 	ldr x6, [x0, #+8]
         and x6, x6, x3
+
    	//termattr.c_cflag |= CS8;
 	mov x4, #0x30
         orr x6, x6, x4
         str x6, [x0, #+8]
+
+	// Commented out for now because it's causing weird indent issues
    	//termattr.c_oflag &= ~(OPOST);
-	movn x5, #1
- 	ldr x6, [x0, #+4]
-        and x6, x6, x5
-        str x6, [x0, #+4]
+	// movn x5, #1
+ 	// ldr x6, [x0, #+4]
+    //     and x6, x6, x5
+    //     str x6, [x0, #+4]
+
+	// Commented out for now because it's causing the program to exit immediately
 	//termattr.c_cc[VMIN] = 1;  // or 0 for some Unices 
-   	mov x7, #0		// needs to be 0 for Raspbian
-	strb w7, [x0, #+23]	// 16 + 1 + 6 (VMIN) 
+   	// mov x7, #0		// needs to be 0 for Raspbian
+	// strb w7, [x0, #+23]	// 16 + 1 + 6 (VMIN) 
+
 	//termattr.c_cc[VTIME] = 0;
 	mov x8, #0
 	strb w8, [x0, #+22]	// 16 + 1 + 5 (VTIME)
