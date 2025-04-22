@@ -41,6 +41,8 @@ _start:
     ldr x0, =test_msg
     bl output
 
+    bl update_and_print_map
+
     // Wait for keypress
     mov x0, #0              // stdin
     adr x1, input_buffer    // buffer
