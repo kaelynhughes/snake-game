@@ -7,6 +7,9 @@ termios: .skip 100
 saved_termios: .skip 100
 input_buffer: .skip 1
 
+.equ MAPXLEN, 14			// define map width as 14 cells
+.equ MAPYLEN, 8				// define map height as 8 cells
+
 .text
 .global _start
 
