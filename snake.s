@@ -56,12 +56,13 @@ _start:
         bl output
 
 game_loop:
+	bl update_and_print_map
 
 	bl move_and_check_collision	// update snake position
 	cmp x0, #1			// did collision occur?
 	beq the_end
 
-	bl update_and_print_map
+	// bl update_and_print_map
 
 	bl check_keypress		// check if key was pressed
 					// update dx and dy if needed
