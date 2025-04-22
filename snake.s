@@ -108,13 +108,7 @@ move_and_check_collision:
 	ldr x4, =map
 
         ldr x1, =headx		// something's going wrong around here
-        ldr x1, [x1]		// X1 - previous x location of head
-        
-        // Debug: Print headx value
-        mov x0, x1
-        bl output_int
-        ldr x0, =endl
-        bl output
+        ldr w1, [x1]		// X1 - previous x location of head
         
         ldr x0, =dx
         ldr x0, [x0]
