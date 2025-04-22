@@ -191,7 +191,7 @@ mapx_loop:
 	//// Update and print map point ////
 	ldr x8, [x6]            // load map point
 
-	ldr x7, =empty
+	ldr x8, =empty
 	cmp x8, #0              //if point is:
 	csel x0, x7, x0, eq     //==0 --> '.' to be printed
 	// bgt snake_tail_age
