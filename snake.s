@@ -190,45 +190,40 @@ mapx_loop:
 
 	//// Update and print map point ////
 	ldr x8, [x6]            // load map point
-	mov x0, x8              // Move the value to x0 for output_int
-	bl output_int           // Print the number
-	
-	ldr x0, =space          // Print a space after each number
-	bl output
 
-	// ldr x7, =empty
-	// cmp x8, #0              //if point is:
-	// csel x0, x7, x0, eq     //==0 --> '.' to be printed
+	ldr x7, =empty
+	cmp x8, #0              //if point is:
+	csel x0, x7, x0, eq     //==0 --> '.' to be printed
 	// bgt snake_tail_age
 		
 
-	// ldr x7, =snake        //==1 --> '@' head
+	ldr x7, =snake        //==1 --> '@' head
+	cmp x8, #1
+    csel x0, x7, x0, eq
+	ldr x7, =tail         //>1 --> '0' tail
 	// cmp x8, #1
-    // csel x0, x7, x0, eq
-	// ldr x7, =tail         //>1 --> '0' tail
-	// cmp x8, #1
-	// csel x0, x7, x0, gt
+	csel x0, x7, x0, gt
 
-    // ldr x7, =border       //==-1 --> '#'
-	// cmp x8, #-1
-	// csel x0, x7, x0, eq
+    ldr x7, =border       //==-1 --> '#'
+	cmp x8, #-1
+	csel x0, x7, x0, eq
 
-	// ldr x7, =bug1
-	// cmp x8, #-2             //==-2 --> '*'
-	// csel x0, x7, x0, eq
+	ldr x7, =bug1
+	cmp x8, #-2             //==-2 --> '*'
+	csel x0, x7, x0, eq
 
-    // ldr x7, =bug2
-	// cmp x8, #-3             //==-3 --> '~'
-	// csel x0, x7, x0, eq
+    ldr x7, =bug2
+	cmp x8, #-3             //==-3 --> '~'
+	csel x0, x7, x0, eq
 
-    // ldr x7, =bug3
-	// cmp x8, #-4             //==-4 --> '%'
-    // csel x0, x7, x0, eq
+    ldr x7, =bug3
+	cmp x8, #-4             //==-4 --> '%'
+    csel x0, x7, x0, eq
 
-	// ldr x1, =max_len        // cut tail if its too long
-	// ldr x1, [x1]
-	// add x1, x1, #1
-	// cmp x8, x1
+	ldr x1, =max_len        // cut tail if its too long
+	ldr x1, [x1]
+	add x1, x1, #1
+	cmp x8, x1
 	// bgt reset_point_empty
 
 	bl output               // print the point
