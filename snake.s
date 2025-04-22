@@ -359,6 +359,7 @@ create_horizontal_borders:
 	mov x1, #MAPYLEN
 	sub x2, x1, #1		// bottom row y-value since rows start at 0
 
+	mov x1, #MAPXLEN
 	mul x2, x2, x1		// bottom row * cells per row = first cell of last row
 	mov x1, #4
 	mul x2, x2, x1		// offset in cells * memory offset per cell = total memory offset
