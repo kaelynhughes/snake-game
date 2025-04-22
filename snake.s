@@ -541,8 +541,7 @@ end_input:
 	ldp x4, x6, [sp], #16
         ret
 ////////////////////////////////////////////////
-
-
+////// OUTPUT INTEGER TO PRINT AS STRING ///////
 // Input: r0, 32 bit positive integer
 // Output: none, prints r0 to stdout as decimal
 output_int:
@@ -750,6 +749,7 @@ cooked_mode:
 	ldr x0, =termios
         mov x1, #0
         ldr x2, =saved_termios
+	loop_load:                      // load old configurations
         cmp x1, #11
         beq end_loop_load
         ldr x3, [x2], #4
