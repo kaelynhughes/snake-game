@@ -185,11 +185,10 @@ mapy_loop:
 mapx_loop:
 	cmp x4, #MAPXLEN
 	bne skip_line_break
-	// bl line_break_and_output
-	stp x8, lr, [sp, #-16]!
+
 	ldr x0, =endl
 	bl output
-	ldp x8, lr, [sp], #16
+
 	b mapy_loop
 skip_line_break:
 	add x4, x4, #1
@@ -239,12 +238,6 @@ choose_character:
 
 	add x6, x6, #4          // next point in map
 	b mapx_loop
-line_break_and_output:
-	stp x8, lr, [sp, #-16]!
-	ldr x0, =endl
-	bl output
-	ldp x8, lr, [sp], #16
-	ret
 end_map_loop:
 	ldr x0, =endl
 	bl output
