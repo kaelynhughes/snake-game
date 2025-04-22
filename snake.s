@@ -347,48 +347,63 @@ end_check_keypress:
 // Initialize map values, mainly draw borders.
 initialize_map:
 	stp x4, lr, [sp, #-16]!
-
-	//horizontal borders//
 	ldr x4, =map
+
+	// create horizontal borders
+	// REGISTERS:
+	// x0: column number, number of the current top-row cell
+	// x2: memory offset between a cell in the top row & its corresponding bottom-row cell
+	// x4: map address of the cell in x0
+
 	mov x0, #0
 	mov x1, #MAPYLEN
-	sub x2, x1, #1		// compute offset for bottom row
-	mov x1, #MAPXLEN
-	mul x2, x2, x1
-	mov x1, #4
-	mul x2, x2, x1
-top_loop:
-        cmp x0, #MAPXLEN
-        beq end_top_loop
-        add x0, x0, #1
+	sub x2, x1, #1		// bottom row y-value since rows start at 0
 
-	mov x1, #-1
-	str x1, [x4]
-	str x1, [x4, x2]  	// r2 is the offset for bottom row
-	add x4, x4, #4
+	mov x1, #MAPXLEN
+	mul x2, x2, x1		// bottom row * cells per row = first cell of last row
+	mov x1, #4
+	mul x2, x2, x1		// offset in cells * memory offset per cell = total memory offset
+top_loop:
+	cmp x0, #MAPXLEN	// did we reach the end of the row?
+	beq end_top_loop
+
+	add x0, x0, #1		// increment column
+	mov x1, #-1			// border indicator
+	str x1, [x4]		// set border in the top row
+	str x1, [x4, x2]  	// set border in the bottom row
+
+	add x4, x4, #4		// increment address
 	b top_loop
 end_top_loop:
-	//vertical borders//
 	ldr x4, =map
-	mov x0, #0
-        mov x1, #MAPXLEN
-        sub x2, x1, #1          // compute offset for left row
-	mov x3, #4
-	mul x2, x2, x3
-        mov x1, #MAPXLEN
-        mul x3, x1, x3
-side_loop:
-	cmp x0, #MAPYLEN
-	beq end_side_loop
-        add x0, x0, #1
 
-        mov x1, #-1
-        str x1, [x4]
-        str x1, [x4, x2]  	// r2 is offset for left row
-        add x4, x4, x3   	// r3 is offset for next point
-        b side_loop
+	// create vertical borders
+	// REGISTERS:
+	// x0: row number
+	// x2: memory offset between the first and last cell in a row
+	// x3: memory offset used to increment rows
+
+	mov x0, #0
+	mov x1, #MAPXLEN
+	sub x2, x1, #1		// offset between the first and last cell in a row
+
+	mov x3, #4
+	mul x2, x2, x3		// offset in cells * memory offset per cell = total memory offset
+
+	mov x1, #MAPXLEN
+	mul x3, x1, x3		// row length * memory offset per cell = offset to the next row
+side_loop:
+	cmp x0, #MAPYLEN	// did we reach the last row?
+	beq end_side_loop
+
+	add x0, x0, #1		// increment row number
+	mov x1, #-1			// border indicator
+	str x1, [x4]		// set border in the first column
+	str x1, [x4, x2]  	// set border in the last column
+
+	add x4, x4, x3   	// increment address to the next row
+	b side_loop
 end_side_loop:
-	// currently it seems like all squares are initializing to -1 - can fix the underlying problem once we can see it
 	// bl add_new_bug
 	ldp x4, lr, [sp], #16
 	ret lr
