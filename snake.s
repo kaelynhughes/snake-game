@@ -492,7 +492,7 @@ output:
 	mov x4, x0		// store orig addr of string
 	mov x3, #0
 count_loop:			// count chars in the string
-	ldrb w1, [x0, #1]	// each char is one byte
+	ldrb w1, [x0], #1	// each char is one byte
 	cbz w1, next_print	// each string must be null-ended
 	// this shouldn't be run if equal
 	add x3, x3, #1
