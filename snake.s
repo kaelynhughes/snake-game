@@ -170,23 +170,35 @@ update_and_print_map:
 	stp x4, x5, [sp, #-16]!
 	stp x6, x7, [sp, #-16]!
 	stp x8, lr, [sp, #-16]!
-	ldr x6, =map
-        ldr x0, =clear_screen
-        bl output
 
-        mov x5, #0
+	// REGISTER KEY:
+	// 0 - character to be printed
+	// 1 - handles max length (/age) when tail ages
+	// 2 & 3 exclusively used in output
+	// 4 - cell's x-value
+	// 5 - cell's y-value
+	// 6 - address where the cell's info is stored
+	// 7 - temp storage to load & conditionally select text to print
+	// 8 - value stored for cell
+
+	ldr x6, =map
+	ldr x0, =clear_screen
+	bl output
+
+	mov x5, #0
 mapy_loop:
-        mov x4, #0
-        cmp x5, #MAPYLEN
-        beq end_map_loop
-        add x5, x5, #1
+	mov x4, #0				// reset x-value
+	cmp x5, #MAPYLEN		// did we just complete the last row?
+	beq end_map_loop
+
+	add x5, x5, #1
 	ldr x0, =space
 	bl output
 mapx_loop:
-	cmp x4, #MAPXLEN
+	cmp x4, #MAPXLEN		// did we just complete the last cell of a row?
 	bne skip_line_break
 
-	ldr x0, =endl
+	ldr x0, =endl			// do a line break if so
 	bl output
 
 	b mapy_loop
@@ -215,7 +227,6 @@ choose_character:
     csel x0, x7, x0, eq
 
 	ldr x7, =tail			// point > 1 -> print '0' (tail)
-	// cmp x8, #1
 	csel x0, x7, x0, gt
 
     ldr x7, =border			// point = -1 -> print '#' (border)
@@ -241,10 +252,12 @@ choose_character:
 end_map_loop:
 	ldr x0, =endl
 	bl output
+
 	ldp x8, lr, [sp], #16
 	ldp x6, x7, [sp], #16
 	ldp x4, x5, [sp], #16
-	ret
+
+	ret						// should only return to game_loop
 ///////////////////////////////////////////////
 
 
