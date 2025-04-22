@@ -50,7 +50,7 @@ _start:
 
 	bl save_termios
 	bl init_random_seed
-	bl initialize_map
+	// bl initialize_map
 
         ldr x0, =hide_cursor
         bl output
