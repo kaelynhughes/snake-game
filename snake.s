@@ -485,23 +485,26 @@ init_random_seed:
 // Input: r0, address of string to print
 // Output: none, prints to stdout
 output:
-	stp x29, x30, [sp, #-16]!
-	mov x29, sp
+	stp x4, x6, [sp, #-16]!
+	stp x7, lr, [sp, #-16]!
 
-	mov x1, x0		// store orig addr of string
-	mov x2, #0
+	mov x4, x0		// store orig addr of string
+	mov x3, #0
 count_loop:			// count chars in the string
-	ldrb w3, [x0], #1	// each char is one byte
-	cbz w3, next_print	// each string must be null-ended
+	ldrb w1, [x0], #1	// each char is one byte
+	cbz w1, next_print	// each string must be null-ended
 	// this shouldn't be run if equal
-	add x2, x2, #1
+	add x3, x3, #1
 	b count_loop
 next_print:
 	mov x0, #1              // stdout
+	mov x1, x4
+	mov x2, x3
 	mov x8, #64              // syscall for 'write'
 	svc #0                  // software interrupt
 
-	ldp x29, x30, [sp], #16
+	ldp x7, lr, [sp], #16
+	ldp x4, x6, [sp], #16
 	ret
 ////////////////////////////////////
 
