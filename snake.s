@@ -351,14 +351,8 @@ top_loop:
 	str x1, [x4]
 	str x1, [x4, x2]  	// r2 is the offset for bottom row
 	add x4, x4, #4
-	// mov     x0, #1              // stdout
-	// ldr     x1, =msg            // address of message
-	// mov     x2, #1              // message length
-	// mov     x8, #64             // syscall: write
-	// svc     #0
 	b top_loop
 end_top_loop:
-
 	//vertical borders//
 	ldr x4, =map
 	mov x0, #0
@@ -379,8 +373,8 @@ side_loop:
         add x4, x4, x3   	// r3 is offset for next point
         b side_loop
 end_side_loop:
-
-	bl add_new_bug
+	// currently it seems like all squares are initializing to -1 - can fix the underlying problem once we can see it
+	// bl add_new_bug
 	ldp x4, lr, [sp], #16
 	ret lr
 ////////////////////////////////
