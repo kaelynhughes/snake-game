@@ -194,7 +194,7 @@ mapx_loop:
 	ldr x0, =empty
 	ldr x7, =empty
 	cmp x8, #0              //if point is:
-	bgt snake_tail_age
+	// bgt snake_tail_age
 	csel x0, x7, x0, eq     //==0 --> '.' to be printed
 		
 
