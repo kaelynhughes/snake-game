@@ -7,7 +7,7 @@ msg2:	.asciz "O"
 space: .asciz "   "
 empty: .asciz "\033[38;5;130m.\033[0m"		// brown .
 snake: .asciz "\033[32m@\033[0m"			// green @
-tail: .asciz "\033[32mo\033[0m"				// green 0
+tail: .asciz "\033[32mo\033[0m"				// green o
 border: .asciz "\033[33m#\033[0m"			// yellow #
 bug1: .asciz "\033[38;5;199m\244\033[0m"	// pink currency sign
 bug2: .asciz "\033[38;5;207m~\033[0m"		// pink ~
@@ -226,7 +226,7 @@ choose_character:
 	cmp x8, #1
     csel x0, x7, x0, eq
 
-	ldr x7, =tail			// point > 1 -> print '0' (tail)
+	ldr x7, =tail			// point > 1 -> print 'o' (tail)
 	csel x0, x7, x0, gt
 
     ldr x7, =border			// point = -1 -> print '#' (border)
