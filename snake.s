@@ -243,7 +243,7 @@ reset_point_empty:
 line_break_and_output:
 	ldr x0, =endl
 	bl output
-	b mapx_loop
+	ret
 end_map_loop:
 	ldr x0, =endl
 	bl output
