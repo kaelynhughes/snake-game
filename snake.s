@@ -170,91 +170,94 @@ update_and_print_map:
 	stp x4, x5, [sp, #-16]!
 	stp x6, x7, [sp, #-16]!
 	stp x8, lr, [sp, #-16]!
-	ldr x6, =map
-        ldr x0, =clear_screen
-        bl output
 
-        mov x5, #0
+	// REGISTER KEY:
+	// 0 - character to be printed
+	// 1 - handles max length (/age) when tail ages
+	// 2 & 3 exclusively used in output
+	// 4 - cell's x-value
+	// 5 - cell's y-value
+	// 6 - address where the cell's info is stored
+	// 7 - temp storage to load & conditionally select text to print
+	// 8 - value stored for cell
+
+	ldr x6, =map
+	ldr x0, =clear_screen
+	bl output
+
+	mov x5, #0
 mapy_loop:
-        mov x4, #0
-        cmp x5, #MAPYLEN
-        beq end_map_loop
-        add x5, x5, #1
+	mov x4, #0				// reset x-value
+	cmp x5, #MAPYLEN		// did we just complete the last row?
+	beq end_map_loop
+
+	add x5, x5, #1
 	ldr x0, =space
 	bl output
 mapx_loop:
-	cmp x4, #MAPXLEN
+	cmp x4, #MAPXLEN		// did we just complete the last cell of a row?
 	bne skip_line_break
-	bl line_break_and_output
+
+	ldr x0, =endl			// do a line break if so
+	bl output
+
 	b mapy_loop
 skip_line_break:
 	add x4, x4, #1
-
-	//// Update and print map point ////
 	ldr x8, [x6]            // load map point
+	ldr x0, =empty			// default value -> print '.' (empty)
 
-	ldr x0, =empty
-	ldr x7, =empty
-	cmp x8, #0              //if point is:
-	// bgt snake_tail_age
-	csel x0, x7, x0, eq     //==0 --> '.' to be printed
-		
+	cmp x8, #1				// point >= 1 -> is snake
+	blt choose_character	// point < 1 -> don't age
 
-	ldr x7, =snake        //==1 --> '@' head
-	cmp x8, #1
-    csel x0, x7, x0, eq
-	ldr x7, =tail         //>1 --> '0' tail
-	// cmp x8, #1
-	csel x0, x7, x0, gt
+	add x0, x8, #1			// add 1 to tail age & store
+	str x0, [x6]
 
-    ldr x7, =border       //==-1 --> '#'
-	cmp x8, #-1
-	csel x0, x7, x0, eq
-
-	ldr x7, =bug1
-	cmp x8, #-2             //==-2 --> '*'
-	csel x0, x7, x0, eq
-
-    ldr x7, =bug2
-	cmp x8, #-3             //==-3 --> '~'
-	csel x0, x7, x0, eq
-
-    ldr x7, =bug3
-	cmp x8, #-4             //==-4 --> '%'
-    csel x0, x7, x0, eq
-
-	ldr x1, =max_len        // cut tail if its too long
+	ldr x1, =max_len        // cut off your tail if it's too long
 	ldr x1, [x1]
 	add x1, x1, #1
 	cmp x8, x1
-	// bgt reset_point_empty
+	ble choose_character
+
+	mov x0, #0
+	str x0, [x6]
+choose_character:
+	ldr x7, =snake			// point = 1 -> print '@' (head)
+	cmp x8, #1
+    csel x0, x7, x0, eq
+
+	ldr x7, =tail			// point > 1 -> print '0' (tail)
+	csel x0, x7, x0, gt
+
+    ldr x7, =border			// point = -1 -> print '#' (border)
+	cmp x8, #-1
+	csel x0, x7, x0, eq
+
+	ldr x7, =bug1           // point = -2 -> print '*' (bug 1)
+	cmp x8, #-2
+	csel x0, x7, x0, eq
+
+    ldr x7, =bug2           // point = -3 -> print '~' (bug 2)
+	cmp x8, #-3
+	csel x0, x7, x0, eq
+
+    ldr x7, =bug3           // point = -4 -> print '%' (bug 3)
+	cmp x8, #-4
+    csel x0, x7, x0, eq
 
 	bl output               // print the point
 
-	add x6, x6, #4          // next  point in map
+	add x6, x6, #4          // next point in map
 	b mapx_loop
-snake_tail_age:
-	add x0, x8, #1
-	str x0, [x6]
-	ret
-reset_point_empty:
-	mov x0, #0
-	str x0, [x6]
-	ldr x0, =empty
-	ret
-line_break_and_output:
-	stp x8, lr, [sp, #-16]!
-	ldr x0, =endl
-	bl output
-	ldp x8, lr, [sp], #16
-	ret
 end_map_loop:
 	ldr x0, =endl
 	bl output
+
 	ldp x8, lr, [sp], #16
 	ldp x6, x7, [sp], #16
 	ldp x4, x5, [sp], #16
-	ret
+
+	ret						// should only return to game_loop
 ///////////////////////////////////////////////
 
 
