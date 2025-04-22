@@ -242,8 +242,10 @@ reset_point_empty:
 	ret
 line_break_and_output:
 	stp x8, lr, [sp, #-16]!
+	mov x8, lr
 	ldr x0, =endl
 	bl output
+	mov lr, x8
 	ldp x8, lr, [sp], #16
 	ret
 end_map_loop:
