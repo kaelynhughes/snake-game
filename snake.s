@@ -111,12 +111,12 @@ move_and_check_collision:
         ldr w1, [x1]		// X1 - previous x location of head
         
         ldr x0, =dx
-        ldr x0, [x0]
+        ldr w0, [x0]
         add x5, x1, x0		// X5 - new x location of head
         ldr x2, =heady
-        ldr x2, [x2]		// X2 - previous y location of head
+        ldr w2, [x2]		// X2 - previous y location of head
         ldr x0, =dy	
-        ldr x0, [x0]		
+        ldr w0, [x0]		
         add x6, x2, x0		// X6 - new y location of head
         mov x0, #MAPXLEN
         mul x3, x6, x0
