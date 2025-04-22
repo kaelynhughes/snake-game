@@ -193,7 +193,7 @@ skip_line_break:
 	ldr x0, =empty			// default value -> print '.' (empty)
 
 	cmp x8, #1				// point >= 1 -> is snake
-	blt skip_tail_age		// point < 1 -> don't age
+	blt choose_character	// point < 1 -> don't age
 
 	add x0, x8, #1			// add 1 to tail age & store
 	str x0, [x6]
@@ -202,11 +202,11 @@ skip_line_break:
 	ldr x1, [x1]
 	add x1, x1, #1
 	cmp x8, x1
-	ble skip_tail_age
+	ble choose_character
 
 	mov x0, #0
 	str x0, [x6]
-skip_tail_age:
+choose_character:
 	ldr x7, =snake			// point = 1 -> print '@' (head)
 	cmp x8, #1
     csel x0, x7, x0, eq
