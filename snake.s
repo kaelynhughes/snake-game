@@ -52,8 +52,8 @@ _start:
 	bl init_random_seed
 	bl initialize_map
 
-        ldr x0, =hide_cursor
-        bl output
+	ldr x0, =hide_cursor
+	bl output
 
 game_loop:
 	bl update_and_print_map
