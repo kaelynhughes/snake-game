@@ -189,7 +189,7 @@ mapx_loop:
 	add x4, x4, #1
 
 	//// Update and print map point ////
-	ldr x8, [x6]            // load map point
+	ldr w8, [x6]            // load map point
 
 	ldr x7, =empty
 	cmp x8, #0              //if point is:
