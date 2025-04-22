@@ -52,7 +52,7 @@ _start:
 	bl init_random_seed
 	bl initialize_map
 
-        // ldr x0, =hide_cursor
+        ldr x0, =hide_cursor
         bl output
 
 game_loop:
