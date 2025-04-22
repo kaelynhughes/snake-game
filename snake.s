@@ -344,44 +344,42 @@ end_check_keypress:
 ////////// INIT MAP /////////////////
 // Input: none
 // Output: none
-// Initialize map values, mainly draw borders.
+// Initialize map values; create borders & call functions that add bugs.
 initialize_map:
 	stp x4, lr, [sp, #-16]!
-	ldr x4, =map
-
-	// create horizontal borders
+create_horizontal_borders:
 	// REGISTERS:
 	// x0: column number, number of the current top-row cell
 	// x2: memory offset between a cell in the top row & its corresponding bottom-row cell
 	// x4: map address of the cell in x0
 
+	ldr x4, =map
+
 	mov x0, #0
 	mov x1, #MAPYLEN
 	sub x2, x1, #1		// bottom row y-value since rows start at 0
 
-	mov x1, #MAPXLEN
 	mul x2, x2, x1		// bottom row * cells per row = first cell of last row
 	mov x1, #4
 	mul x2, x2, x1		// offset in cells * memory offset per cell = total memory offset
-top_loop:
+horizontal_border_loop:
 	cmp x0, #MAPXLEN	// did we reach the end of the row?
-	beq end_top_loop
+	beq create_vertical_borders
 
-	add x0, x0, #1		// increment column
 	mov x1, #-1			// border indicator
 	str x1, [x4]		// set border in the top row
 	str x1, [x4, x2]  	// set border in the bottom row
 
+	add x0, x0, #1		// increment column
 	add x4, x4, #4		// increment address
-	b top_loop
-end_top_loop:
-	ldr x4, =map
-
-	// create vertical borders
+	b horizontal_border_loop
+create_vertical_borders:
 	// REGISTERS:
 	// x0: row number
 	// x2: memory offset between the first and last cell in a row
 	// x3: memory offset used to increment rows
+
+	ldr x4, =map
 
 	mov x0, #0
 	mov x1, #MAPXLEN
@@ -390,23 +388,22 @@ end_top_loop:
 	mov x3, #4
 	mul x2, x2, x3		// offset in cells * memory offset per cell = total memory offset
 
-	mov x1, #MAPXLEN
 	mul x3, x1, x3		// row length * memory offset per cell = offset to the next row
-side_loop:
+vertical_border_loop:
 	cmp x0, #MAPYLEN	// did we reach the last row?
-	beq end_side_loop
+	beq end_initialize_map
 
-	add x0, x0, #1		// increment row number
 	mov x1, #-1			// border indicator
 	str x1, [x4]		// set border in the first column
 	str x1, [x4, x2]  	// set border in the last column
 
+	add x0, x0, #1		// increment row number
 	add x4, x4, x3   	// increment address to the next row
-	b side_loop
-end_side_loop:
+	b vertical_border_loop
+end_initialize_map:
 	// bl add_new_bug
 	ldp x4, lr, [sp], #16
-	ret lr
+	ret
 ////////////////////////////////
 
 
