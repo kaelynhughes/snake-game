@@ -125,6 +125,8 @@ update_and_print_map:
 	ldr x6, =map
         ldr x0, =clear_screen
         bl output
+        
+    ldr x0, =test_msg
 
         mov x5, #0
 mapy_loop:
