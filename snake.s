@@ -198,9 +198,9 @@ skip_line_break:
 	add x0, x8, #1
 	str x0, [x6]
 skip_tail_age:
-	ldr x7, =empty			// point = 0 -> print '.'
-	cmp x8, #0
-	csel x0, x7, x0, eq
+	// ldr x7, =empty			// point = 0 -> print '.'
+	// cmp x8, #0
+	// csel x0, x7, x0, eq
 		
 
 	ldr x7, =snake			// point = 1 -> print '@' (head)
