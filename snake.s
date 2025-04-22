@@ -190,7 +190,7 @@ mapx_loop:
 skip_line_break:
 	add x4, x4, #1
 	ldr x8, [x6]            // load map point
-	ldr x0, =empty			// default value
+	ldr x0, =empty			// default value -> print '.' (empty)
 
 	cmp x8, #1				// point >= 1 -> is snake
 	blt skip_tail_age		// point < 1 -> don't age
@@ -198,11 +198,6 @@ skip_line_break:
 	add x0, x8, #1
 	str x0, [x6]
 skip_tail_age:
-	// ldr x7, =empty			// point = 0 -> print '.'
-	// cmp x8, #0
-	// csel x0, x7, x0, eq
-		
-
 	ldr x7, =snake			// point = 1 -> print '@' (head)
 	cmp x8, #1
     csel x0, x7, x0, eq
