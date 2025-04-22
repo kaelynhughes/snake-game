@@ -202,7 +202,7 @@ mapx_loop:
     csel x0, x7, x0, eq
 	ldr x7, =tail         //>1 --> '0' tail
 	cmp x8, #1
-	csel x0, x8, x0, gt
+	csel x0, x7, x0, gt
 
     ldr x7, =border       //==-1 --> '#'
 	cmp x8, #-1
