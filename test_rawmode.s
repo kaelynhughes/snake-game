@@ -7,6 +7,21 @@ termios: .skip 100
 saved_termios: .skip 100
 input_buffer: .skip 1
 
+space: .asciz "   "
+empty: .asciz "\033[38;5;130m.\033[0m"		// brown .
+snake: .asciz "\033[32m@\033[0m"			// green @
+tail: .asciz "\033[32mo\033[0m"				// green 0
+border: .asciz "\033[33m#\033[0m"			// yellow #
+bug1: .asciz "\033[38;5;199m\244\033[0m"	// pink currency sign
+bug2: .asciz "\033[38;5;207m~\033[0m"		// pink ~
+bug3: .asciz "\033[38;5;165m\272\033[0m"	// pink circle
+
+map: .skip 600  			// allocate space for map: mapxlen * mapylen * 4 bytes per cell, with some extra space
+
+endl: .asciz "\n"
+
+max_len: .word 0			// snake length: 0
+
 .equ MAPXLEN, 14			// define map width as 14 cells
 .equ MAPYLEN, 8				// define map height as 8 cells
 
