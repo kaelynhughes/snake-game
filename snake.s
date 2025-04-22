@@ -195,7 +195,16 @@ skip_line_break:
 	cmp x8, #1				// point >= 1 -> is snake
 	blt skip_tail_age		// point < 1 -> don't age
 
-	add x0, x8, #1
+	add x0, x8, #1			// add 1 to tail age & store
+	str x0, [x6]
+
+	ldr x1, =max_len        // cut off your tail if it's too long
+	ldr x1, [x1]
+	add x1, x1, #1
+	cmp x8, x1
+	ble skip_tail_age
+
+	mov x0, #0
 	str x0, [x6]
 skip_tail_age:
 	ldr x7, =snake			// point = 1 -> print '@' (head)
@@ -222,21 +231,10 @@ skip_tail_age:
 	cmp x8, #-4
     csel x0, x7, x0, eq
 
-	ldr x1, =max_len        // cut off your tail if it's too long
-	ldr x1, [x1]
-	add x1, x1, #1
-	cmp x8, x1
-	// bgt reset_point_empty
-
 	bl output               // print the point
 
 	add x6, x6, #4          // next point in map
 	b mapx_loop
-reset_point_empty:
-	mov x0, #0
-	str x0, [x6]
-	ldr x0, =empty
-	ret
 line_break_and_output:
 	stp x8, lr, [sp, #-16]!
 	ldr x0, =endl
