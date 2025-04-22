@@ -47,26 +47,113 @@ _start:
     mov x8, #93             // exit
     svc #0
 
+update_and_print_map:
+	stp x4, x5, [sp, #-16]!
+	stp x6, x7, [sp, #-16]!
+	stp x8, lr, [sp, #-16]!
+	ldr x6, =map
+        ldr x0, =clear_screen
+        bl output
+
+        mov x5, #0
+mapy_loop:
+        mov x4, #0
+        cmp x5, #MAPYLEN
+        beq end_map_loop
+        add x5, x5, #1
+	ldr x0, =space
+	bl output
+mapx_loop:
+	cmp x4, #MAPXLEN
+	beq line_break_and_output
+	beq mapy_loop
+	add x4, x4, #1
+
+	//// Update and print map point ////
+	ldr x8, [x6]            // load map point
+
+	ldr x7, =empty
+	cmp x8, #0              //if point is:
+	csel x0, x7, x0, eq     //==0 --> '.' to be printed
+	// bgt snake_tail_age
+		
+
+	ldr x7, =snake        //==1 --> '@' head
+	cmp x8, #1
+    csel x0, x7, x0, eq
+	ldr x7, =tail         //>1 --> '0' tail
+	// cmp x8, #1
+	csel x0, x7, x0, gt
+
+    ldr x7, =border       //==-1 --> '#'
+	cmp x8, #-1
+	csel x0, x7, x0, eq
+
+	ldr x7, =bug1
+	cmp x8, #-2             //==-2 --> '*'
+	csel x0, x7, x0, eq
+
+    ldr x7, =bug2
+	cmp x8, #-3             //==-3 --> '~'
+	csel x0, x7, x0, eq
+
+    ldr x7, =bug3
+	cmp x8, #-4             //==-4 --> '%'
+    csel x0, x7, x0, eq
+
+	ldr x1, =max_len        // cut tail if its too long
+	ldr x1, [x1]
+	add x1, x1, #1
+	cmp x8, x1
+	// bgt reset_point_empty
+
+	bl output               // print the point
+
+	add x6, x6, #4          // next  point in map
+	b mapx_loop
+snake_tail_age:
+	add x0, x8, #1
+	str x0, [x6]
+	ret
+reset_point_empty:
+	mov x0, #0
+	str x0, [x6]
+	ldr x0, =empty
+	ret
+line_break_and_output:
+	ldr x0, =endl
+	bl output
+	b mapx_loop
+end_map_loop:
+	ldr x0, =endl
+	bl output
+	ldp x8, lr, [sp], #16
+	ldp x6, x7, [sp], #16
+	ldp x4, x5, [sp], #16
+	ret
+
 output:
-    stp x29, x30, [sp, #-16]!
-    mov x29, sp
+	stp x4, x6, [sp, #-16]!
+	stp x7, lr, [sp, #-16]!
 
-    // Count string length
-    mov x1, x0
-    mov x2, #0
-count_loop:
-    ldrb w3, [x0], #1
-    cbz w3, print
-    add x2, x2, #1
-    b count_loop
+	mov x4, x0		// store orig addr of string
+	mov x3, #0
+count_loop:			// count chars in the string
+	ldrb w1, [x0], #1	// each char is one byte
+	cbz w1, next_print	// each string must be null-ended
+	// this shouldn't be run if equal
+	add x3, x3, #1
+	b count_loop
+next_print:
+	mov x0, #1              // stdout
+	mov x1, x4
+	mov x2, x3
+	mov x8, #64              // syscall for 'write'
+	svc #0                  // software interrupt
 
-print:
-    mov x0, #1              // stdout
-    mov x8, #64             // write is 64 in 64, 4 in 32
-    svc #0
-
-    ldp x29, x30, [sp], #16
-    ret 
+	ldp x7, lr, [sp], #16
+	ldp x4, x6, [sp], #16
+	ret
 
 raw_mode:
 	stp x4, x5, [sp, #-16]!
