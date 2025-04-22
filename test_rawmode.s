@@ -41,6 +41,8 @@ _start:
     ldr x0, =test_msg
     bl output
 
+    bl initialize_map
+
     bl update_and_print_map
 
     // Wait for keypress
@@ -66,6 +68,55 @@ _start:
     mov x0, #0              // status
     mov x8, #93             // exit
     svc #0
+
+
+initialize_map:
+	stp x4, lr, [sp, #-16]!
+
+	//horizontal borders//
+	ldr x4, =map
+	mov x0, #0
+	mov x1, #MAPYLEN
+	sub x2, x1, #1		// compute offset for bottom row
+	mov x1, #MAPXLEN
+	mul x2, x2, x1
+	mov x1, #4
+	mul x2, x2, x1
+top_loop:
+        cmp x0, #MAPXLEN
+        beq end_top_loop
+        add x0, x0, #1
+
+	mov x1, #-1
+	str x1, [x4]
+	str x1, [x4, x2]  	// r2 is the offset for bottom row
+	add x4, x4, #4
+	b top_loop
+end_top_loop:
+	//vertical borders//
+	ldr x4, =map
+	mov x0, #0
+        mov x1, #MAPXLEN
+        sub x2, x1, #1          // compute offset for left row
+	mov x3, #4
+	mul x2, x2, x3
+        mov x1, #MAPXLEN
+        mul x3, x1, x3
+side_loop:
+	cmp x0, #MAPYLEN
+	beq end_side_loop
+        add x0, x0, #1
+
+        mov x1, #-1
+        str x1, [x4]
+        str x1, [x4, x2]  	// r2 is offset for left row
+        add x4, x4, x3   	// r3 is offset for next point
+        b side_loop
+end_side_loop:
+	// currently it seems like all squares are initializing to -1 - can fix the underlying problem once we can see it
+	// bl add_new_bug
+	ldp x4, lr, [sp], #16
+	ret lr
 
 update_and_print_map:
 	stp x4, x5, [sp, #-16]!
