@@ -107,24 +107,31 @@ move_and_check_collision:
 	stp x8, lr, [sp, #-16]!
 	ldr x4, =map
 
-        ldr x1, =headx
-        ldr x1, [x1]
+        ldr x1, =headx		// something's going wrong around here
+        ldr x1, [x1]		// X1 - previous x location of head
+        
+        // Debug: Print headx value
+        mov x0, x1
+        bl output_int
+        ldr x0, =endl
+        bl output
+        
         ldr x0, =dx
         ldr x0, [x0]
-        add x5, x1, x0		// r5 = headx + dx
+        add x5, x1, x0		// X5 - new x location of head
         ldr x2, =heady
-        ldr x2, [x2]
-        ldr x0, =dy
-        ldr x0, [x0]
-        add x6, x2, x0		// r6 = heady + dy
-        mov x0, #MAPXLEN	// get map address for head (r3)
+        ldr x2, [x2]		// X2 - previous y location of head
+        ldr x0, =dy	
+        ldr x0, [x0]		
+        add x6, x2, x0		// X6 - new y location of head
+        mov x0, #MAPXLEN
         mul x3, x6, x0
-        add x3, x3, x5
+        add x3, x3, x5		// X3 - head cell
         mov x0, #4
-        mul x7, x3, x0		// (head) r7 = y*mapxlen + x
+        mul x7, x3, x0		// X7 - location of head in memory
 
-        ldr x0, [x4, x7]	// r0 = map point for next step
-        cmp x0, #0              // collision to points >0 --> end
+        ldr x0, [x4, x7]	// X0 - map point for next step
+        cmp x0, #0          // collision to points >0 --> end
         bgt collision
 
         cmp x0, #-1             // -"- ==-1 --> end
