@@ -184,7 +184,7 @@ mapy_loop:
 	bl output
 mapx_loop:
 	cmp x4, #MAPXLEN
-	beq line_break_and_output
+	bleq line_break_and_output
 	beq mapy_loop
 	add x4, x4, #1
 
@@ -242,10 +242,8 @@ reset_point_empty:
 	ret
 line_break_and_output:
 	stp x8, lr, [sp, #-16]!
-	mov x8, lr
 	ldr x0, =endl
 	bl output
-	mov lr, x8
 	ldp x8, lr, [sp], #16
 	ret
 end_map_loop:
