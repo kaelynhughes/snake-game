@@ -719,10 +719,10 @@ raw_mode:
 
 	// Commented out for now because it's causing weird indent issues
    	//termattr.c_oflag &= ~(OPOST);
-	// movn x5, #1
- 	// ldr x6, [x0, #+4]
-    //     and x6, x6, x5
-    //     str x6, [x0, #+4]
+	movn x5, #1
+ 	ldr x6, [x0, #+4]
+        and x6, x6, x5
+        str x6, [x0, #+4]
 
 	// Commented out for now because it's causing the program to exit immediately
 	//termattr.c_cc[VMIN] = 1;  // or 0 for some Unices 
