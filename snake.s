@@ -283,6 +283,7 @@ check_keypress:
         //bl getch              // ncurses function: get non-blocking
  	//mov r4, r0            // keypress, store in r0
 	//bl endwin		//
+	bl output
 
 	mov x1, #1
 	cmp x4, #0x73           // 'w'
