@@ -760,8 +760,8 @@ raw_mode:
 
 	// Commented out for now because it's causing the program to exit immediately
 	//termattr.c_cc[VMIN] = 1;  // or 0 for some Unices 
-   	// mov x7, #0		// needs to be 0 for Raspbian
-	// strb w7, [x0, #+23]	// 16 + 1 + 6 (VMIN) 
+   	mov x7, #0		// needs to be 0 for Raspbian
+	strb w7, [x0, #+23]	// 16 + 1 + 6 (VMIN) 
 
 	//termattr.c_cc[VTIME] = 0;
 	mov x8, #0
