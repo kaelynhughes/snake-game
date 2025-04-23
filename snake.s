@@ -459,7 +459,6 @@ divide:
 	mov x2, #0
 divide_loop:		// how many times can r1 be substr from r0?
 	cmp x0, x1
-	csel x1, x2, x1, lt
 	blt end_divide
 
 	sub x0, x0, x1
@@ -467,6 +466,7 @@ divide_loop:		// how many times can r1 be substr from r0?
 	b divide_loop
 
 end_divide:
+	mov x1, x2
 	ret
 /////////////////////////////////////
 
