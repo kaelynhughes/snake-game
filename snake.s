@@ -595,14 +595,14 @@ output_int_loop:
 	cmp x6, #0		// add carry if previous round >9
 	ble no_applied_carry
 
-	add r0, r0, #1
-	mov r6, #0
+	add x0, x0, #1
+	mov x6, #0
 no_applied_carry:
 	cmp x0, #9		// check if >9, if so mark carry
 	ble no_added_carry
 
-	sub r0, r0, #10
-	mov r6, #1
+	sub x0, x0, #10
+	mov x6, #1
 no_added_carry:
 	mov x4, x4, lsl #4	// Shift r4 for next time
 
