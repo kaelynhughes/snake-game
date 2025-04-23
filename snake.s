@@ -260,7 +260,6 @@ end_map_loop:
 ///////////////////////////////////////////////
 
 
-
 /////////// CHECK KEYPRESS and UPDATE DX DY ///
 // Input: none
 // Output: none, update dx and dy
@@ -401,7 +400,7 @@ vertical_border_loop:
 	add x4, x4, x3   	// increment address to the next row
 	b vertical_border_loop
 end_initialize_map:
-	// bl add_new_bug
+	bl add_new_bug
 	ldp x4, lr, [sp], #16
 	ret
 ////////////////////////////////
@@ -421,9 +420,7 @@ add_new_bug:
 	bl get_random			// r0 = next random
 	mov x1, #3
 	bl divide				// r0 = r0 % 3
-	mov x3, #-4
-	cmp x0, #0
-	csel x6, x3, x6, eq		// new bug '%'
+	mov x6, #-4
 	cmp x0, #1
 	cinc x6, x6, eq	        // bug is '~'
 
@@ -434,14 +431,14 @@ add_bug_new_try:
 	bl get_random		// r0 = next random
 	mov x1, x5
 	bl divide		// r0 / (mapylen*mapxlen)
-				// --> r0 stores the modulo
+							// --> r0 stores the modulo (cell number)
 	mov x3, #8
-	mul x0, x0, x3  	// map address for new bug
+	mul x0, x0, x3			// map offset for new bug
 
 	ldr x3, [x4, x0]	// load map point
 	cmp x3, #0			// map point must be empty = 0 = '.'
-	csel x2, x6, x2, eq // new bug: -2, -3, or -4
 	bne add_bug_new_try	// if not empty, try again
+	mov x2, x6				// new bug: -2, -3, or -4
 
 	// this will not be run if not equal
 	str x2, [x4, x0]	// store bug to map
@@ -459,7 +456,6 @@ divide:
 	mov x2, #0
 divide_loop:		// how many times can r1 be substr from r0?
 	cmp x0, x1
-	csel x1, x2, x1, lt
 	blt end_divide
 
 	sub x0, x0, x1
@@ -467,6 +463,7 @@ divide_loop:		// how many times can r1 be substr from r0?
 	b divide_loop
 
 end_divide:
+	mov x1, x2
 	ret
 /////////////////////////////////////
 
@@ -479,14 +476,18 @@ end_divide:
 // Note that #1 shift would be enough for this purpose, but we want 
 // small random numbers so calculating the following modulo is fast
 get_random:
+	stp x8, lr, [sp, #-16]!
+	bl init_random_seed
+
 	ldr x1, =random_seed
 	ldr x0, [x1]
 	add x0, x0, #137
 	eor x0, x0, x0, ror #13
 	lsr x0, x0, #5				// shift right to ensure positive
-	and x0, x0, #0xFF			// keep only the lowest byte
+	and x0, x0, #0xFFFF			// keep only the lowest half-word
 	str x0, [x1]
 
+	ldp x8, lr, [sp], #16
 	ret
 /////////////////////////////////////
 
