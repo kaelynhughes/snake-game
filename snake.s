@@ -145,11 +145,20 @@ move_and_check_collision:
 	mov x0, #0
 	b end_move_and_coll
 bug_collision:
+	// janky alert
+	mov x0, #1		// store new head point to map
+	str x0, [x4, x7]
+	ldr x0, =headx
+	str x5, [x0] 		// store new headx
+	ldr x0, =heady
+	str x6, [x0]    	// store new heady
+
 	ldr x1, =max_len
 	ldr x0, [x1]
 	add x0, x0, #1
 	str x0, [x1]
-	b add_new_bug
+	bl add_new_bug
+	b end_move_and_coll
 collision:
 	mov x0, #1
 end_move_and_coll:
