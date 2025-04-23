@@ -373,7 +373,7 @@ horizontal_border_loop:
 	// for whatever reason, my raspberry pi will load all 64 bits from register 1 into the map
 	// regardless of whether i specify w/32-bit registers. this is a horrible workaround
 	strh w1, [x4]		// set border in the top row
-	strh w1, [x4, #1]
+	strh w1, [x4, #2]
 	str w1, [x4, x2]  	// set border in the bottom row
 
 	add x0, x0, #1		// increment column
