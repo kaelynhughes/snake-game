@@ -214,7 +214,7 @@ load_cell:
 
 	ldr x1, =max_len        // cut off your tail if it's too long
 	ldr x1, [x1]
-	add x1, x1, #1
+	// add x1, x1, #1
 	cmp x8, x1
 	ble choose_character
 
