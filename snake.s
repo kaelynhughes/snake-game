@@ -581,40 +581,51 @@ end_input:
 output_int:
 	stp x4, x5, [sp, #-16]!
 	stp x6, lr, [sp, #-16]!
-	
-	// Convert number to ASCII string
-	ldr x3, =rw_buffer
-	add x3, x3, #19        // Start at end of buffer
-	mov x4, x0             // Save original number
-	
-	// Handle zero case
-	cbz x0, zero_case
-	
-	// Convert digits to ASCII
-convert_loop:
-	mov x5, #10
-	udiv x6, x4, x5        // x6 = x4 / 10
-	msub x0, x6, x5, x4    // x0 = x4 % 10
-	add x0, x0, #48        // Convert to ASCII
-	strb w0, [x3], #-1     // Store digit
-	
-	mov x4, x6             // x4 = x4 / 10
-	cbnz x4, convert_loop  // Continue if more digits
-	
-	// Print the number
-	add x3, x3, #1         // Point to first digit
-	mov x0, x3
+
+	mov x4, x0
+	mov x5, #8		// word is 8 x 4 bits
+	mov x6, #0		// carry
+	ldr x3, =rw_buffer	// buffer to write string
+	add x3, x3, #7		// start writing from end
+output_int_loop:
+	// Take least significant 4 bits from r4 into r0, loop 8 times
+	mov x0, x4, lsl #28
+	mov x0, x0, lsr #28
+
+	cmp x6, #0		// add carry if previous round >9
+	ble no_applied_carry
+
+	add r0, r0, #1
+	mov r6, #0
+no_applied_carry:
+	cmp x0, #9		// check if >9, if so mark carry
+	ble no_added_carry
+
+	sub r0, r0, #10
+	mov r6, #1
+no_added_carry:
+	mov x4, x4, lsl #4	// Shift r4 for next time
+
+	// For each nibble (now in r0) convert to ASCII
+	add x0, x0, #48
+	strb w0, [x3], #-1
+	sub x5, x5, #1		// decrease loop counter
+
+	cmp x5, #0
+	bne output_int_loop
+
+	ldr x0, =rw_buffer	// reset to start
+	mov x2, #6
+output_int_loop3:		// skip leading zeroes (max 7)
+	ldrb w1, [x0]
+	cmp x1, #0x30		//= "0" in ascii
+	cinc x0, x0, eq
+	bne output_int_end
+	subs x2, x2, #1
+	bmi output_int_end	//if last number is also 0, print it
+	b output_int_loop3
+output_int_end:
 	bl output
-	
-	b end_output_int
-	
-zero_case:
-	mov x0, #48
-	strb w0, [x3]
-	mov x0, x3
-	bl output
-	
-end_output_int:
 	ldp x6, lr, [sp], #16
 	ldp x4, x5, [sp], #16
 	ret
