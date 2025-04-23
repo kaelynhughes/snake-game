@@ -421,9 +421,7 @@ add_new_bug:
 	bl get_random			// r0 = next random
 	mov x1, #3
 	bl divide				// r0 = r0 % 3
-	mov x3, #-4
-	cmp x0, #0
-	csel x6, x3, x6, eq		// new bug '%'
+	mov x6, #-4
 	cmp x0, #1
 	cinc x6, x6, eq	        // bug is '~'
 
@@ -434,14 +432,14 @@ add_bug_new_try:
 	bl get_random		// r0 = next random
 	mov x1, x5
 	bl divide		// r0 / (mapylen*mapxlen)
-				// --> r0 stores the modulo
+							// --> r0 stores the modulo (cell number)
 	mov x3, #8
-	mul x0, x0, x3  	// map address for new bug
+	mul x0, x0, x3			// map offset for new bug
 
 	ldr x3, [x4, x0]	// load map point
 	cmp x3, #0			// map point must be empty = 0 = '.'
-	csel x2, x6, x2, eq // new bug: -2, -3, or -4
 	bne add_bug_new_try	// if not empty, try again
+	mov x2, x6				// new bug: -2, -3, or -4
 
 	// this will not be run if not equal
 	str x2, [x4, x0]	// store bug to map
