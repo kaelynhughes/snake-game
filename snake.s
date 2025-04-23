@@ -488,7 +488,7 @@ get_random:
 	str x0, [x1]
 
 	str x0, [sp, #-8]!
-	mv x0 sp
+	mv x0, sp
 	bl output
 	ldr x0, [sp], #16
 
