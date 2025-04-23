@@ -483,13 +483,22 @@ get_random:
 	stp x8, lr, [sp, #-16]!
 	bl init_random_seed
 
+	// ldr x1, =random_seed
+	// ldr x0, [x1]
+	// add x0, x0, #137
+	// eor x0, x0, x0, ror #13
+	// lsr x0, x0, #5				// shift right to ensure positive
+	// and x0, x0, #0xFFFFFFFF		// keep only the lowest word
+	// str x0, [x1]
+
 	ldr x1, =random_seed
-	ldr x0, [x1]
-	add x0, x0, #137
-	eor x0, x0, x0, ror #13
-	lsr x0, x0, #5				// shift right to ensure positive
-	and x0, x0, #0xFFFFFFFF		// keep only the lowest word
-	str x0, [x1]
+    ldr x0, [x1]
+    mov x2, #1103515245
+    mul x0, x0, x2
+    add x0, x0, #12345
+    str x0, [x1]
+    lsr x0, x0, #16
+    and x0, x0, #0x7FFF
 
 	ldp x8, lr, [sp], #16
 	ret
