@@ -1,5 +1,25 @@
 # README
 
+## How to Run
+
+1) Clone the repository to your Raspberry Pi. This has been tested on a Raspberry Pi 3 Model B V1.2; it is not guaranteed to work on other machines and is confirmed not to work on Apple AARCH64 machines.
+2) Make sure the `as` and `ld` commands are available.
+3) Run the following commands to compile:
+
+```
+as -o snake.o snake.s
+ld -o snake snake.o
+```
+
+4) Run the following command to run the snake game:
+```
+./snake
+```
+
+## How it Works
+
+The program will run directly from your terminal - no need for a separate graphics program! It temporarily switches off a few settings in the terminal window in order to receive input directly from the user. Use the WASD keys to change direction!
+
 ## notes
 
 1. trying the .s [file](https://github.com/ahmedshabib/Snake-Game-ARM/blob/master/snake.s) i was looking at originally
