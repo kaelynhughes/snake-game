@@ -145,8 +145,7 @@ move_and_check_collision:
 	mov x0, #0
 	b end_move_and_coll
 bug_collision:
-	adrp x1, max_len
-	add x1, x1, :lo12:max_len
+	ldr x1, =max_len
 	ldr x0, [x1]
 	add x0, x0, #1
 	str x0, [x1]
@@ -482,15 +481,15 @@ end_divide:
 // small random numbers so calculating the following modulo is fast
 get_random:
 	stp x8, lr, [sp, #-16]!
-	bl init_random_seed
 
 	ldr x1, =random_seed
-	ldr x0, [x1]
-	add x0, x0, #137
-	eor x0, x0, x0, ror #13
-	lsr x0, x0, #5				// shift right to ensure positive
-	and x0, x0, #0xFFFFFFFF		// keep only the lowest word
-	str x0, [x1]
+    ldr x0, [x1]
+    mov x2, #33
+    mul x0, x0, x2
+    add x0, x0, #213
+    str x0, [x1]
+    lsr x0, x0, #16
+    and x0, x0, #0x7FFF
 
 	ldp x8, lr, [sp], #16
 	ret
@@ -760,8 +759,8 @@ raw_mode:
 
 	// Commented out for now because it's causing the program to exit immediately
 	//termattr.c_cc[VMIN] = 1;  // or 0 for some Unices 
-   	// mov x7, #0		// needs to be 0 for Raspbian
-	// strb w7, [x0, #+23]	// 16 + 1 + 6 (VMIN) 
+   	mov x7, #0		// needs to be 0 for Raspbian
+	strb w7, [x0, #+23]	// 16 + 1 + 6 (VMIN) 
 
 	//termattr.c_cc[VTIME] = 0;
 	mov x8, #0
