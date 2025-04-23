@@ -268,6 +268,8 @@ check_keypress:
 	stp x6, lr, [sp, #-16]!
 
       	bl raw_mode		// key presses are not buffered
+	mov x0, =msg
+	bl output
       	bl delay
       	bl input
 	ldr x4, [x0]
@@ -283,7 +285,6 @@ check_keypress:
         //bl getch              // ncurses function: get non-blocking
  	//mov r4, r0            // keypress, store in r0
 	//bl endwin		//
-	bl output
 
 	mov x1, #1
 	cmp x4, #0x73           // 'w'
