@@ -23,7 +23,7 @@ game_over: .asciz "\033[1A Game Over. Score: "
 
 // initialize snake variables
 .align 4
-map: .skip 600  			// allocate space for map: mapxlen * mapylen * 4 bytes per cell, with some extra space
+map: .skip 1200  			// allocate space for map: mapxlen * mapylen * 4 bytes per cell, with some extra space
 dx: .word 1					// snake directions - initialize to moving right & not moving vertically
 dy: .word 0	
 headx: .word 3				// snake head coords - (3, 3)
@@ -52,8 +52,8 @@ _start:
 	bl init_random_seed
 	bl initialize_map
 
-        ldr x0, =hide_cursor
-        bl output
+	ldr x0, =hide_cursor
+	bl output
 
 game_loop:
 
@@ -121,7 +121,7 @@ move_and_check_collision:
         mov x0, #MAPXLEN
         mul x3, x6, x0
         add x3, x3, x5		// X3 - head cell
-        mov x0, #4
+        mov x0, #8
         mul x7, x3, x0		// X7 - location of head in memory
 
         ldr x0, [x4, x7]	// X0 - map point for next step
@@ -186,24 +186,23 @@ update_and_print_map:
 	bl output
 
 	mov x5, #0
-mapy_loop:
-	mov x4, #0				// reset x-value
+begin_row:
+	mov x4, #0				// (re)set x-value
 	cmp x5, #MAPYLEN		// did we just complete the last row?
 	beq end_map_loop
 
 	add x5, x5, #1
 	ldr x0, =space
 	bl output
-mapx_loop:
+print_cell_loop:
 	cmp x4, #MAPXLEN		// did we just complete the last cell of a row?
-	bne skip_line_break
+	bne load_cell
 
-	ldr x0, =endl			// do a line break if so
+	ldr x0, =endl			// if so, we need to do a line break...
 	bl output
-
-	b mapy_loop
-skip_line_break:
-	add x4, x4, #1
+	b begin_row				// ...and get reset for a new row
+load_cell:
+	add x4, x4, #1			// increment x-value
 	ldr x8, [x6]            // load map point
 	ldr x0, =empty			// default value -> print '.' (empty)
 
@@ -247,8 +246,8 @@ choose_character:
 
 	bl output               // print the point
 
-	add x6, x6, #4          // next point in map
-	b mapx_loop
+	add x6, x6, #8          // next point in map
+	b print_cell_loop
 end_map_loop:
 	ldr x0, =endl
 	bl output
@@ -344,54 +343,67 @@ end_check_keypress:
 ////////// INIT MAP /////////////////
 // Input: none
 // Output: none
-// Initialize map values, mainly draw borders.
+// Initialize map values; create borders & call functions that add bugs.
 initialize_map:
 	stp x4, lr, [sp, #-16]!
+create_horizontal_borders:
+	// REGISTERS:
+	// x0: column number, number of the current top-row cell
+	// x2: memory offset between a cell in the top row & its corresponding bottom-row cell
+	// x4: map address of the cell in x0
 
-	//horizontal borders//
 	ldr x4, =map
+
 	mov x0, #0
 	mov x1, #MAPYLEN
-	sub x2, x1, #1		// compute offset for bottom row
+	sub x2, x1, #1		// bottom row y-value since rows start at 0
+
 	mov x1, #MAPXLEN
-	mul x2, x2, x1
-	mov x1, #4
-	mul x2, x2, x1
-top_loop:
-        cmp x0, #MAPXLEN
-        beq end_top_loop
-        add x0, x0, #1
+	mul x2, x2, x1		// bottom row * cells per row = first cell of last row
+	mov x1, #8
+	mul x2, x2, x1		// offset in cells * memory offset per cell = total memory offset
+horizontal_border_loop:
+	cmp x0, #MAPXLEN	// did we reach the end of the row?
+	beq create_vertical_borders
 
-	mov x1, #-1
-	str x1, [x4]
-	str x1, [x4, x2]  	// r2 is the offset for bottom row
-	add x4, x4, #4
-	b top_loop
-end_top_loop:
-	//vertical borders//
+	mov x1, #-1			// border indicator
+	str x1, [x4]		// set border in the top row
+	str x1, [x4, x2]  	// set border in the bottom row
+
+	add x0, x0, #1		// increment column
+	add x4, x4, #8		// increment address
+	b horizontal_border_loop
+create_vertical_borders:
+	// REGISTERS:
+	// x0: row number
+	// x2: memory offset between the first and last cell in a row
+	// x3: memory offset used to increment rows
+
 	ldr x4, =map
-	mov x0, #0
-        mov x1, #MAPXLEN
-        sub x2, x1, #1          // compute offset for left row
-	mov x3, #4
-	mul x2, x2, x3
-        mov x1, #MAPXLEN
-        mul x3, x1, x3
-side_loop:
-	cmp x0, #MAPYLEN
-	beq end_side_loop
-        add x0, x0, #1
 
-        mov x1, #-1
-        str x1, [x4]
-        str x1, [x4, x2]  	// r2 is offset for left row
-        add x4, x4, x3   	// r3 is offset for next point
-        b side_loop
-end_side_loop:
-	// currently it seems like all squares are initializing to -1 - can fix the underlying problem once we can see it
+	mov x0, #0
+	mov x1, #MAPXLEN
+	sub x2, x1, #1		// offset between the first and last cell in a row
+
+	mov x3, #8
+	mul x2, x2, x3		// offset in cells * memory offset per cell = total memory offset
+
+	mul x3, x1, x3		// row length * memory offset per cell = offset to the next row
+vertical_border_loop:
+	cmp x0, #MAPYLEN	// did we reach the last row?
+	beq end_initialize_map
+
+	mov x1, #-1			// border indicator
+	str x1, [x4]		// set border in the first column
+	str x1, [x4, x2]  	// set border in the last column
+
+	add x0, x0, #1		// increment row number
+	add x4, x4, x3   	// increment address to the next row
+	b vertical_border_loop
+end_initialize_map:
 	// bl add_new_bug
 	ldp x4, lr, [sp], #16
-	ret lr
+	ret
 ////////////////////////////////
 
 
@@ -423,7 +435,7 @@ add_bug_new_try:
 	mov x1, x5
 	bl divide		// r0 / (mapylen*mapxlen)
 				// --> r0 stores the modulo
-	mov x3, #4
+	mov x3, #8
 	mul x0, x0, x3  	// map address for new bug
 
 	ldr x3, [x4, x0]	// load map point
