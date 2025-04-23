@@ -271,7 +271,7 @@ check_keypress:
       	bl delay
       	bl input
 	ldr x4, [x0]
-      	bl cooked_mode		// return to normal mode immediately
+      	// bl cooked_mode		// return to normal mode immediately
 				// this is overkill, but helps when
 				// debugging
 
