@@ -352,6 +352,7 @@ create_horizontal_borders:
 	// REGISTERS:
 	// x0: column number, number of the current top-row cell
 	// x2: memory offset between a cell in the top row & its corresponding bottom-row cell
+	// x3: memory offset between a top-row cell & its bottom-row cell's second half-word
 	// x4: map address of the cell in x0
 
 	ldr x4, =map
@@ -364,6 +365,7 @@ create_horizontal_borders:
 	mul x2, x2, x1		// bottom row * cells per row = first cell of last row
 	mov x1, #4
 	mul x2, x2, x1		// offset in cells * memory offset per cell = total memory offset
+	add x3, x2, #2		// offset for the second half-address of the bottom cell
 horizontal_border_loop:
 	cmp x0, #MAPXLEN	// did we reach the end of the row?
 	beq create_vertical_borders
@@ -374,7 +376,8 @@ horizontal_border_loop:
 	// regardless of whether i specify w/32-bit registers. this is a horrible workaround
 	strh w1, [x4]		// set border in the top row
 	strh w1, [x4, #2]
-	str w1, [x4, x2]  	// set border in the bottom row
+	strh w1, [x4, x2]  	// set border in the bottom row
+	strh w1, [x4, x3]
 
 	add x0, x0, #1		// increment column
 	add x4, x4, #4		// increment address
