@@ -365,7 +365,6 @@ create_horizontal_borders:
 	mul x2, x2, x1		// bottom row * cells per row = first cell of last row
 	mov x1, #4
 	mul x2, x2, x1		// offset in cells * memory offset per cell = total memory offset
-	add x3, x2, #2		// offset for the second half-address of the bottom cell
 horizontal_border_loop:
 	cmp x0, #MAPXLEN	// did we reach the end of the row?
 	beq create_vertical_borders
@@ -375,12 +374,15 @@ horizontal_border_loop:
 	// for whatever reason, my raspberry pi will load all 64 bits from register 1 into the map
 	// regardless of whether i specify w/32-bit registers. this is a horrible workaround
 	strh w1, [x4]		// set border in the top row
-	strh w1, [x4, #2]
 	strh w1, [x4, x2]  	// set border in the bottom row
-	strh w1, [x4, x3]
+
+	add x4, x4, #2		// increment address for the second halves of words
+
+	strh w1, [x4]
+	strh w1, [x4, x2]
 
 	add x0, x0, #1		// increment column
-	add x4, x4, #4		// increment address
+	add x4, x4, #2		// increment address the rest of the way
 	b horizontal_border_loop
 create_vertical_borders:
 	// REGISTERS:
@@ -398,11 +400,17 @@ create_vertical_borders:
 	mul x2, x2, x3		// offset in cells * memory offset per cell = total memory offset
 
 	mul x3, x1, x3		// row length * memory offset per cell = offset to the next row
+	sub x3, x3, #2		// because we have to increment 2 of these bits before for half-word
 vertical_border_loop:
 	cmp x0, #MAPYLEN	// did we reach the last row?
 	beq end_initialize_map
 
 	mov x1, #-1			// border indicator
+	str x1, [x4]		// set border in the first column
+	str x1, [x4, x2]  	// set border in the last column
+
+	add x4, x4, #2		// prep for second half-word
+
 	str x1, [x4]		// set border in the first column
 	str x1, [x4, x2]  	// set border in the last column
 
