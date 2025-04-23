@@ -24,11 +24,11 @@ game_over: .asciz "\033[1A Game Over. Score: "
 // initialize snake variables
 .align 4
 map: .skip 1200  			// allocate space for map: mapxlen * mapylen * 4 bytes per cell, with some extra space
-dx: .long 1					// snake directions - initialize to moving right & not moving vertically
-dy: .long 0	
-headx: .long 3				// snake head coords - (3, 3)
-heady: .long 3
-max_len: .long 0			// snake length: 0
+dx: .quad 1					// snake directions - initialize to moving right & not moving vertically
+dy: .quad 0	
+headx: .quad 3				// snake head coords - (3, 3)
+heady: .quad 3
+max_len: .quad 0			// snake length: 0
 
 // define some globals for gameplay
 random_seed: .word 0x1234	// used to generate random bug positions; will be updated using gettimeofday to make it more random
@@ -109,16 +109,16 @@ move_and_check_collision:
 	ldr x4, =map
 
 	ldr x1, =headx
-	ldr w1, [x1]		// X1 - previous x location of head
+	ldr x1, [x1]		// X1 - previous x location of head
 	
 	ldr x0, =dx
 	ldr x0, [x0]
 	add x5, x1, x0		// X5 - new x location of head
 
 	ldr x2, =heady
-	ldr w2, [x2]		// X2 - previous y location of head
+	ldr x2, [x2]		// X2 - previous y location of head
 	ldr x0, =dy
-	ldr w0, [x0]		
+	ldr x0, [x0]		
 	add x6, x2, x0		// X6 - new y location of head
 
 	mov x0, #MAPXLEN
@@ -334,8 +334,8 @@ update_dxdy:
         cmp x0, #3
 	csel x5, x3, x5, eq
 
-	str x4, [x1]
-	str x5, [x2]
+	str w4, [x1]
+	str w5, [x2]
 
 end_check_keypress:
 	ldp x6, lr, [sp], #16
