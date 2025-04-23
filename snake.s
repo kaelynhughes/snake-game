@@ -487,11 +487,6 @@ get_random:
 	and x0, x0, #0xFF			// keep only the lowest byte
 	str x0, [x1]
 
-	str x0, [sp, #-8]!
-	mov x0, sp
-	bl output
-	ldr x0, [sp], #16
-
 	ldp x8, lr, [sp], #16
 	ret
 /////////////////////////////////////
