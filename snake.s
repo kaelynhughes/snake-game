@@ -23,7 +23,7 @@ game_over: .asciz "\033[1A Game Over. Score: "
 
 // initialize snake variables
 .align 4
-map: .skip 600  			// allocate space for map: mapxlen * mapylen * 4 bytes per cell, with some extra space
+map: .skip 1200  			// allocate space for map: mapxlen * mapylen * 4 bytes per cell, with some extra space
 dx: .word 1					// snake directions - initialize to moving right & not moving vertically
 dy: .word 0	
 headx: .word 3				// snake head coords - (3, 3)
@@ -123,7 +123,7 @@ move_and_check_collision:
         mov x0, #MAPXLEN
         mul x3, x6, x0
         add x3, x3, x5		// X3 - head cell
-        mov x0, #4
+        mov x0, #8
         mul x7, x3, x0		// X7 - location of head in memory
 
         ldr x0, [x4, x7]	// X0 - map point for next step
@@ -248,7 +248,7 @@ choose_character:
 
 	bl output               // print the point
 
-	add x6, x6, #4          // next point in map
+	add x6, x6, #8          // next point in map
 	b print_cell_loop
 end_map_loop:
 	ldr x0, =endl
@@ -362,7 +362,7 @@ create_horizontal_borders:
 
 	mov x1, #MAPXLEN
 	mul x2, x2, x1		// bottom row * cells per row = first cell of last row
-	mov x1, #4
+	mov x1, #8
 	mul x2, x2, x1		// offset in cells * memory offset per cell = total memory offset
 horizontal_border_loop:
 	cmp x0, #MAPXLEN	// did we reach the end of the row?
@@ -373,7 +373,7 @@ horizontal_border_loop:
 	str w1, [x4, x2]  	// set border in the bottom row
 
 	add x0, x0, #1		// increment column
-	add x4, x4, #4		// increment address
+	add x4, x4, #8		// increment address
 	b horizontal_border_loop
 create_vertical_borders:
 	// REGISTERS:
@@ -387,7 +387,7 @@ create_vertical_borders:
 	mov x1, #MAPXLEN
 	sub x2, x1, #1		// offset between the first and last cell in a row
 
-	mov x3, #4
+	mov x3, #8
 	mul x2, x2, x3		// offset in cells * memory offset per cell = total memory offset
 
 	mul x3, x1, x3		// row length * memory offset per cell = offset to the next row
@@ -437,7 +437,7 @@ add_bug_new_try:
 	mov x1, x5
 	bl divide		// r0 / (mapylen*mapxlen)
 				// --> r0 stores the modulo
-	mov x3, #4
+	mov x3, #8
 	mul x0, x0, x3  	// map address for new bug
 
 	ldr x3, [x4, x0]	// load map point
