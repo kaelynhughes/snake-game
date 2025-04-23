@@ -9,9 +9,9 @@ empty: .asciz "\033[38;5;130m.\033[0m"		// brown .
 snake: .asciz "\033[32m@\033[0m"			// green @
 tail: .asciz "\033[32mo\033[0m"				// green o
 border: .asciz "\033[33m#\033[0m"			// yellow #
-bug1: .asciz "\033[38;5;199m\244\033[0m"	// pink currency sign
+bug1: .asciz "\033[38;5;199m%\033[0m"	// pink currency sign
 bug2: .asciz "\033[38;5;207m~\033[0m"		// pink ~
-bug3: .asciz "\033[38;5;165m\272\033[0m"	// pink circle
+bug3: .asciz "\033[38;5;165m*\033[0m"	// pink circle
 
 // set ansi control codes
 clear_screen: .asciz "\033[2J\n"
@@ -24,11 +24,11 @@ game_over: .asciz "\033[1A Game Over. Score: "
 // initialize snake variables
 .align 4
 map: .skip 1200  			// allocate space for map: mapxlen * mapylen * 4 bytes per cell, with some extra space
-dx: .word 1					// snake directions - initialize to moving right & not moving vertically
-dy: .word 0	
-headx: .word 3				// snake head coords - (3, 3)
-heady: .word 3
-max_len: .word 0			// snake length: 0
+dx: .quad 1					// snake directions - initialize to moving right & not moving vertically
+dy: .quad 0	
+headx: .quad 3				// snake head coords - (3, 3)
+heady: .quad 3
+max_len: .quad 0			// snake length: 0
 
 // define some globals for gameplay
 random_seed: .word 0x1234	// used to generate random bug positions; will be updated using gettimeofday to make it more random
@@ -71,7 +71,7 @@ the_end:
 	ldr x0, =game_over
 	bl output
 	ldr x0, =max_len
-	ldr x0, [x0]
+	ldr w0, [x0]
 	bl output_int
 	ldr x0, =endl
 	bl output
@@ -105,39 +105,42 @@ move_and_check_collision:
 	stp x4, x5, [sp, #-16]!
 	stp x6, x7, [sp, #-16]!
 	stp x8, lr, [sp, #-16]!
+
 	ldr x4, =map
 
-        ldr x1, =headx		// something's going wrong around here
-        ldr w1, [x1]		// X1 - previous x location of head
-        
-        ldr x0, =dx
-        ldr w0, [x0]
-        add x5, x1, x0		// X5 - new x location of head
-        ldr x2, =heady
-        ldr w2, [x2]		// X2 - previous y location of head
-        ldr x0, =dy	
-        ldr w0, [x0]		
-        add x6, x2, x0		// X6 - new y location of head
-        mov x0, #MAPXLEN
-        mul x3, x6, x0
-        add x3, x3, x5		// X3 - head cell
-        mov x0, #8
-        mul x7, x3, x0		// X7 - location of head in memory
+	ldr x1, =headx
+	ldr x1, [x1]		// X1 - previous x location of head
+	
+	ldr x0, =dx
+	ldr x0, [x0]
+	add w5, w1, w0		// X5 - new x location of head
 
-        ldr x0, [x4, x7]	// X0 - map point for next step
-        cmp x0, #0          // collision to points >0 --> end
-        bgt collision
+	ldr x2, =heady
+	ldr x2, [x2]		// X2 - previous y location of head
+	ldr x0, =dy
+	ldr x0, [x0]		
+	add w6, w2, w0		// X6 - new y location of head
 
-        cmp x0, #-1             // -"- ==-1 --> end
-        beq collision
-		blt bug_collision
+	mov x0, #MAPXLEN
+	mul x3, x6, x0		// y location * 
+	add x3, x3, x5		// X3 - head cell
+	mov x0, #8
+	mul x7, x3, x0		// X7 - location of head in memory
 
-        mov x0, #1		// store new head point to map
-        str x0, [x4, x7]
-        ldr x0, =headx
-        str x5, [x0] 		// store new headx
-        ldr x0, =heady
-        str x6, [x0]    	// store new heady
+	ldr x0, [x4, x7]	// X0 - map point for next step
+	cmp x0, #0          // collision to points >0 --> end
+	bgt collision
+
+	cmp x0, #-1             // -"- ==-1 --> end
+	beq collision
+	blt bug_collision
+
+	mov x0, #1		// store new head point to map
+	str x0, [x4, x7]
+	ldr x0, =headx
+	str x5, [x0] 		// store new headx
+	ldr x0, =heady
+	str x6, [x0]    	// store new heady
 
 	mov x0, #0
 	b end_move_and_coll
@@ -268,6 +271,8 @@ check_keypress:
 	stp x6, lr, [sp, #-16]!
 
       	bl raw_mode		// key presses are not buffered
+	ldr x0, =msg
+	bl output
       	bl delay
       	bl input
 	ldr x4, [x0]
@@ -329,8 +334,8 @@ update_dxdy:
         cmp x0, #3
 	csel x5, x3, x5, eq
 
-	str x4, [x1]
-	str x5, [x2]
+	str w4, [x1]
+	str w5, [x2]
 
 end_check_keypress:
 	ldp x6, lr, [sp], #16
