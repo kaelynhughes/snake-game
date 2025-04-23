@@ -24,11 +24,11 @@ game_over: .asciz "\033[1A Game Over. Score: "
 // initialize snake variables
 .align 4
 map: .skip 1200  			// allocate space for map: mapxlen * mapylen * 4 bytes per cell, with some extra space
-dx: .doubleword 1					// snake directions - initialize to moving right & not moving vertically
-dy: .doubleword 0	
-headx: .doubleword 3				// snake head coords - (3, 3)
-heady: .doubleword 3
-max_len: .doubleword 0			// snake length: 0
+dx: .long 1					// snake directions - initialize to moving right & not moving vertically
+dy: .long 0	
+headx: .long 3				// snake head coords - (3, 3)
+heady: .long 3
+max_len: .long 0			// snake length: 0
 
 // define some globals for gameplay
 random_seed: .word 0x1234	// used to generate random bug positions; will be updated using gettimeofday to make it more random
