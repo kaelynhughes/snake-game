@@ -71,7 +71,7 @@ the_end:
 	ldr x0, =game_over
 	bl output
 	ldr x0, =max_len
-	ldr x0, [x0]
+	ldr w0, [x0]
 	bl output_int
 	ldr x0, =endl
 	bl output
