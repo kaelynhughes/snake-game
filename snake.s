@@ -279,8 +279,6 @@ check_keypress:
 	stp x6, lr, [sp, #-16]!
 
       	bl raw_mode		// key presses are not buffered
-	ldr x0, =msg
-	bl output
       	bl delay
       	bl input
 	ldr x4, [x0]
