@@ -406,13 +406,13 @@ vertical_border_loop:
 	beq end_initialize_map
 
 	mov x1, #-1			// border indicator
-	str x1, [x4]		// set border in the first column
-	str x1, [x4, x2]  	// set border in the last column
+	strh x1, [x4]		// set border in the first column
+	strh x1, [x4, x2]  	// set border in the last column
 
 	add x4, x4, #2		// prep for second half-word
 
-	str x1, [x4]		// set border in the first column
-	str x1, [x4, x2]  	// set border in the last column
+	strh x1, [x4]		// set border in the first column
+	strh x1, [x4, x2]  	// set border in the last column
 
 	add x0, x0, #1		// increment row number
 	add x4, x4, x3   	// increment address to the next row
