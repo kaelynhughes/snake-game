@@ -588,7 +588,7 @@ output_int:
 	ldr x3, =rw_buffer	// buffer to write string
 	add x3, x3, #7		// start writing from end
 output_int_loop:
-	Take least significant 4 bits from r4 into r0, loop 8 times
+	// Take least significant 4 bits from r4 into r0, loop 8 times
 	mov x0, x4, lsl #28
 	mov x0, x0, lsr #28
 
@@ -606,7 +606,7 @@ no_applied_carry:
 no_added_carry:
 	mov x4, x4, lsl #4	// Shift r4 for next time
 
-	For each nibble (now in r0) convert to ASCII
+	// For each nibble (now in r0) convert to ASCII
 	add x0, x0, #48
 	strb w0, [x3], #-1
 	sub x5, x5, #1		// decrease loop counter
