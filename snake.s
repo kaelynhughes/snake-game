@@ -188,24 +188,23 @@ update_and_print_map:
 	bl output
 
 	mov x5, #0
-mapy_loop:
-	mov x4, #0				// reset x-value
+begin_row:
+	mov x4, #0				// (re)set x-value
 	cmp x5, #MAPYLEN		// did we just complete the last row?
 	beq end_map_loop
 
 	add x5, x5, #1
 	ldr x0, =space
 	bl output
-mapx_loop:
+print_cell_loop:
 	cmp x4, #MAPXLEN		// did we just complete the last cell of a row?
-	bne skip_line_break
+	bne load_cell
 
-	ldr x0, =endl			// do a line break if so
+	ldr x0, =endl			// if so, we need to do a line break...
 	bl output
-
-	b mapy_loop
-skip_line_break:
-	add x4, x4, #1
+	b begin_row				// ...and get reset for a new row
+load_cell:
+	add x4, x4, #1			// increment x-value
 	ldr x8, [x6]            // load map point
 	ldr x0, =empty			// default value -> print '.' (empty)
 
@@ -250,7 +249,7 @@ choose_character:
 	bl output               // print the point
 
 	add x6, x6, #4          // next point in map
-	b mapx_loop
+	b print_cell_loop
 end_map_loop:
 	ldr x0, =endl
 	bl output
