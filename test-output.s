@@ -3,6 +3,7 @@
 .align 4
 rw_buffer: .skip 100
 
+.text
 .global _start
 
 
