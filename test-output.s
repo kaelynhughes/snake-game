@@ -78,15 +78,14 @@ output_int_loop:
     bne output_int_loop
 
     ldr x0, =rw_buffer     // reset to start
-    mov x2, #6
-output_int_loop3:          // skip leading zeroes (max 7)
+    mov x2, #7             // check all 8 digits (0-7)
+output_int_loop3:          // skip leading zeroes
     ldrb w1, [x0]
     cmp x1, #0x30          //= "0" in ascii
-    cinc x0, x0, eq
-    bne output_int_end
+    bne output_int_end     // if not zero, we're done
+    add x0, x0, #1         // move to next digit
     subs x2, x2, #1
-    bmi output_int_end     //if last number is also 0, print it
-    b output_int_loop3
+    bpl output_int_loop3   // continue if we haven't checked all digits
 output_int_end:
     bl output
 
