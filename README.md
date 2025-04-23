@@ -24,7 +24,7 @@ The game stores all its information in a piece of memory called the map. A refer
 
 ## Course Concepts Applied
 
-As far as I can tell, my Raspberry Pi cannot run ARM32 assembly code - only ARM64. Although I couldn't find anything labeled as an ARM64 Snake Game starter kit, I did find [this](https://github.com/haperofi/asm_snake/blob/main/mato.s) implemented Snake game. At least, as far as I could tell, it had been fully implemented; it's written in ARM32. I thought it would be a great challenge and test of my understanding if I updated it to run in ARM64! It also marks a huge improvement to the program itself as this allows a ton of machines to run it that otherwise would not have been able to.
+As far as I can tell, my Raspberry Pi cannot run ARM32 assembly code - only ARM64. Although I couldn't find anything labeled as an ARM64 Snake Game starter kit, I did find [this](https://github.com/haperofi/asm_snake/blob/main/mato.s) implemented Snake game. At least, as far as I could tell, it had been fully implemented; it's written in ARM32. I thought it would be a great challenge and test of my understanding if I updated it to run in ARM64! It also marks a huge improvement to the program itself; to my knowledge, modern ARM machines typically run ARM64, so this gives the code a whole new life and allows it to be run on many more machines than could have otherwise!
 
 One of the first issues I ran into was the fact that the commands for interacting with the stack in ARM32 had been deprecated. The ARM64 version is much more hands-on - rather than using a simple `push` method on as many registers as you want, ARM64 requires you to use the stack pointer to store and load stack data, and it's up to you to offset the pointer every time. This forced me to think much harder about the mechanics of the stack, especially since the operations felt backwards in my mind! I'm used to thinking of a stack as having the oldest items at the bottom and the newest near the top where they're accessible, but the Assembly stack expands from the top down. I kept mixing up which operations needed a positive vs. negative offset. And I had to think more carefully about the order I placed things in the stack! In one part of the code, six of the registers are added to the stack and loaded back out at the end of the function, one of which was the link register. When I first tested this code, I kept getting segmentation faults, and I was unsure why they were happening - until I realized that I had attempted to pop the data in the same order I'd pushed it. Because of this, the address that I'd pushed from the link register was being loaded into register 5 and vice versa - and register 5 was occasionally empty when that function ran. 
 
@@ -37,3 +37,24 @@ Later on, the difference between types of registers caused another problem as I 
 I also ran into several issues that were caused more by my particular system than anything. In order to accept input in real time, without needing to press Enter after every command, the game has to contact the terminal directly and change some settings. Each of these settings were bound to a specific flag at a certain address, and many of them differed between my machine and the one used by the author of the ARM32 version. I'm unsure how much variation exists among other devices, but I dug through my system and found exactly where that information is stored on my Raspberry Pi - so I'm hopeful I could load the game onto another similar device if the need arose!
 
 After finishing this project, I feel much more confident in my understanding of how programs like my snake game work at a low level. Though I felt like a fish out of water at first, with even capabilities like `print` requiring significant effort, I found it extremely satisfying to watch the game come together. I'd periodically notice commands we had built for assignments and realize I understood how that part of the code worked down to the circuitry itself. Even though it isn't the most practical language, I sort of wish I had more reason to use it!
+
+## Online Help and Documentation Used
+
+I spent a lot of time with Google, Stack Overflow, and various coding blogs to figure this out. Some of the resources I used are bound to slip through the cracks, but I did my best to document as many as I could:
+
+- The [official ARM Developer documentation](https://developer.arm.com/documentation/ddi0596/2020-12/Base-Instructions/ADD--extended-register---Add--extended-register--)
+- A [surprisingly comprehensive guide to ARM64 commands](https://modexp.wordpress.com/2018/10/30/arm64-assembly/)
+- A list of [ANSI codes] and their uses(https://gist.github.com/fnky/458719343aabd01cfb17a3a4f7296797) - very helpful when I was messing with terminal settings and output colors!
+- A list of [ARM64 syscalls](https://arm64.syscall.sh/) and another of [ARM32 syscalls](https://arm.syscall.sh/) to compare
+- An [ARM32 tutorial](https://www.davespace.co.uk/arm/introduction-to-arm/) that listed and explained most of the commands I saw in the original version
+- [Unofficial GDB documentation](https://web.cecs.pdx.edu/~apt/cs510comp/gdb.pdf) for debugging
+- This [article](https://eclecticlight.co/2021/07/20/code-in-arm-assembly-conditions-without-branches/) with some good info on conditional branches
+- This [article](https://thinkingeek.com/2017/05/29/exploring-aarch64-assembler-chapter-8/) about the stack 
+- This [article](https://valsamaras.medium.com/arm-64-assembly-series-load-and-store-6bfe9c1d1896) about the load and store functions
+- This [GitHub repository](https://github.com/kevinboone/pi-asm/blob/14c0d60406200753d2b71395d1ca6debfa53fcf4/08_first_loop_64.as) was very helpful starting out because it contains versions of the same programs in ARM64 and ARM32 - and the author posted a series of articles to go with them too!
+- The [termios.h specs](https://pubs.opengroup.org/onlinepubs/7908799/xsh/termios.h.html) - again, helpful when I was changing a million terminal settings
+- Surprisingly good information within [this forum](https://sourceforge.net/p/hla-stdlib/mailman/hla-stdlib-talk/thread/814462.63171.qm@web65510.mail.ac4.yahoo.com/) about raw terminal mode
+- The [termios man page](https://www.man7.org/linux/man-pages/man3/termios.3.html)
+- A [Medium article](https://valsamaras.medium.com/arm-64-assembly-series-branch-9ce820987fc6)
+- This [Wikipedia article](https://en.wikipedia.org/wiki/Linear_congruential_generator) that helped me figure out how to write my own random function, because the one it came with stalled out the program
+- I got the numbers for my random function from [this paper](https://www.ams.org/journals/mcom/1999-68-225/S0025-5718-99-00996-5/S0025-5718-99-00996-5.pdf)
