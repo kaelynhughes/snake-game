@@ -145,12 +145,14 @@ move_and_check_collision:
 	mov x0, #0
 	b end_move_and_coll
 bug_collision:
-	str x0, #0			// remove bug from game
+	stp x8, lr, [sp, #-16]!
 	ldr x1, =max_len
 	ldr x0, [x1]
 	add x0, x0, #1
 	str x0, [x1]
-	b add_new_bug
+	bl add_new_bug
+	ldp x8, lr, [sp], #16
+	ret
 collision:
 	mov x0, #1
 end_move_and_coll:
