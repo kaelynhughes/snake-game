@@ -477,6 +477,9 @@ end_divide:
 // Note that #1 shift would be enough for this purpose, but we want 
 // small random numbers so calculating the following modulo is fast
 get_random:
+	str x8, lr, [sp, #-16]!
+	bl init_random_seed
+
 	ldr x1, =random_seed
 	ldr x0, [x1]
 	add x0, x0, #137
@@ -485,6 +488,7 @@ get_random:
 	and x0, x0, #0xFF			// keep only the lowest byte
 	str x0, [x1]
 
+	ldp x8, lr, [sp], #16
 	ret
 /////////////////////////////////////
 
