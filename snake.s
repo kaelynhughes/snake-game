@@ -9,9 +9,9 @@ empty: .asciz "\033[38;5;130m.\033[0m"		// brown .
 snake: .asciz "\033[32m@\033[0m"			// green @
 tail: .asciz "\033[32mo\033[0m"				// green o
 border: .asciz "\033[33m#\033[0m"			// yellow #
-bug1: .asciz "\033[38;5;199m\244\033[0m"	// pink currency sign
+bug1: .asciz "\033[38;5;199m%\033[0m"	// pink currency sign
 bug2: .asciz "\033[38;5;207m~\033[0m"		// pink ~
-bug3: .asciz "\033[38;5;165m\272\033[0m"	// pink circle
+bug3: .asciz "\033[38;5;165m*\033[0m"	// pink circle
 
 // set ansi control codes
 clear_screen: .asciz "\033[2J\n"
