@@ -369,8 +369,8 @@ horizontal_border_loop:
 	beq create_vertical_borders
 
 	mov w1, #-1			// border indicator
-	str w1, [w4]		// set border in the top row
-	str w1, [w4, w2]  	// set border in the bottom row
+	str w1, [x4]		// set border in the top row
+	str w1, [x4, w2]  	// set border in the bottom row
 
 	add x0, x0, #1		// increment column
 	add x4, x4, #4		// increment address
