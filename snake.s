@@ -405,7 +405,7 @@ vertical_border_loop:
 	add x4, x4, x3   	// increment address to the next row
 	b vertical_border_loop
 end_initialize_map:
-	// bl add_new_bug
+	bl add_new_bug
 	ldp x4, lr, [sp], #16
 	ret
 ////////////////////////////////
