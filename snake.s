@@ -260,7 +260,6 @@ end_map_loop:
 ///////////////////////////////////////////////
 
 
-
 /////////// CHECK KEYPRESS and UPDATE DX DY ///
 // Input: none
 // Output: none, update dx and dy
@@ -487,6 +486,11 @@ get_random:
 	lsr x0, x0, #5				// shift right to ensure positive
 	and x0, x0, #0xFF			// keep only the lowest byte
 	str x0, [x1]
+
+	str x0, [sp, #-8]!
+	mv x0 sp
+	bl output
+	ldr x0, [sp], #16
 
 	ldp x8, lr, [sp], #16
 	ret
