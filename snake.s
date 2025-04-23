@@ -493,9 +493,9 @@ get_random:
 
 	ldr x1, =random_seed
     ldr x0, [x1]
-    mov x2, #1103515245
+    mov x2, #8121
     mul x0, x0, x2
-    add x0, x0, #12345
+    add x0, x0, #28411
     str x0, [x1]
     lsr x0, x0, #16
     and x0, x0, #0x7FFF
