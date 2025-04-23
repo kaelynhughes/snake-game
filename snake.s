@@ -145,8 +145,7 @@ move_and_check_collision:
 	mov x0, #0
 	b end_move_and_coll
 bug_collision:
-	adrp x1, max_len
-	add x1, x1, :lo12:max_len
+	ldr x1, =max_len
 	ldr x0, [x1]
 	add x0, x0, #1
 	str x0, [x1]
