@@ -481,15 +481,6 @@ end_divide:
 // small random numbers so calculating the following modulo is fast
 get_random:
 	stp x8, lr, [sp, #-16]!
-	bl init_random_seed
-
-	// ldr x1, =random_seed
-	// ldr x0, [x1]
-	// add x0, x0, #137
-	// eor x0, x0, x0, ror #13
-	// lsr x0, x0, #5				// shift right to ensure positive
-	// and x0, x0, #0xFFFFFFFF		// keep only the lowest word
-	// str x0, [x1]
 
 	ldr x1, =random_seed
     ldr x0, [x1]
