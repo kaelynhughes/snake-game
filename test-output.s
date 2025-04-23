@@ -1,6 +1,7 @@
 .data
 
 .align 4
+rw_buffer: .skip 100
 
 .global _start
 
