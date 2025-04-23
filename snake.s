@@ -484,7 +484,6 @@ get_random:
 	add x0, x0, #137
 	eor x0, x0, x0, ror #13
 	lsr x0, x0, #5				// shift right to ensure positive
-	and x0, x0, #0xFFFFFFFF		// keep only the lowest word
 	str x0, [x1]
 
 	ldp x8, lr, [sp], #16
